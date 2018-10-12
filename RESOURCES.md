@@ -15,3 +15,6 @@ BuilderBook
 - https://builderbook.org/books/builder-book/introduction
 - https://github.com/builderbook/builderbook/
 - https://medium.freecodecamp.org/how-to-integrate-mailchimp-in-a-javascript-web-app-2a889fb43f6f
+
+- About isomorphic unfetch
+https://nodewebapps.com/2018/03/29/building-server-rendered-react-apps-with-nextjs/
