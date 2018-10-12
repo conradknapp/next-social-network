@@ -9,3 +9,9 @@ Using Material UI with Next.js
 Express w/ Next.js
 
 - https://www.youtube.com/watch?v=kmrJkrW-ha0
+
+BuilderBook
+
+- https://builderbook.org/books/builder-book/introduction
+- https://github.com/builderbook/builderbook/
+- https://medium.freecodecamp.org/how-to-integrate-mailchimp-in-a-javascript-web-app-2a889fb43f6f
