@@ -17,4 +17,10 @@ BuilderBook
 - https://medium.freecodecamp.org/how-to-integrate-mailchimp-in-a-javascript-web-app-2a889fb43f6f
 
 - About isomorphic unfetch
-https://nodewebapps.com/2018/03/29/building-server-rendered-react-apps-with-nextjs/
+  https://nodewebapps.com/2018/03/29/building-server-rendered-react-apps-with-nextjs/
+
+- https://github.com/shamahoque/mern-social
+
+Next w/ Postgres
+
+- https://www.youtube.com/watch?v=kmrJkrW-ha0

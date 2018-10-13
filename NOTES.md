@@ -1,4 +1,5 @@
 1. Required Tools (i.e. Node / NPM)
+   Note: We will start this project from scratch, but tell users that they can always find the package.json file with all the deps and versions that I used in my github page (in order to resolve any problems with versioning)
 2. `npm init`, `npm i (-D) express`, setup express server, nodemon, nodemon --watch flag
 3. (Optional) Babel 7 Setup, install babel devdeps, add .babelrc, change dev script to include `--exec babel-node`(https://hackernoon.com/using-babel-7-with-node-7e401bc28b04)
 4. Adding Next, install deps (next, react, react-dom), create 'next' script (start), show pages dir, link, stateless / stateful components w/ Next, scoped styles
@@ -11,6 +12,9 @@
 9. Remove any post routes in app.js (and any requests made from the client), create routes folder and userRoutes, create controllers folder and userController
 10. Create authRoutes, create authController
 11. Test out API w/ postman or restlet client (Chrome extension), maybe add morgan for some useful logging upon request (skip static files such as webpack files served from the .next folder)
+    Note: After testing the API, make sure to add CORS to prevent cross origin requests
+12. Add Material UI, create _app, _document, and getPageContext to SSR MUI
+13. Add Components Folder, add and style Header component
 
 Future Videos
 
@@ -27,3 +31,5 @@ Future Videos
     "alias": "something.now.sh"
 }
 ```
+
+1234123894. Upon deploying w/ now, add a build script: `"build": "next build"`

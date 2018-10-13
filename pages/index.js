@@ -1,7 +1,7 @@
 import React from "react";
 // import { sendRequest } from "../utils";
 
-export default class Index extends React.Component {
+class Index extends React.Component {
   // static async getInitialProps() {
   //   const data = {
   //     name: "John Doe"
@@ -13,6 +13,8 @@ export default class Index extends React.Component {
   // }
 
   render() {
-    return <p>hi from next</p>;
+    return <p>hi from next.js</p>;
   }
 }
+
+export default Index;

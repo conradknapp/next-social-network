@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 import expressJwt from "express-jwt";
 import User from "../models/User";
-import dotenv from "dotenv";
-dotenv.config({ path: "variables.env" });
+require("dotenv").config({ path: "variables.env" });
 
 const signin = (req, res) => {
   User.findOne(
