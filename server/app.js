@@ -2,7 +2,11 @@ import express from "express";
 import next from "next";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-require("dotenv").config({ path: "variables.env" });
+import morgan from "morgan";
+import dotenv from "dotenv";
+dotenv.config({ path: "variables.env" });
+
+import apiRoutes from "./routes";
 
 mongoose
   .connect(
@@ -26,10 +30,18 @@ app.prepare().then(() => {
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
 
-  server.post("/api/users", (req, res) => {
-    console.log(req.body);
-    res.send(req.body);
-  });
+  server.use(
+    morgan("tiny", {
+      skip: req => req.url.includes("_next")
+    })
+  );
+
+  apiRoutes(server);
+
+  // server.post("/api/users", (req, res) => {
+  //   console.log(req.body);
+  //   res.send(req.body);
+  // });
 
   server.get("*", (req, res) => handle(req, res));
 

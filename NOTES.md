@@ -7,6 +7,10 @@
    Note: Since the .next folder will be modified anytime we makes changes to our pages directory, we want to ignore .next when restarting the server with nodemon. We'll create a nodemon.json file instead of a flag to change this behavior
 6. Post requests. utils folder, sendRequest, npm i isomorphic-unfetch, bring in dev, port, ROOT_URL variables from app.js. npm i body-parser to parse json data from request bodies. Console log the request data. Then use getInitialProps. Make a post request to the same route (i.e. /api/users) and show. Show that if we want data back from sendRequest, we can make getInitialProps an async function. Show that as the function suggests, the data that is returned from the static method is put on our props object and we can display it in the UI. Show at the end error for not providing an absolute url (using ROOT_URL)
 7. Create MLab Database, connect app to Mlab with Mongoose, create variables.env file
+8. Create models folder and User Model
+9. Remove any post routes in app.js (and any requests made from the client), create routes folder and userRoutes, create controllers folder and userController
+10. Create authRoutes, create authController
+11. Test out API w/ postman or restlet client (Chrome extension), maybe add morgan for some useful logging upon request (skip static files such as webpack files served from the .next folder)
 
 Future Videos
 
