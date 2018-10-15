@@ -34,3 +34,13 @@ https://github.com/mui-org/material-ui/issues/13245
 Cookie Auth Example
 
 - https://with-cookie-auth-hmjqggpeof.now.sh/profile
+
+https://flaviocopes.com/express-validate-input/
+
+Serving Static Files
+
+- https://github.com/ahalimkara/babel-plugin-import-static-files
+
+Running Nodemon/Webpack 4 Simultaneously
+
+- https://stackoverflow.com/questions/35545093/webpack-watch-and-launching-nodemon

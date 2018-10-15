@@ -1,10 +1,11 @@
 import express from "express";
 import next from "next";
 import bodyParser from "body-parser";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import path from "path";
 dotenv.config({ path: "variables.env" });
 
 import apiRoutes from "./routes";
@@ -29,7 +30,7 @@ app.prepare().then(() => {
   const server = express();
 
   server.use(bodyParser.json());
-  server.use(bodyParser.urlencoded({ extended: true }));
+  server.use(bodyParser.urlencoded({ extended: false }));
 
   server.use(cookieParser(process.env.COOKIE_SECRET));
 

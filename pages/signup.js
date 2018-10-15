@@ -13,8 +13,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 import Link from "next/link";
-
-// import { sendRequest } from "../lib/index";
+import { signupUser } from "../lib/auth";
 
 class Signup extends React.Component {
   state = {
@@ -29,19 +28,15 @@ class Signup extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleSubmit = async () => {
+  handleSubmit = () => {
     const user = {
       name: this.state.name,
       password: this.state.password,
       email: this.state.email
     };
-    const newUser = await sendRequest("/api/auth/signup", user);
-    if (newUser) {
-      this.setState({
-        error: "",
-        open: true
-      });
-    }
+    signupUser(user).then(() => {
+      this.setState({ error: "", open: true });
+    });
   };
 
   render() {

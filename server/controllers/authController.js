@@ -4,12 +4,12 @@ require("dotenv").config({ path: "variables.env" });
 const dev = process.env.NODE_ENV !== "production";
 
 const signupUser = async (req, res) => {
-  const user = await new User(req.body).save();
+  const { name, email, password } = req.body;
+  const user = await new User({ name, email, password }).save();
   if (!user) {
-    res.status(400).json({
+    return res.status(400).json({
       error: "Please provide email and/or password"
     });
-    return;
   }
   res.status(200).json({
     message: "Sign up successful!"
@@ -20,10 +20,9 @@ const signinUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(400).json({
+    return res.status(400).json({
       error: "Wrong email and/or password"
     });
-    return;
   }
   if (!user.authenticate(password)) {
     return res.status(401).send({

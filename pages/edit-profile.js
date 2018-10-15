@@ -9,7 +9,8 @@ import Icon from "@material-ui/core/Icon";
 import Avatar from "@material-ui/core/Avatar";
 import CloudUpload from "@material-ui/icons/CloudUpload";
 import { withStyles } from "@material-ui/core/styles";
-import { getUserProfile } from "../lib/auth";
+import { getUserProfile, updateUserProfile } from "../lib/auth";
+import Router from "next/router";
 
 class EditProfile extends React.Component {
   state = {
@@ -17,7 +18,6 @@ class EditProfile extends React.Component {
     name: "",
     about: "",
     photo: "",
-    imageFile: '',
     email: "",
     password: "",
     error: ""
@@ -29,24 +29,10 @@ class EditProfile extends React.Component {
   }
 
   handleSubmit = () => {
-    // const jwt = auth.isAuthenticated()
-    // const user = {
-    //   name: this.state.name || undefined,
-    //   email: this.state.email || undefined,
-    //   password: this.state.password || undefined,
-    //   about: this.state.about || undefined
-    // }
-    // update({
-    //   userId: this.match.params.userId
-    // }, {
-    //   t: jwt.token
-    // }, this.userData).then((data) => {
-    //   if (data.error) {
-    //     this.setState({error: data.error})
-    //   } else {
-    //     this.setState({'redirectToProfile': true})
-    //   }
-    // })
+    updateUserProfile(this.userData, this.state._id).then(data => {
+      console.log(data);
+      Router.replace("/profile");
+    });
   };
 
   handleChange = event => {
@@ -74,7 +60,7 @@ class EditProfile extends React.Component {
           <br />
           <input
             accept="image/*"
-            name="imageFile"
+            name="photo"
             onChange={this.handleChange}
             className={classes.input}
             id="icon-button-file"
@@ -90,6 +76,7 @@ class EditProfile extends React.Component {
           <TextField
             id="name"
             label="Name"
+            name="name"
             className={classes.textField}
             value={name}
             onChange={this.handleChange}
@@ -100,6 +87,7 @@ class EditProfile extends React.Component {
             id="multiline-flexible"
             label="About"
             multiline
+            name="about"
             rows="2"
             value={about}
             onChange={this.handleChange}
@@ -111,6 +99,7 @@ class EditProfile extends React.Component {
             id="email"
             type="email"
             label="Email"
+            name="email"
             className={classes.textField}
             value={email}
             onChange={this.handleChange}
@@ -121,6 +110,7 @@ class EditProfile extends React.Component {
             id="password"
             type="password"
             label="Password"
+            name="password"
             className={classes.textField}
             value={password}
             onChange={this.handleChange}

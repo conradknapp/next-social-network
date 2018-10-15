@@ -14,6 +14,10 @@ router
   .put(userController.updateUser)
   .delete(userController.deleteUser);
 
+router.route('/photo/:userId')
+  .get(userController.photo, userController.defaultPhoto)
+  .get(userController.defaultPhoto);
+
 router.param("userId", userController.userByID);
 
 export default router;

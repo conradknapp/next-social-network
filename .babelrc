@@ -1,3 +1,4 @@
 {
-  "presets": ["@babel/env", "next/babel"]
+  "presets": ["@babel/env", "next/babel"],
+  "plugins": ["import-static-files"]
 }

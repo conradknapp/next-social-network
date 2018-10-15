@@ -19,6 +19,11 @@
 15. (Option 1) Add loading bar in \_app.js page using Next Router (maybe add [Google Analytics too](https://github.com/builderbook/builderbook/blob/415ad89cc3dc6b6d8760085cb25ecebe4a85d0a6/boilerplate/lib/gtag.js)) and add CDN to nprogress min css to \_document (https://unpkg.com/nprogress@0.2.0/nprogress.css)
 16. (Option 2) Add loading bar in \_app.js using the package [next-nprogress](https://www.npmjs.com/package/next-nprogress)
 17. Create EditProfile page, create (dynamic routing with Express)[https://medium.com/@diamondgfx/nextjs-lessons-learned-part-2-f1781237cf5c]
+18. For the default image of the avatar for our users, we'll create a static folder in the root of our project w/ the default image we want as the default avatar. Then we'll use the babel plugin `babel-plugin-import-static-files` and then add this plugins array to .babelrc:
+
+```
+  "plugins": ["import-static-files"]
+```
 
 Future Videos
 

@@ -1,28 +1,8 @@
 import User from "../models/User";
-
-const signupUser = async (req, res) => {
-  const user = await new User(req.body).save();
-  if (!user) {
-    res.status(400).json({
-      error: "Please provide email and/or password"
-    });
-    return;
-  }
-  res.status(200).json({
-    message: "Sign up successful!"
-  });
-};
-// const create = (req, res) => {
-//   const user = new User(req.body);
-//   user.save((err, result) => {
-//     if (err) {
-//       return res.status(400).json({ error: err.message || err.toString() });
-//     }
-//     res.status(200).json({
-//       message: "Sign up successful!"
-//     });
-//   });
-// };
+import formidable from "formidable";
+import fs from "fs";
+import _ from "lodash";
+import profileImage from "../../static/profile-image.jpg";
 
 const list = (_, res) => {
   User.find((err, users) => {
@@ -54,32 +34,44 @@ const read = (req, res) => {
 const getUserProfile = async (req, res) => {
   const { signedCookies = {} } = req;
   const { token = "" } = signedCookies;
-  console.log(token);
   if (token && token.email) {
     const user = await User.findOne({ email: token.email }).select(
-      "_id name email about created"
+      "_id name email about created photo"
     );
     if (!user) {
-      res.sendStatus(403);
-      return;
+      return res.sendStatus(403);
     }
-    res.status(200).json(user);
-    return;
+    return res.status(200).json(user);
   }
-   res.sendStatus(404);
+  res.sendStatus(404);
 };
 
 const updateUser = (req, res) => {
-  let user = req.profile;
-  user = { ...user, ...req.body };
-  user.updated = Date.now();
-  user.save(err => {
+  let form = new formidable.IncomingForm();
+  form.keepExtensions = true;
+  form.parse(req, (err, fields, files) => {
     if (err) {
-      return res.status(400).json({ error: err.message || err.toString() });
+      return res.status(400).json({
+        error: "Photo could not be uploaded"
+      });
     }
-    user.hashed_password = null;
-    user.salt = null;
-    res.status(200).json(user);
+    let user = req.profile;
+    user = _.extend(user, fields);
+    user.updated = Date.now();
+    if (files.photo) {
+      user.photo.data = fs.readFileSync(files.photo.path);
+      user.photo.contentType = files.photo.type;
+    }
+    user.save((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Error"
+        });
+      }
+      user.hashed_password = undefined;
+      user.salt = undefined;
+      res.json(user);
+    });
   });
 };
 
@@ -87,21 +79,30 @@ const deleteUser = async (req, res) => {
   const { userId } = req.params;
   const deletedUser = await User.findOneAndDelete({ _id: userId });
   if (!deletedUser) {
-    return res.status(400).json({ error: 'User could not be deleted' });
+    return res.status(400).json({ error: "User could not be deleted" });
   }
   res.status(200).json(deletedUser);
-}
+};
 
-// const deleteUser = (req, res) => {
-//   let user = req.profile;
-//   user.remove((err, deletedUser) => {
-//     if (err) {
-//       return res.status(400).json({ error: err.message || err.toString() });
-//     f }
-//     // deletedUser.hashed_password = null;
-//     // deletedUser.salt = null;
-//     res.status(200).json(deletedUser);
-//   });
-// };
+const photo = (req, res, next) => {
+  if (req.profile.photo.data) {
+    res.set("Content-Type", req.profile.photo.contentType);
+    return res.send(req.profile.photo.data);
+  }
+  next();
+};
 
-export default { list, userByID, getUserProfile, read, updateUser, deleteUser };
+const defaultPhoto = (req, res) => {
+  return res.sendFile(process.cwd() + profileImage);
+};
+
+export default {
+  list,
+  userByID,
+  getUserProfile,
+  read,
+  updateUser,
+  deleteUser,
+  photo,
+  defaultPhoto
+};
