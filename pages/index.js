@@ -1,5 +1,5 @@
 import React from "react";
-// import { sendRequest } from "../utils";
+// import { sendRequest } from "../lib";
 
 class Index extends React.Component {
   // static async getInitialProps() {
@@ -11,7 +11,6 @@ class Index extends React.Component {
   //   });
   //   return { user };
   // }
-
   render() {
     return <p>hi from next.js</p>;
   }

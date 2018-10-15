@@ -14,3 +14,7 @@ What does SheetRegistry do?
 What is JSS?
 
 - Material-UI's styling solution uses JSS at its core. It's a high performance JS to CSS compiler which works at runtime and server-side
+
+What does the url encoded method of bodyParser do?
+
+- Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST) and exposes the resulting object (containing the keys and values) on req.body. [See more](https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express)

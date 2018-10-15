@@ -1,15 +1,18 @@
 import React from "react";
 import Document, { Head, Main, NextScript } from "next/document";
+// styled-jsx included in Next.js by default
 import flush from "styled-jsx/server";
+
+import { getServerSideToken, getUserScript } from "../lib/auth";
 
 class MyDocument extends Document {
   render() {
-    const { pageContext } = this.props;
+    const { pageContext, user = {} } = this.props;
 
     return (
       <html lang="en" dir="ltr">
         <Head>
-          <title>Next Social</title>
+          {/* You can use the head tag, just not for setting <title> as it leads to unexpected behavior */}
           <meta charSet="utf-8" />
           {/* Use minimum-scale=1 to enable GPU rasterization */}
           <meta
@@ -21,13 +24,10 @@ class MyDocument extends Document {
             name="theme-color"
             content={pageContext.theme.palette.primary.main}
           />
-          {/* <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
-          /> */}
         </Head>
         <body>
           <Main />
+          <script dangerouslySetInnerHTML={{ __html: getUserScript(user) }} />
           <NextScript />
         </body>
       </html>
@@ -36,6 +36,9 @@ class MyDocument extends Document {
 }
 
 MyDocument.getInitialProps = ctx => {
+  // const props = await Document.getInitialProps(ctx);
+  const info = getServerSideToken(ctx.req);
+  console.log("info", info);
   // Resolution order
   //
   // On the server:

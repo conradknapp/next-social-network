@@ -1,7 +1,7 @@
-import users from './users';
-import auth from './auth';
+import usersRoutes from './users';
+import authRoutes from './auth';
 
 export default server => {
-  server.use('/api/users', users);
-  server.use('/api/auth', auth);
+  server.use('/api/users', usersRoutes);
+  server.use('/api/auth', authRoutes);
 }

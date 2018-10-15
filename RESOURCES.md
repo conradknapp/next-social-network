@@ -24,3 +24,13 @@ BuilderBook
 Next w/ Postgres
 
 - https://www.youtube.com/watch?v=kmrJkrW-ha0
+
+Next Auth HOCs and Auth0 Implementation
+
+MUI Typography Error
+
+https://github.com/mui-org/material-ui/issues/13245
+
+Cookie Auth Example
+
+- https://with-cookie-auth-hmjqggpeof.now.sh/profile

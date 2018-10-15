@@ -1,6 +1,7 @@
 import express from "express";
 import next from "next";
 import bodyParser from "body-parser";
+import cookieParser from 'cookie-parser';
 import mongoose from "mongoose";
 import morgan from "morgan";
 import dotenv from "dotenv";
@@ -30,6 +31,8 @@ app.prepare().then(() => {
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
 
+  server.use(cookieParser(process.env.COOKIE_SECRET));
+
   server.use(
     morgan("tiny", {
       skip: req => req.url.includes("_next")
@@ -43,6 +46,13 @@ app.prepare().then(() => {
   //   res.send(req.body);
   // });
 
+  // Custom Routes
+  server.get("/edit-profile/:userId", (req, res) => {
+    // const mergedQuery = Object.assign({}, req.query, req.params);
+    return app.render(req, res, "/edit-profile", req.params.userId);
+  });
+
+  // Default Route
   server.get("*", (req, res) => handle(req, res));
 
   server.listen(port, err => {

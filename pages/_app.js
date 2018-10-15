@@ -4,8 +4,20 @@ import { MuiThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import JssProvider from "react-jss/lib/JssProvider";
 
-import Header from '../components/Header';
-import getPageContext from "../utils/getPageContext";
+import Header from "../components/Header";
+import getPageContext from "../lib/getPageContext";
+
+import withNProgress from "next-nprogress";
+import NProgressStyles from "next-nprogress/styles";
+
+// Loading Bar imports
+// import Router from "next/router";
+// import NProgress from "nprogress";
+
+// Loading Bar w/ Router
+// Router.onRouteChangeStart = () => NProgress.start();
+// Router.onRouteChangeComplete = () => NProgress.done();
+// Router.onRouteChangeError = () => NProgress.done();
 
 class MyApp extends App {
   constructor(props) {
@@ -44,9 +56,12 @@ class MyApp extends App {
             <Component pageContext={this.pageContext} {...pageProps} />
           </MuiThemeProvider>
         </JssProvider>
+        <NProgressStyles color="#e34234" spinner={true} />
       </Container>
     );
   }
 }
 
-export default MyApp;
+const msDelay = 200;
+const configOptions = { trickleSpeed: 50 };
+export default withNProgress(msDelay, configOptions)(MyApp);
