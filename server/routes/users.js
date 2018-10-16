@@ -4,9 +4,17 @@ import userController from "../controllers/userController";
 
 const router = express.Router();
 
-router.route("/").get(userController.list);
+router.route("/").get(userController.getUsers);
 
-router.route("/profile").get(userController.getUserProfile);
+router.route("/profile/:userId").get(userController.getUserProfile);
+
+router
+  .route("/follow")
+  .put(userController.addFollowing, userController.addFollower);
+
+router
+  .route("/unfollow")
+  .put(userController.removeFollowing, userController.removeFollower);
 
 router
   .route("/:userId")
@@ -14,9 +22,11 @@ router
   .put(userController.updateUser)
   .delete(userController.deleteUser);
 
-router.route('/photo/:userId')
-  .get(userController.photo, userController.defaultPhoto)
-  .get(userController.defaultPhoto);
+router
+  .route("/photo/:userId")
+  .get(userController.photo, userController.defaultPhoto);
+
+router.route("/defaultphoto").get(userController.defaultPhoto);
 
 router.param("userId", userController.userByID);
 

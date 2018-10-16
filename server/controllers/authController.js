@@ -1,4 +1,3 @@
-// import jwt from "jsonwebtoken";
 import User from "../models/User";
 require("dotenv").config({ path: "variables.env" });
 const dev = process.env.NODE_ENV !== "production";
@@ -30,6 +29,7 @@ const signinUser = async (req, res) => {
     });
   }
   const tokenPayload = {
+    _id: user._id,
     email: user.email,
     name: user.name,
     type: "authenticated"

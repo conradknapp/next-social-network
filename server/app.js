@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import path from "path";
 dotenv.config({ path: "variables.env" });
 
 import apiRoutes from "./routes";
@@ -48,9 +47,14 @@ app.prepare().then(() => {
   // });
 
   // Custom Routes
+  server.get("/profile/:userId", (req, res) => {
+    const queryParams = Object.assign({}, req.params, req.query);
+    return app.render(req, res, "/profile", queryParams);
+  });
+
   server.get("/edit-profile/:userId", (req, res) => {
-    // const mergedQuery = Object.assign({}, req.query, req.params);
-    return app.render(req, res, "/edit-profile", req.params.userId);
+    const queryParams = Object.assign({}, req.params, req.query);
+    return app.render(req, res, "/edit-profile", queryParams);
   });
 
   // Default Route

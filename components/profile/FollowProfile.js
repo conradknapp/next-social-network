@@ -1,5 +1,5 @@
 import Button from "@material-ui/core/Button";
-// import {unfollow, follow} from './api-user.js'
+import {unfollowUser, followUser } from '../../lib/auth';
 
 const FollowProfile = ({ following, onButtonClick }) => (
   <div>
@@ -7,7 +7,7 @@ const FollowProfile = ({ following, onButtonClick }) => (
       <Button
         variant="contained"
         color="secondary"
-        onClick={() => onButtonClick(unfollow)}
+        onClick={() => onButtonClick(unfollowUser)}
       >
         Unfollow
       </Button>
@@ -15,7 +15,7 @@ const FollowProfile = ({ following, onButtonClick }) => (
       <Button
         variant="contained"
         color="primary"
-        onClick={() => onButtonClick(follow)}
+        onClick={() => onButtonClick(followUser)}
       >
         Follow
       </Button>

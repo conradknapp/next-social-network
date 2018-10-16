@@ -15,7 +15,7 @@ import DeleteProfile from "../components/profile/DeleteProfile";
 import FollowProfile from "../components/profile/FollowProfile";
 import { withStyles } from "@material-ui/core/styles";
 import Link from "next/link";
-import { getUserProfile, authInitialProps } from "../lib/auth";
+import { getUserProfile, authInitialProps, followUser } from "../lib/auth";
 
 class Profile extends React.Component {
   state = {
@@ -46,12 +46,11 @@ class Profile extends React.Component {
     // });
   };
 
-  // componentWillReceiveProps(props) {
-  //   this.init(props.match.params.userId);
-  // };
-
   componentDidMount() {
-    getUserProfile().then(user => this.setState({ user, loading: false }));
+    const { userId } = this.props;
+    getUserProfile(userId).then(user =>
+      this.setState({ user, loading: false })
+    );
   }
 
   checkFollow = user => {
@@ -62,8 +61,7 @@ class Profile extends React.Component {
     // return match;
   };
 
-  clickFollowButton = callApi => {
-    // const jwt = auth.isAuthenticated();
+  clickFollowButton = () => {
     // callApi(
     //   {
     //     userId: jwt.user._id
@@ -109,7 +107,6 @@ class Profile extends React.Component {
   render() {
     const { classes } = this.props;
     const { user, following, loading, posts } = this.state;
-    console.log(user);
     const photoUrl = user._id
       ? `/api/users/photo/${user._id}?${Date.now()}`
       : "/api/users/defaultphoto";

@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import ActiveLink from "./ActiveLink";
 import { signoutUser } from "../lib/auth";
 
-const Header = () => (
+const Header = ({ pageProps: { auth } }) => (
   <AppBar position="static">
     <Toolbar>
       <Typography variant="h5">Next Social</Typography>
@@ -22,7 +22,7 @@ const Header = () => (
       <ActiveLink href="/signin">
         <Button>Sign In</Button>
       </ActiveLink>
-      <ActiveLink href="/profile">
+      <ActiveLink href={`/profile/${auth && auth.user && auth.user._id}`}>
         <Button>My Profile</Button>
       </ActiveLink>
       <Button color="inherit" onClick={signoutUser}>

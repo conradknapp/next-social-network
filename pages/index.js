@@ -1,7 +1,7 @@
 import React from "react";
-// import { sendRequest } from "../lib";
+import { authInitialProps } from "../lib/auth";
 
-class Index extends React.Component {
+export default class Index extends React.Component {
   // static async getInitialProps() {
   //   const data = {
   //     name: "John Doe"
@@ -16,4 +16,4 @@ class Index extends React.Component {
   }
 }
 
-export default Index;
+Index.getInitialProps = authInitialProps();

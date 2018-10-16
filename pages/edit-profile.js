@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
@@ -9,7 +10,11 @@ import Icon from "@material-ui/core/Icon";
 import Avatar from "@material-ui/core/Avatar";
 import CloudUpload from "@material-ui/icons/CloudUpload";
 import { withStyles } from "@material-ui/core/styles";
-import { getUserProfile, updateUserProfile } from "../lib/auth";
+import {
+  getUserProfile,
+  updateUserProfile,
+  authInitialProps
+} from "../lib/auth";
 import Router from "next/router";
 
 class EditProfile extends React.Component {
@@ -20,18 +25,22 @@ class EditProfile extends React.Component {
     photo: "",
     email: "",
     password: "",
-    error: ""
+    error: "",
+    loading: false
   };
 
   componentDidMount() {
+    const { userId } = this.props;
     this.userData = new FormData();
-    getUserProfile().then(user => this.setState({ ...this.state, ...user }));
+    getUserProfile(userId).then(user =>
+      this.setState({ ...this.state, ...user })
+    );
   }
 
   handleSubmit = () => {
+    this.setState({ loading: true });
     updateUserProfile(this.userData, this.state._id).then(data => {
-      console.log(data);
-      Router.replace("/profile");
+      Router.replace(`/profile/${this.state._id}`);
     });
   };
 
@@ -46,7 +55,8 @@ class EditProfile extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { _id, name, password, email, about, error, photo } = this.state;
+    // prettier-ignore
+    const { _id, name, password, email, about, error, photo, loading } = this.state;
     const photoUrl = _id
       ? `/api/users/photo/${_id}?${Date.now()}`
       : "/api/users/defaultphoto";
@@ -126,20 +136,26 @@ class EditProfile extends React.Component {
             </Typography>
           )}
         </CardContent>
-        <CardActions>
+        <CardActions className={classes.wrapper}>
           <Button
             color="primary"
             variant="contained"
+            disabled={loading}
             onClick={this.handleSubmit}
             className={classes.submit}
           >
             Submit
           </Button>
+          {loading && (
+            <CircularProgress size={24} className={classes.buttonProgress} />
+          )}
         </CardActions>
       </Card>
     );
   }
 }
+
+EditProfile.getInitialProps = authInitialProps(false, true);
 
 const styles = theme => ({
   card: {
@@ -175,6 +191,17 @@ const styles = theme => ({
   },
   filename: {
     marginLeft: "10px"
+  },
+  buttonProgress: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12
+  },
+  wrapper: {
+    margin: theme.spacing.unit,
+    position: "relative"
   }
 });
 
