@@ -39,7 +39,7 @@ class EditProfile extends React.Component {
 
   handleSubmit = () => {
     this.setState({ loading: true });
-    updateUserProfile(this.userData, this.state._id).then(data => {
+    updateUserProfile(this.userData, this.state._id).then(() => {
       Router.replace(`/profile/${this.state._id}`);
     });
   };
@@ -196,7 +196,7 @@ const styles = theme => ({
     position: "absolute",
     top: "50%",
     left: "50%",
-    marginTop: -12,
+    marginTop: -18,
     marginLeft: -12
   },
   wrapper: {

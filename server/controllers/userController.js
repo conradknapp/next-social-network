@@ -35,9 +35,7 @@ const read = (req, res) => {
 
 const getUserProfile = async (req, res) => {
   const { userId } = req.params;
-  const user = await User.findOne({ _id: userId }).select(
-    "_id name email about created photo"
-  );
+  const user = await User.findOne({ _id: userId });
   if (!user) {
     return res.sendStatus(403);
   }

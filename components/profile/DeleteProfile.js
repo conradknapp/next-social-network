@@ -8,6 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { signoutUser, deleteUser } from "../../lib/auth";
+import Router from "next/router";
 
 class DeleteProfile extends React.Component {
   state = {
@@ -19,7 +20,8 @@ class DeleteProfile extends React.Component {
   handleDialogClose = () => this.setState({ open: false });
 
   deleteAccount = () => {
-    deleteUser();
+    const { userId } = this.props;
+    deleteUser(userId);
     signoutUser();
     Router.push("/");
   };

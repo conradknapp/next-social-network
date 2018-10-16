@@ -1,5 +1,5 @@
 import Button from "@material-ui/core/Button";
-import {unfollowUser, followUser } from '../../lib/auth';
+import { unfollowUser, followUser } from '../../lib/auth';
 
 const FollowProfile = ({ following, onButtonClick }) => (
   <div>

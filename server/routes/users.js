@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.route("/").get(userController.getUsers);
 
-router.route("/profile/:userId").get(userController.getUserProfile);
+router.route("/profile/:userId").get(userController.read);
 
 router
   .route("/follow")

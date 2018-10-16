@@ -25,7 +25,8 @@ class Profile extends React.Component {
     },
     following: false,
     posts: [],
-    loading: true
+    loading: true,
+    isAuth: false
   };
 
   init = userId => {
@@ -47,13 +48,27 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
-    const { userId } = this.props;
-    getUserProfile(userId).then(user =>
-      this.setState({ user, loading: false })
-    );
+    const { userId, auth } = this.props;
+    getUserProfile(userId).then(user => {
+      const isFollowing = this.checkFollow(user);
+      this.setState({ user, loading: false, following: isFollowing });
+    });
+    this.isAuthUser(auth.user._id, userId);
   }
 
+  isAuthUser = (authId, userId) => {
+    const isAuth = authId === userId;
+    this.setState({ isAuth });
+  };
+
   checkFollow = user => {
+    const { auth } = this.props;
+    console.log(user);
+    const isFollowing = user.followers.find(follower => {
+      return follower._id === auth.user._id;
+    });
+    console.log(isFollowing);
+    return isFollowing;
     // const jwt = auth.isAuthenticated();
     // const match = user.followers.find(follower => {
     //   return follower._id == jwt.user._id;
@@ -61,7 +76,11 @@ class Profile extends React.Component {
     // return match;
   };
 
-  clickFollowButton = () => {
+  clickFollowButton = sendRequest => {
+    const { auth, userId } = this.props;
+    sendRequest(auth.user._id, userId).then(() => {
+      this.setState({ following: !this.state.following });
+    });
     // callApi(
     //   {
     //     userId: jwt.user._id
@@ -106,7 +125,7 @@ class Profile extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { user, following, loading, posts } = this.state;
+    const { isAuth, user, following, loading, posts } = this.state;
     const photoUrl = user._id
       ? `/api/users/photo/${user._id}?${Date.now()}`
       : "/api/users/defaultphoto";
@@ -124,7 +143,7 @@ class Profile extends React.Component {
                 <Avatar src={photoUrl} className={classes.bigAvatar} />
               </ListItemAvatar>
               <ListItemText primary={user.name} secondary={user.email} />{" "}
-              {true ? (
+              {isAuth ? (
                 <ListItemSecondaryAction>
                   <Link href={`/edit-profile/${user._id}`}>
                     <IconButton aria-label="Edit" color="primary">

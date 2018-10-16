@@ -15,38 +15,27 @@ class Signin extends React.Component {
   state = {
     email: "",
     password: "",
-    error: "",
-    redirectToReferrer: false
+    error: ""
   };
-
-  setError = (err) => {
-    console.error(err);
-    const error = (err.response && err.response.data) || err.message
-    this.setState({ error });
-  }
 
   handleSubmit = () => {
     const user = {
       email: this.state.email,
       password: this.state.password
     };
-    this.setState({ error: '' })
+    this.setState({ error: "" });
     signinUser(user)
-    .then(() => Router.push('/'))
-    .catch(this.setError)
-    // sendRequest(user).then(data => {
-    //   if (data.error) {
-    //     this.setState({ error: data.error });
-    //   } else {
-    //     // auth.authenticate(data, () => {
-    //     //   this.setState({ redirectToReferrer: true });
-    //     // });
-    //   }
-    // });
+      .then(() => Router.push("/"))
+      .catch(this.setError);
   };
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
+  };
+
+  setError = err => {
+    const errorMessage = (err.response && err.response.data) || err.message;
+    this.setState({ error: errorMessage.error });
   };
 
   render() {
