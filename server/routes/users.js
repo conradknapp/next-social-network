@@ -11,10 +11,12 @@ router.route("/profile/:userId").get(userController.read);
 router
   .route("/follow")
   .put(userController.addFollowing, userController.addFollower);
-
 router
   .route("/unfollow")
   .put(userController.removeFollowing, userController.removeFollower);
+
+router.route('/findpeople/:userId')
+   .get(userController.findPeople);
 
 router
   .route("/:userId")

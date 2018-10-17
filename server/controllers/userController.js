@@ -172,10 +172,10 @@ const findPeople = (req, res) => {
   User.find({ _id: { $nin: following } }, (err, users) => {
     if (err) {
       return res.status(400).json({
-        error: "Error"
+        error: errorHandler.getErrorMessage(err)
       });
     }
-    res.json(users);
+    res.status(200).json(users);
   }).select("name");
 };
 

@@ -63,17 +63,10 @@ class Profile extends React.Component {
 
   checkFollow = user => {
     const { auth } = this.props;
-    console.log(user);
     const isFollowing = user.followers.find(follower => {
       return follower._id === auth.user._id;
     });
-    console.log(isFollowing);
     return isFollowing;
-    // const jwt = auth.isAuthenticated();
-    // const match = user.followers.find(follower => {
-    //   return follower._id == jwt.user._id;
-    // });
-    // return match;
   };
 
   clickFollowButton = sendRequest => {
@@ -81,14 +74,7 @@ class Profile extends React.Component {
     sendRequest(auth.user._id, userId).then(() => {
       this.setState({ following: !this.state.following });
     });
-    // callApi(
-    //   {
-    //     userId: jwt.user._id
-    //   },
-    //   {
-    //     t: jwt.token
-    //   },
-    //   this.state.user._id
+   // ...
     // ).then(data => {
     //   if (data.error) {
     //     this.setState({ error: data.error });
