@@ -11,7 +11,10 @@ router.post(
   authController.validateSignup,
   authController.signup
 );
-router.post("/api/auth/signin", authController.signin);
+router.post(
+  "/api/auth/signin",
+  authController.signin
+);
 router.get("/api/auth/signout", authController.signout);
 
 /* User Routes */
@@ -61,7 +64,7 @@ router.put(
 router.delete(
   "/api/posts/:postId",
   authController.isAuth,
-  postController.isPoster,
+  // postController.isPoster,
   postController.remove
 );
 

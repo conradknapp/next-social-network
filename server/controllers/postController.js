@@ -164,16 +164,3 @@ export const uncomment = (req, res) => {
       res.json(result);
     });
 };
-
-export const isPoster = (req, res, next) => {
-  const { signedCookies = {} } = req;
-  const { token = "" } = signedCookies;
-  console.log(token, req.post);
-  const isAuth = req.post && token && req.post.postedBy._id == token._id;
-  if (!isAuth) {
-    return res.status(403).json({
-      error: "User is not authorized"
-    });
-  }
-  next();
-};

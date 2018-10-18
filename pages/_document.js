@@ -37,7 +37,7 @@ class MyDocument extends Document {
 
 MyDocument.getInitialProps = async ctx => {
   const documentProps = await Document.getInitialProps(ctx);
-  const info = getServerSideToken(ctx.req);
+  const user = getServerSideToken(ctx.req);
 
   // Render app and page and get the context of the page with collected side effects.
   let pageContext;
@@ -51,7 +51,7 @@ MyDocument.getInitialProps = async ctx => {
 
   return {
     ...documentProps,
-    ...info,
+    user,
     ...page,
     pageContext,
     // Styles fragment is rendered after the app and page rendering finish.

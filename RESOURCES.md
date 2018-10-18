@@ -63,3 +63,7 @@ Passport Local Mongoose Docs
 
 * http://www.passportjs.org/docs/authenticate/
 * https://blog.cloudboost.io/node-js-authentication-with-passport-4a125f264cd4
+
+How to pass data from Express-Session to Next client
+
+- https://github.com/zeit/next.js/issues/2252

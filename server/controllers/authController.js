@@ -54,15 +54,16 @@ export const signin = passport.authenticate("local", {
 //       console.log("ayy", info);
 //       return res.status(401).json(info);
 //     }
-//     req.session.user = user;
-//     return res.redirect("/");
+//     res.status(200).json(user);
+//     // return res.redirect("/");
 //   })(req, res);
 // };
 
 export const signout = (req, res) => {
-  res.clearCookie("next-social.sid");
+  // res.clearCookie("next-social.sid");
   req.logout();
-  return res.sendStatus(204);
+  res.json({ message: "You are now signed out!" });
+  // res.redirect("/");
 };
 
 export const isAuth = (req, res, next) => {

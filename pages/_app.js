@@ -53,7 +53,10 @@ class MyApp extends App {
             <Header {...this.props} />
             {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server side. */}
-            <Component pageContext={this.pageContext} {...pageProps} />
+            <Component
+              pageContext={this.pageContext}
+              {...pageProps}
+            />
           </MuiThemeProvider>
         </JssProvider>
         <NProgressStyles color="#e34234" spinner={false} />

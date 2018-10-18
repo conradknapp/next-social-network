@@ -16,6 +16,7 @@ import "./models/User";
 
 import routes from "./routes";
 
+// Import passport config
 import "./passport";
 
 mongoose.connect(
@@ -26,7 +27,7 @@ mongoose.connect(
 );
 
 mongoose.connection.on("error", err => {
-  console.log(err.message);
+  console.log(`DB connection error: ${err.message}`);
 });
 
 const dev = process.env.NODE_ENV !== "production";
@@ -52,10 +53,10 @@ app.prepare().then(() => {
     })
   };
 
-  // if (!dev) {
-  //   sessionConfig.cookie.secure = true; // serve secure cookies in production environment
-  // app.set('trust proxy', 1) // trust first proxy
-  // }
+  if (!dev) {
+    sessionConfig.cookie.secure = true; // serve secure cookies in production environment
+    server.set("trust proxy", 1); // trust first proxy
+  }
 
   /* Body Parser built-in to Express as of version 4.16 */
   server.use(express.json());
@@ -69,7 +70,6 @@ app.prepare().then(() => {
   server.use((req, res, next) => {
     // res.locals.flashes = req.flash();
     res.locals.user = req.user || null;
-    console.log(req.user);
     next();
   });
 
@@ -83,7 +83,7 @@ app.prepare().then(() => {
   /* Apply our routes */
   server.use("/", routes);
 
-  // Custom Routes
+  // Create custom routes with route params
   server.get("/profile/:userId", (req, res) => {
     const queryParams = Object.assign({}, req.params, req.query);
     return app.render(req, res, "/profile", queryParams);
@@ -93,6 +93,15 @@ app.prepare().then(() => {
     const queryParams = Object.assign({}, req.params, req.query);
     return app.render(req, res, "/edit-profile", queryParams);
   });
+
+  // // give all Nextjs's request to Nextjs server
+  // server.get("/_next/*", (req, res) => {
+  //   handle(req, res);
+  // });
+
+  // server.get("/static/*", (req, res) => {
+  //   handle(req, res);
+  // });
 
   // Default Route
   server.get("*", (req, res) => {

@@ -1,5 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
+import Snackbar from "@material-ui/core/Snackbar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -70,6 +71,16 @@ class Index extends React.Component {
             </Grid>
           </Grid>
         )}
+        {/* <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}
+          open={open}
+          onClose={this.handleDialogClose}
+          autoHideDuration={6000}
+          message={<span className={classes.snack}>{followMessage}</span>}
+        /> */}
       </div>
     );
   }
