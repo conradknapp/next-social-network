@@ -1,9 +1,10 @@
-import Post from "../models/Post";
+import mongoose from "mongoose";
+const Post = mongoose.model("Post");
 import _ from "lodash";
 import formidable from "formidable";
 import fs from "fs";
 
-const create = (req, res) => {
+export const create = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, (err, fields, files) => {
@@ -29,7 +30,7 @@ const create = (req, res) => {
   });
 };
 
-const postByID = (req, res, next, id) => {
+export const postByID = (req, res, next, id) => {
   Post.findById(id)
     .populate("postedBy", "_id name")
     .exec((err, post) => {
@@ -42,7 +43,7 @@ const postByID = (req, res, next, id) => {
     });
 };
 
-const listByUser = (req, res) => {
+export  const listByUser = (req, res) => {
   Post.find({ postedBy: req.profile._id })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
@@ -58,7 +59,7 @@ const listByUser = (req, res) => {
     });
 };
 
-const listNewsFeed = (req, res) => {
+export const listNewsFeed = (req, res) => {
   let following = req.profile.following;
   following.push(req.profile._id);
   Post.find({ postedBy: { $in: req.profile.following } })
@@ -76,9 +77,9 @@ const listNewsFeed = (req, res) => {
     });
 };
 
-const remove = (req, res) => {
+export const remove = (req, res) => {
   let post = req.post;
-  post.remove((err, deletedPost) => {
+  post.deleteOne((err, deletedPost) => {
     if (err) {
       return res.status(400).json({
         error: "Error"
@@ -88,15 +89,18 @@ const remove = (req, res) => {
   });
 };
 
-const photo = (req, res) => {
+export const photo = (req, res) => {
   res.set("Content-Type", req.post.photo.contentType);
   return res.send(req.post.photo.data);
 };
 
-const like = (req, res) => {
+export const like = (req, res) => {
+  const { userId } = req.body;
+  const likes = req.post.likes.map(obj => obj.toString());
+  const operator = likes.includes(userId) ? "$pull" : "$push";
   Post.findByIdAndUpdate(
-    req.body.postId,
-    { $push: { likes: req.body.userId } },
+    post._id,
+    { [operator]: { likes: userId } },
     { new: true }
   ).exec((err, result) => {
     if (err) {
@@ -108,7 +112,7 @@ const like = (req, res) => {
   });
 };
 
-const unlike = (req, res) => {
+export const unlike = (req, res) => {
   Post.findByIdAndUpdate(
     req.body.postId,
     { $pull: { likes: req.body.userId } },
@@ -123,7 +127,7 @@ const unlike = (req, res) => {
   });
 };
 
-const comment = (req, res) => {
+export const comment = (req, res) => {
   const { comment, postId } = req.body;
   Post.findByIdAndUpdate(
     postId,
@@ -142,7 +146,7 @@ const comment = (req, res) => {
     });
 };
 
-const uncomment = (req, res) => {
+export const uncomment = (req, res) => {
   const { comment, postId } = req.body;
   Post.findByIdAndUpdate(
     postId,
@@ -161,7 +165,7 @@ const uncomment = (req, res) => {
     });
 };
 
-const isPoster = (req, res, next) => {
+export const isPoster = (req, res, next) => {
   const { signedCookies = {} } = req;
   const { token = "" } = signedCookies;
   console.log(token, req.post);
@@ -172,18 +176,4 @@ const isPoster = (req, res, next) => {
     });
   }
   next();
-};
-
-export default {
-  listByUser,
-  listNewsFeed,
-  create,
-  postByID,
-  remove,
-  photo,
-  like,
-  unlike,
-  comment,
-  uncomment,
-  isPoster
 };

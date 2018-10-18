@@ -1,23 +1,33 @@
 import express from "express";
 import next from "next";
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
+import session from "express-session";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import store from "connect-mongo";
+import expressValidator from "express-validator";
+const MongoStore = store(session);
+const passport = require("passport");
 dotenv.config({ path: "variables.env" });
 
-import apiRoutes from "./routes";
+// import models to use mongoose.model() Singleton
+import "./models/Post";
+import "./models/User";
 
-mongoose
-  .connect(
-    process.env.MONGO_URI,
-    {
-      useNewUrlParser: true
-    }
-  )
-  .then(() => console.log("Connected to DB"))
-  .catch(err => console.log(err));
+import routes from "./routes";
+
+import "./passport";
+
+mongoose.connect(
+  process.env.MONGO_URI,
+  {
+    useNewUrlParser: true
+  }
+);
+
+mongoose.connection.on("error", err => {
+  console.log(err.message);
+});
 
 const dev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
@@ -28,23 +38,50 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
-  server.use(bodyParser.json());
-  server.use(bodyParser.urlencoded({ extended: false }));
+  const sessionConfig = {
+    name: "next-social.sid",
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+    },
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection
+    })
+  };
 
-  server.use(cookieParser(process.env.COOKIE_SECRET));
+  // if (!dev) {
+  //   sessionConfig.cookie.secure = true; // serve secure cookies in production environment
+  // app.set('trust proxy', 1) // trust first proxy
+  // }
 
+  /* Body Parser built-in to Express as of version 4.16 */
+  server.use(express.json());
+  server.use(expressValidator());
+  server.use(session(sessionConfig));
+
+  /* Passport Middleware */
+  server.use(passport.initialize());
+  server.use(passport.session());
+
+  server.use((req, res, next) => {
+    // res.locals.flashes = req.flash();
+    res.locals.user = req.user || null;
+    console.log(req.user);
+    next();
+  });
+
+  /* Morgan for Request Logging from Client, skip to ignore static files from _next folder */
   server.use(
-    morgan("tiny", {
+    morgan("dev", {
       skip: req => req.url.includes("_next")
     })
   );
 
-  apiRoutes(server);
-
-  // server.post("/api/users", (req, res) => {
-  //   console.log(req.body);
-  //   res.send(req.body);
-  // });
+  /* Apply our routes */
+  server.use("/", routes);
 
   // Custom Routes
   server.get("/profile/:userId", (req, res) => {
@@ -58,7 +95,9 @@ app.prepare().then(() => {
   });
 
   // Default Route
-  server.get("*", (req, res) => handle(req, res));
+  server.get("*", (req, res) => {
+    handle(req, res);
+  });
 
   server.listen(port, err => {
     if (err) throw err;

@@ -1,68 +1,73 @@
-import User from "../models/User";
-require("dotenv").config({ path: "variables.env" });
-const dev = process.env.NODE_ENV !== "production";
+import mongoose from "mongoose";
+import passport from "passport";
 
-const signupUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  const user = await new User({ name, email, password }).save();
-  if (!user) {
-    return res.status(400).json({
-      error: "Please provide email and/or password"
-    });
-  }
-  res.status(200).json({
-    message: "Sign up successful!"
-  });
-};
+const User = mongoose.model("User");
 
-const signinUser = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(400).json({
-      error: "Wrong email and/or password"
-    });
-  }
-  if (!user.authenticate(password)) {
-    return res.status(401).send({
-      error: "Email and password do not match"
-    });
-  }
-  const tokenPayload = {
-    _id: user._id,
-    email: user.email,
-    name: user.name,
-    type: "authenticated"
-  };
-  // use httpOnly flag (prevents JavaScript access to cookie)
-  // use secure flag (only set cookie for https requests)
-  // Signed cookies (verify source of cookie)
-  // const token = jwt.sign(tokenPayload, process.env.JWT_SECRET);
-  const COOKIE_OPTIONS = {
-    // domain: 'YOU_DOMAIN',
-    path: "/",
-    secure: !dev,
-    httpOnly: true,
-    signed: true
-  };
-  res.cookie("token", tokenPayload, COOKIE_OPTIONS);
-  res.status(200).json(tokenPayload);
-};
+export const validateSignup = (req, res, next) => {
+  req.sanitizeBody("name");
+  req.sanitizeBody("email");
+  req.checkBody("name", "Name is required").notEmpty();
+  req.checkBody("email", "Email is not valid").isEmail();
+  req.checkBody("password", "Password is required").notEmpty();
 
-const signoutUser = (req, res) => {
-  // can also optionally pass the TOKEN_OPTIONS variable
-  res.clearCookie("token");
-  return res.sendStatus(204);
-};
-
-const hasAuthorization = (req, res, next) => {
-  const isAuth = req.profile && req.auth && req.profile._id === req.auth._id;
-  if (!isAuth) {
-    return res.status(403).json({
-      error: "User not authorized"
-    });
+  const errors = req.validationErrors();
+  if (errors) {
+    console.log(errors.map(err => err.msg));
+    return;
   }
   next();
 };
 
-export default { signupUser, signinUser, signoutUser, hasAuthorization };
+export const signup = async (req, res, next) => {
+  const { name, email, password } = req.body;
+  const user = await new User({ name, email, password });
+  // passport local mongoose plugin gives us a register method that will hash our password and call .save();
+  User.register(user, password, (err, account) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Please provide email and/or password"
+      });
+    }
+    console.log("user registered!", account);
+    res.status(200).json({
+      message: "Sign up successful!"
+    });
+  });
+};
+
+export const signin = passport.authenticate("local", {
+  failureRedirect: "/login",
+  // failureFlash: "Failed Login!",
+  successRedirect: "/"
+  // successFlash: "You are now logged in!"
+});
+
+// export const signin = (req, res) => {
+//   passport.authenticate("local", (err, user, info) => {
+//     if (err) {
+//       // Authentication failed - Error 500 - Server Error
+//       // return next(err);
+//       console.log(err);
+//     }
+//     if (!user) {
+//       // Authentication failed - Error 401 Missing Credentials
+//       console.log("ayy", info);
+//       return res.status(401).json(info);
+//     }
+//     req.session.user = user;
+//     return res.redirect("/");
+//   })(req, res);
+// };
+
+export const signout = (req, res) => {
+  res.clearCookie("next-social.sid");
+  req.logout();
+  return res.sendStatus(204);
+};
+
+export const isAuth = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/signin");
+};

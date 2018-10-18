@@ -53,7 +53,7 @@ class Post extends React.Component {
     const sendRequest = like ? unlikeUserPost : likeUserPost;
     sendRequest({
       userId: auth.user._id,
-      postId: post._id
+      post
     }).then(postData => {
       console.log(postData);
       this.setState({ like: !like, likes: postData.likes.length });

@@ -18,3 +18,19 @@ What is JSS?
 What does the url encoded method of bodyParser do?
 
 - Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST) and exposes the resulting object (containing the keys and values) on req.body. [See more](https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express)
+
+What is resave ( from docs)
+
+Forces the session to be saved back to the session store, even if the session was never modified during the request. Depending on your store this may be necessary, but it can also create race conditions where a client makes two parallel requests to your server and changes made to the session in one request may get overwritten when the other request ends, even if it made no changes (this behavior also depends on what store you’re using).
+
+The default value is true, but using the default has been deprecated, as the default will change in the future. Please research into this setting and choose what is appropriate to your use-case. Typically, you'll want false.
+
+What is saveUninitialized ( from docs)
+
+Forces a session that is “uninitialized” to be saved to the store. A session is uninitialized when it is new but not modified. Choosing false is useful for implementing login sessions, reducing server storage usage, or complying with laws that require permission before setting a cookie. Choosing false will also help with race conditions where a client makes multiple parallel requests without a session.
+
+What properties for cookies should we use?
+
+Use httpOnly flag (prevents JavaScript access to cookie)
+Use secure flag (only set cookie for https requests)
+Signed cookies (verify source of cookie)

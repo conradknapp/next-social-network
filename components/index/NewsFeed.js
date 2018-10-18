@@ -30,8 +30,8 @@ class NewsFeed extends React.Component {
 
   removePost = post => {
     const updatedPosts = [...this.state.posts];
-    const index = updatedPosts.indexOf(post);
-    updatedPosts.splice(index, 1);
+    const postToRemove = updatedPosts.indexOf(post);
+    updatedPosts.splice(postToRemove, 1);
     this.setState({ posts: updatedPosts });
   };
 
@@ -41,7 +41,7 @@ class NewsFeed extends React.Component {
 
     return (
       <Card className={classes.card}>
-        <Typography type="title" className={classes.title}>
+        <Typography variant="h5" className={classes.title}>
           News Feed
         </Typography>
         <Divider />

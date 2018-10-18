@@ -44,3 +44,22 @@ Serving Static Files
 Running Nodemon/Webpack 4 Simultaneously
 
 - https://stackoverflow.com/questions/35545093/webpack-watch-and-launching-nodemon
+
+connect-mongo
+
+- https://www.npmjs.com/package/connect-mongo
+
+Express Session Docs (why not to use cookie-parser with express-session)
+
+- https://github.com/expressjs/session#sessionoptions
+
+Sessions with MongoDb
+
+- https://medium.com/front-end-hacking/make-sessions-work-with-express-js-using-mongodb-62a8a3423ef5
+
+Passport Local Mongoose Docs
+
+- https://www.npmjs.com/package/passport-local-mongoose
+
+* http://www.passportjs.org/docs/authenticate/
+* https://blog.cloudboost.io/node-js-authentication-with-passport-4a125f264cd4
