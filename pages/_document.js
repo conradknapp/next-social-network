@@ -51,7 +51,7 @@ MyDocument.getInitialProps = ctx => {
 
   return {
     // ...documentProps,
-    user,
+    ...user,
     ...page,
     pageContext,
     // Styles fragment is rendered after the app and page rendering finish.

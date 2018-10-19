@@ -74,7 +74,7 @@ class Profile extends React.Component {
     sendRequest(auth.user._id, userId).then(() => {
       this.setState({ following: !this.state.following });
     });
-   // ...
+    // ...
     // ).then(data => {
     //   if (data.error) {
     //     this.setState({ error: data.error });
@@ -159,6 +159,7 @@ class Profile extends React.Component {
   }
 }
 
+// Profile is a protected route
 Profile.getInitialProps = authInitialProps(false, true);
 
 const styles = theme => ({

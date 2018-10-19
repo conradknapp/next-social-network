@@ -16,20 +16,27 @@ const Header = ({ pageProps: { auth } }) => (
           <HomeIcon />
         </ActiveLink>
       </IconButton>
-      <Button>
-        <ActiveLink href="/signup">Sign up</ActiveLink>
-      </Button>
-      <Button>
-        <ActiveLink href="/signin">Sign In</ActiveLink>
-      </Button>
-      <Button>
-        <ActiveLink href={`/profile/${auth && auth.user && auth.user._id}`}>
-          My Profile
-        </ActiveLink>
-      </Button>
-      <Button color="inherit" onClick={signoutUser}>
-        Sign out
-      </Button>
+      {auth && auth.user && auth.user._id ? (
+        <div>
+          <Button>
+            <ActiveLink href={`/profile/${auth.user._id}`}>
+              My Profile
+            </ActiveLink>
+          </Button>
+          <Button color="inherit" onClick={signoutUser}>
+            Sign out
+          </Button>
+        </div>
+      ) : (
+        <div>
+          <Button>
+            <ActiveLink href="/signup">Sign up</ActiveLink>
+          </Button>
+          <Button>
+            <ActiveLink href="/signin">Sign In</ActiveLink>
+          </Button>
+        </div>
+      )}
     </Toolbar>
   </AppBar>
 );
