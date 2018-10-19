@@ -11,20 +11,22 @@ const Header = ({ pageProps: { auth } }) => (
   <AppBar position="static">
     <Toolbar>
       <Typography variant="h5">Next Social</Typography>
-      <ActiveLink href="/">
-        <IconButton aria-label="Home">
+      <IconButton aria-label="Home">
+        <ActiveLink href="/">
           <HomeIcon />
-        </IconButton>
-      </ActiveLink>
-      <ActiveLink href="/signup">
-        <Button>Sign up</Button>
-      </ActiveLink>
-      <ActiveLink href="/signin">
-        <Button>Sign In</Button>
-      </ActiveLink>
-      <ActiveLink href={`/profile/${auth && auth.user && auth.user._id}`}>
-        <Button>My Profile</Button>
-      </ActiveLink>
+        </ActiveLink>
+      </IconButton>
+      <Button>
+        <ActiveLink href="/signup">Sign up</ActiveLink>
+      </Button>
+      <Button>
+        <ActiveLink href="/signin">Sign In</ActiveLink>
+      </Button>
+      <Button>
+        <ActiveLink href={`/profile/${auth && auth.user && auth.user._id}`}>
+          My Profile
+        </ActiveLink>
+      </Button>
       <Button color="inherit" onClick={signoutUser}>
         Sign out
       </Button>
