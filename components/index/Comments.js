@@ -6,6 +6,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/core/styles";
 import { commentPost, uncommentPost } from "../../lib/auth";
 import Link from "next/link";
+import { distanceInWordsToNow } from "date-fns";
 
 class Comments extends React.Component {
   state = {
@@ -30,7 +31,7 @@ class Comments extends React.Component {
       commentPost(commentPayload).then(data => {
         console.log(data);
         this.props.updateComments(data.comments);
-        this.setState({ text: "" });
+        this.setState({ text: ""  });
       });
     }
   };
@@ -100,7 +101,10 @@ const commentBody = (classes, item, auth, deleteComment) => (
     <br />
     {item.text}
     <span className={classes.commentDate}>
-      {new Date(item.created).toDateString()}
+      {distanceInWordsToNow(item.created, {
+        includeSeconds: true,
+        addSuffix: true
+      })}
       {auth.user._id === item.postedBy._id && (
         <DeleteIcon
           onClick={() => deleteComment(item)}

@@ -15,6 +15,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { deleteUserPost, likeUserPost, unlikeUserPost } from "../../lib/auth";
 import Link from "next/link";
 import Comments from "./Comments";
+import { distanceInWordsToNow } from "date-fns";
 
 class Post extends React.Component {
   state = {
@@ -87,7 +88,10 @@ class Post extends React.Component {
               {post.postedBy.name}
             </Link>
           }
-          subheader={new Date(post.created).toDateString()}
+          subheader={distanceInWordsToNow(post.created, {
+            includeSeconds: true,
+            addSuffix: true
+          })}
           className={classes.cardHeader}
         />
         <CardContent className={classes.cardContent}>

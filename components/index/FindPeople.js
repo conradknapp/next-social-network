@@ -54,7 +54,7 @@ class FindPeople extends React.Component {
       <div>
         <Paper className={classes.root} elevation={4}>
           <Typography type="title" className={classes.title}>
-            Who to follow
+            People to Follow
           </Typography>
           <List>
             {users.map((user, i) => {

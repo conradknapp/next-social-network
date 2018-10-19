@@ -43,7 +43,7 @@ export const postByID = (req, res, next, id) => {
     });
 };
 
-export  const listByUser = (req, res) => {
+export const listByUser = (req, res) => {
   Post.find({ postedBy: req.profile._id })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
@@ -79,7 +79,7 @@ export const listNewsFeed = (req, res) => {
 
 export const remove = (req, res) => {
   let post = req.post;
-  post.deleteOne((err, deletedPost) => {
+  post.remove((err, deletedPost) => {
     if (err) {
       return res.status(400).json({
         error: "Error"

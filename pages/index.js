@@ -1,6 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import Snackbar from "@material-ui/core/Snackbar";
+// import Snackbar from "@material-ui/core/Snackbar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -18,7 +18,6 @@ class Index extends React.Component {
 
   isAuth = () => {
     const { auth } = this.props;
-    console.log("in index", auth);
     if (auth && auth.user && auth.user._id) {
       this.setState({
         defaultPage: false
@@ -87,6 +86,8 @@ class Index extends React.Component {
   }
 }
 
+Index.getInitialProps = authInitialProps();
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -106,7 +107,5 @@ const styles = theme => ({
     minHeight: 330
   }
 });
-
-Index.getInitialProps = authInitialProps();
 
 export default withStyles(styles)(Index);

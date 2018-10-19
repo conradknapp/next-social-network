@@ -11,7 +11,7 @@ import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { withStyles } from "@material-ui/core/styles";
-import { create, authInitialProps } from "../../lib/auth";
+import { create } from "../../lib/auth";
 
 class NewPost extends React.Component {
   state = {
@@ -59,7 +59,7 @@ class NewPost extends React.Component {
           />
           <CardContent className={classes.cardContent}>
             <TextField
-              placeholder="Share your thoughts ..."
+              placeholder="Share your thoughts"
               multiline
               rows="3"
               value={text}
@@ -71,6 +71,7 @@ class NewPost extends React.Component {
             <input
               accept="image/*"
               name="photo"
+              value={photo}
               onChange={this.handleChange}
               className={classes.input}
               id="icon-button-file"
