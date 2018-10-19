@@ -104,6 +104,10 @@ app.prepare().then(() => {
   // });
 
   // Default Route
+  // Allow Next to handle all other routes:
+  // - Includes the numerous `/_next/...` routes which must be exposed
+  //   for the next app to work correctly
+  // - Includes 404'ing on unknown routes
   server.get("*", (req, res) => {
     handle(req, res);
   });

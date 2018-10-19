@@ -18,6 +18,7 @@ class Index extends React.Component {
 
   isAuth = () => {
     const { auth } = this.props;
+    console.log("in index", auth);
     if (auth && auth.user && auth.user._id) {
       this.setState({
         defaultPage: false

@@ -35,8 +35,8 @@ class MyDocument extends Document {
   }
 }
 
-MyDocument.getInitialProps = async ctx => {
-  const documentProps = await Document.getInitialProps(ctx);
+MyDocument.getInitialProps = ctx => {
+  // const documentProps = await Document.getInitialProps(ctx);
   const user = getServerSideToken(ctx.req);
 
   // Render app and page and get the context of the page with collected side effects.
@@ -50,7 +50,7 @@ MyDocument.getInitialProps = async ctx => {
   });
 
   return {
-    ...documentProps,
+    // ...documentProps,
     user,
     ...page,
     pageContext,

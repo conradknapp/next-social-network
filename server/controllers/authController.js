@@ -35,30 +35,6 @@ export const signup = async (req, res, next) => {
   });
 };
 
-export const signin = passport.authenticate("local", {
-  failureRedirect: "/login",
-  // failureFlash: "Failed Login!",
-  successRedirect: "/"
-  // successFlash: "You are now logged in!"
-});
-
-// export const signin = (req, res) => {
-//   passport.authenticate("local", (err, user, info) => {
-//     if (err) {
-//       // Authentication failed - Error 500 - Server Error
-//       // return next(err);
-//       console.log(err);
-//     }
-//     if (!user) {
-//       // Authentication failed - Error 401 Missing Credentials
-//       console.log("ayy", info);
-//       return res.status(401).json(info);
-//     }
-//     res.status(200).json(user);
-//     // return res.redirect("/");
-//   })(req, res);
-// };
-
 export const signout = (req, res) => {
   // res.clearCookie("next-social.sid");
   req.logout();
