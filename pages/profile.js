@@ -1,21 +1,13 @@
 import React from "react";
-import Paper from "@material-ui/core/Paper";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Divider from "@material-ui/core/Divider";
-import Edit from "@material-ui/icons/Edit";
+// prettier-ignore
+import { Paper, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, IconButton, Typography, CircularProgress, Divider } from '@material-ui/core';
+import { Edit } from "@material-ui/icons";
+
 import DeleteProfile from "../components/profile/DeleteProfile";
 import FollowProfile from "../components/profile/FollowProfile";
 import { withStyles } from "@material-ui/core/styles";
 import Link from "next/link";
-import { getUserProfile, authInitialProps, followUser } from "../lib/auth";
+import { getUserProfile, authInitialProps } from "../lib/auth";
 
 class Profile extends React.Component {
   state = {
@@ -149,7 +141,7 @@ class Profile extends React.Component {
             <ListItem>
               <ListItemText
                 primary={user.about}
-                secondary={`Joined: ${new Date(user.created).toDateString()}`}
+                secondary={`Joined: ${new Date(user.createdAt).toDateString()}`}
               />
             </ListItem>
           </List>

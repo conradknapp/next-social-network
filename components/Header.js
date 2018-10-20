@@ -1,19 +1,24 @@
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import HomeIcon from "@material-ui/icons/Home";
-import Button from "@material-ui/core/Button";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton
+} from "@material-ui/core";
+import { Home } from "@material-ui/icons";
+
 import ActiveLink from "./ActiveLink";
 import { signoutUser } from "../lib/auth";
 
 const Header = ({ pageProps: { auth } }) => (
   <AppBar position="static">
     <Toolbar>
-      <Typography variant="h5">Next Social</Typography>
+      <Typography variant="h5">
+        <ActiveLink href="/">Next Social</ActiveLink>
+      </Typography>
       <IconButton aria-label="Home">
         <ActiveLink href="/">
-          <HomeIcon />
+          <Home />
         </ActiveLink>
       </IconButton>
       {auth && auth.user && auth.user._id ? (
@@ -30,10 +35,10 @@ const Header = ({ pageProps: { auth } }) => (
       ) : (
         <div>
           <Button>
-            <ActiveLink href="/signup">Sign up</ActiveLink>
+            <ActiveLink href="/signin">Sign In</ActiveLink>
           </Button>
           <Button>
-            <ActiveLink href="/signin">Sign In</ActiveLink>
+            <ActiveLink href="/signup">Sign up</ActiveLink>
           </Button>
         </div>
       )}

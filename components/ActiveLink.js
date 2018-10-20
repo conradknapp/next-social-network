@@ -4,6 +4,7 @@ const ActiveLink = ({ children, router, href }) => {
   const style = {
     margin: 0,
     padding: 0,
+    textDecoration: "none",
     color: router.pathname === href ? "red" : "black"
   };
 

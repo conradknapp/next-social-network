@@ -1,14 +1,10 @@
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { signoutUser, deleteUser } from "../../lib/auth";
+// prettier-ignore
+import { IconButton, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Delete } from "@material-ui/icons";
 import Router from "next/router";
+
+import { signoutUser, deleteUser } from "../../lib/auth";
 
 class DeleteProfile extends React.Component {
   state = {
@@ -23,7 +19,7 @@ class DeleteProfile extends React.Component {
     const { userId } = this.props;
     deleteUser(userId);
     signoutUser();
-    Router.push("/");
+    Router.push("/signup");
   };
 
   render() {
@@ -35,7 +31,7 @@ class DeleteProfile extends React.Component {
           onClick={this.handleDialogOpen}
           color="secondary"
         >
-          <DeleteIcon />
+          <Delete />
         </IconButton>
 
         <Dialog open={open} onClose={this.handleDialogClose}>

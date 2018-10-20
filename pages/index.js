@@ -1,12 +1,8 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
-// import Snackbar from "@material-ui/core/Snackbar";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Typography from "@material-ui/core/Typography";
+// prettier-ignore
+import { withStyles, Card, CardContent, CardMedia, Typography, Grid } from '@material-ui/core';
+
 import defaultImage from "../static/profile-image.jpg";
-import Grid from "@material-ui/core/Grid";
 import FindPeople from "../components/index/FindPeople";
 import NewsFeed from "../components/index/NewsFeed";
 import { authInitialProps } from "../lib/auth";
@@ -71,16 +67,6 @@ class Index extends React.Component {
             </Grid>
           </Grid>
         )}
-        {/* <Snackbar
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right"
-          }}
-          open={open}
-          onClose={this.handleDialogClose}
-          autoHideDuration={6000}
-          message={<span className={classes.snack}>{followMessage}</span>}
-        /> */}
       </div>
     );
   }

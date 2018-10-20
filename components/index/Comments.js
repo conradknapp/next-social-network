@@ -1,12 +1,11 @@
 import React from "react";
-import CardHeader from "@material-ui/core/CardHeader";
-import TextField from "@material-ui/core//TextField";
-import Avatar from "@material-ui/core/Avatar";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { withStyles } from "@material-ui/core/styles";
-import { commentPost, uncommentPost } from "../../lib/auth";
+// prettier-ignore
+import { CardHeader, TextField, Avatar, withStyles } from '@material-ui/core';
+import { Delete } from "@material-ui/icons";
 import Link from "next/link";
 import { distanceInWordsToNow } from "date-fns";
+
+import { commentPost, uncommentPost } from "../../lib/auth";
 
 class Comments extends React.Component {
   state = {
@@ -31,7 +30,7 @@ class Comments extends React.Component {
       commentPost(commentPayload).then(data => {
         console.log(data);
         this.props.updateComments(data.comments);
-        this.setState({ text: ""  });
+        this.setState({ text: "" });
       });
     }
   };
@@ -97,7 +96,9 @@ class Comments extends React.Component {
 
 const commentBody = (classes, item, auth, deleteComment) => (
   <p className={classes.commentText}>
-    <Link href={`/user/${item.postedBy._id}`}>{item.postedBy.name}</Link>
+    <Link passHref href={`/user/${item.postedBy._id}`}>
+      <a>{item.postedBy.name}</a>
+    </Link>
     <br />
     {item.text}
     <span className={classes.commentDate}>
@@ -106,7 +107,7 @@ const commentBody = (classes, item, auth, deleteComment) => (
         addSuffix: true
       })}
       {auth.user._id === item.postedBy._id && (
-        <DeleteIcon
+        <Delete
           onClick={() => deleteComment(item)}
           className={classes.commentDelete}
         />

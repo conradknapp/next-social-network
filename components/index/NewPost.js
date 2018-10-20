@@ -11,6 +11,7 @@ import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { withStyles } from "@material-ui/core/styles";
+
 import { create } from "../../lib/auth";
 
 class NewPost extends React.Component {

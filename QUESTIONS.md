@@ -34,3 +34,21 @@ What properties for cookies should we use?
 Use httpOnly flag (prevents JavaScript access to cookie)
 Use secure flag (only set cookie for https requests)
 Signed cookies (verify source of cookie)
+
+Where is the session data stored? it depends on how you set up the express-session module.
+
+It can store session data in memory, not meant for production
+a database like MySQL or Mongo
+a memory cache like Redis or Memcached
+There is a big list of 3rd packages that implement a wide variety of different compatible caching stores in https://github.com/expressjs/session
+
+All solutions store the session id in a cookie, and keep the data server-side. The client will receive the session id in a cookie, and will send it along with every HTTP request.
+
+What is the difference between a 301 / 302 redirect?
+
+301 - Permanent redirect
+302 - Temporary redirect
+
+A 301 redirect is an indicator that the destination of the link has changed URL to a different URL, permanently.
+
+302 redirects are temporary, where we want to move the user temporarily to a different place. These considerations as to whether redirects are 301 or 302 are significant for SEO purposes

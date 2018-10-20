@@ -1,21 +1,14 @@
 import React from "react";
-import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import Icon from "@material-ui/core/Icon";
-import Avatar from "@material-ui/core/Avatar";
-import CloudUpload from "@material-ui/icons/CloudUpload";
-import { withStyles } from "@material-ui/core/styles";
+// prettier-ignore
+import { Card, Button, CircularProgress, CardActions, CardContent, TextField, Typography, Icon, Avatar, withStyles } from '@material-ui/core';
+import { CloudUpload } from '@material-ui/icons';
+import Router from "next/router";
+
 import {
   getUserProfile,
   updateUserProfile,
   authInitialProps
 } from "../lib/auth";
-import Router from "next/router";
 
 class EditProfile extends React.Component {
   state = {

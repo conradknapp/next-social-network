@@ -11,7 +11,7 @@ export const getUsers = (req, res) => {
       return res.status(400).json({ error: err.message || err.toString() });
     }
     res.status(200).json(users);
-  }).select("name email updated created");
+  }).select("name email updatedAt createdAt");
 };
 
 export const userByID = (req, res, next, id) => {
@@ -54,7 +54,7 @@ export const updateUser = (req, res) => {
     }
     let user = req.profile;
     user = _.extend(user, fields);
-    user.updated = Date.now();
+    user.updatedAt = Date.now();
     if (files.photo) {
       user.photo.data = fs.readFileSync(files.photo.path);
       user.photo.contentType = files.photo.type;

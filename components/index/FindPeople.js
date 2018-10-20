@@ -1,18 +1,8 @@
 import React from "react";
-import Paper from "@material-ui/core/Paper";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import Snackbar from "@material-ui/core/Snackbar";
-import ViewIcon from "@material-ui/icons/Visibility";
+// prettier-ignore
+import { Paper, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, Button, IconButton, Typography, Snackbar, withStyles } from '@material-ui/core';
+import { Visibility } from "@material-ui/icons";
 import Link from "next/link";
-import { withStyles } from "@material-ui/core/styles";
 
 import { findPeople, followUser } from "../../lib/auth";
 
@@ -72,7 +62,7 @@ class FindPeople extends React.Component {
                           color="secondary"
                           className={classes.viewButton}
                         >
-                          <ViewIcon />
+                          <Visibility />
                         </IconButton>
                       </Link>
                       <Button

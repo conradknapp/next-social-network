@@ -67,3 +67,16 @@ Passport Local Mongoose Docs
 How to pass data from Express-Session to Next client
 
 - https://github.com/zeit/next.js/issues/2252
+
+Signed Cookies
+
+- https://stackoverflow.com/questions/11897965/what-are-signed-cookies-in-connect-expressjs
+
+Express Validator
+
+- https://flaviocopes.com/express-sanitize-input/
+
+Optional Chaining Proposal
+
+- https://babeljs.io/docs/en/next/babel-plugin-proposal-optional-chaining.html
+- auth?.user?.\_id

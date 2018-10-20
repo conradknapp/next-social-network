@@ -1,9 +1,11 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
-import Typography from "@material-ui/core/Typography";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
+import {
+  withStyles,
+  Avatar,
+  Typography,
+  GridList,
+  GridListTile
+} from "@material-ui/core";
 import Link from "next/link";
 
 class FollowGrid extends React.Component {

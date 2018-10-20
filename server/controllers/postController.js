@@ -94,22 +94,27 @@ export const photo = (req, res) => {
   return res.send(req.post.photo.data);
 };
 
-export const like = (req, res) => {
-  const { userId } = req.body;
-  const likes = req.post.likes.map(obj => obj.toString());
-  const operator = likes.includes(userId) ? "$pull" : "$push";
-  Post.findByIdAndUpdate(
-    post._id,
-    { [operator]: { likes: userId } },
-    { new: true }
-  ).exec((err, result) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Error"
-      });
-    }
-    res.json(result);
-  });
+export const like = async (req, res) => {
+  const { userId, post } = req.body;
+  const likedPost = await Post.findOne({ _id: post._id });
+  const likes = likedPost.likes.map(like => like.toString());
+  if (likes.includes(userId)) {
+    await likedPost.likes.pull(userId);
+  } else {
+    await likedPost.likes.push(userId);
+  }
+  await likedPost.save();
+  res.json(likedPost);
+
+  // const { userId, post } = req.body;
+  // const likedPost = await Post.findOne({ _id: post._id });
+  // const operator = likes.includes(userId) ? "$pull" : "$addToSet";
+  // const result = await Post.findOneAndUpdate(
+  //   { _id: likedPost._id },
+  //   { [operator]: { likes: userId } },
+  //   { new: true }
+  // );
+  // res.json(result);
 };
 
 export const unlike = (req, res) => {

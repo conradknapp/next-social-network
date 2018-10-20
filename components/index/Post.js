@@ -1,27 +1,19 @@
 import React from "react";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import CommentIcon from "@material-ui/icons/Comment";
-import Divider from "@material-ui/core/Divider";
-import { withStyles } from "@material-ui/core/styles";
-import { deleteUserPost, likeUserPost, unlikeUserPost } from "../../lib/auth";
+// prettier-ignore
+import { Card, CardHeader, CardContent, CardActions, Typography, Avatar, IconButton, Divider, withStyles } from '@material-ui/core';
+import { Delete, Favorite, FavoriteBorder, Comment } from "@material-ui/icons";
 import Link from "next/link";
-import Comments from "./Comments";
 import { distanceInWordsToNow } from "date-fns";
+
+import { deleteUserPost, likeUserPost, unlikeUserPost } from "../../lib/auth";
+import Comments from "./Comments";
 
 class Post extends React.Component {
   state = {
     like: false,
     likes: 0,
-    comments: []
+    comments: [],
+    loading: false
   };
 
   componentDidMount() {
@@ -34,14 +26,6 @@ class Post extends React.Component {
     });
   }
 
-  // componentWillReceiveProps = props => {
-  //   this.setState({
-  //     like: this.checkLike(props.post.likes),
-  //     likes: props.post.likes.length,
-  //     comments: props.post.comments
-  //   });
-  // };
-
   checkLike = likes => {
     const { auth } = this.props;
     const isLiked = likes.indexOf(auth.user._id) !== -1;
@@ -49,6 +33,7 @@ class Post extends React.Component {
   };
 
   likePost = () => {
+    this.setState({ loading: true });
     const { auth, post } = this.props;
     const { like } = this.state;
     const sendRequest = like ? unlikeUserPost : likeUserPost;
@@ -57,7 +42,11 @@ class Post extends React.Component {
       post
     }).then(postData => {
       console.log(postData);
-      this.setState({ like: !like, likes: postData.likes.length });
+      this.setState({
+        like: !like,
+        likes: postData.likes.length,
+        loading: false
+      });
     });
   };
 
@@ -70,7 +59,7 @@ class Post extends React.Component {
 
   render() {
     const { classes, post, auth } = this.props;
-    const { comments, likes, like } = this.state;
+    const { comments, likes, like, loading } = this.state;
 
     return (
       <Card className={classes.card}>
@@ -79,13 +68,13 @@ class Post extends React.Component {
           action={
             post.postedBy._id === auth.user._id && (
               <IconButton onClick={this.deletePost}>
-                <DeleteIcon />
+                <Delete />
               </IconButton>
             )
           }
           title={
-            <Link href={`/user/${post.postedBy._id}`}>
-              {post.postedBy.name}
+            <Link passHref href={`/user/${post.postedBy._id}`}>
+              <a>{post.postedBy.name}</a>
             </Link>
           }
           subheader={distanceInWordsToNow(post.created, {
@@ -111,20 +100,22 @@ class Post extends React.Component {
           {like ? (
             <IconButton
               onClick={this.likePost}
+              disabled={loading}
               className={classes.button}
               aria-label="Like"
               color="secondary"
             >
-              <FavoriteIcon />
+              <Favorite />
             </IconButton>
           ) : (
             <IconButton
               onClick={this.likePost}
               className={classes.button}
+              disabled={loading}
               aria-label="Unlike"
               color="secondary"
             >
-              <FavoriteBorderIcon />
+              <FavoriteBorder />
             </IconButton>
           )}{" "}
           <span>{likes}</span>
@@ -133,7 +124,7 @@ class Post extends React.Component {
             aria-label="Comment"
             color="secondary"
           >
-            <CommentIcon />
+            <Comment />
           </IconButton>{" "}
           <span>{comments.length}</span>
         </CardActions>
