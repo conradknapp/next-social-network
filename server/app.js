@@ -2,9 +2,10 @@ import express from "express";
 import next from "next";
 import session from "express-session";
 import mongoose from "mongoose";
-import morgan from "morgan";
+import logger from "morgan";
 import dotenv from "dotenv";
 import store from "connect-mongo";
+import flash from 'connect-flash';
 import expressValidator from "express-validator";
 const MongoStore = store(session);
 const passport = require("passport");
@@ -67,6 +68,8 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
 
+  server.use(flash());
+
   server.use((req, res, next) => {
     // res.locals.flashes = req.flash();
     res.locals.user = req.user || null;
@@ -75,7 +78,7 @@ app.prepare().then(() => {
 
   /* Morgan for Request Logging from Client, skip to ignore static files from _next folder */
   server.use(
-    morgan("dev", {
+    logger("dev", {
       skip: req => req.url.includes("_next")
     })
   );

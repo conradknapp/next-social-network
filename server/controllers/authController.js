@@ -17,11 +17,10 @@ export const validateSignup = (req, res, next) => {
   req
     .checkBody("password", "Password must be between 4 and 10 characters")
     .isLength({ min: 4, max: 10 });
-``
   const errors = req.validationErrors();
   if (errors) {
-    console.log(errors.map(err => err.msg));
-    return;
+    const json = JSON.stringify(errors.map(err => err.msg));
+    return res.status(400).json(json);
   }
   next();
 };
@@ -37,9 +36,7 @@ export const signup = async (req, res, next) => {
       });
     }
     console.log("user registered!", account);
-    res.status(200).json({
-      message: "Sign up successful!"
-    });
+    res.status(200).json(account.name);
   });
 };
 

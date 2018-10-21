@@ -12,11 +12,18 @@ router.post(
   authController.validateSignup,
   authController.signup
 );
-router.post("/api/auth/signin", passport.authenticate("local"), (req, res) => {
-  // If this function gets called, authentication was successful.
-  // `req.user` contains the authenticated user.
-  res.json(req.user);
-});
+router.post(
+  "/api/auth/signin",
+  passport.authenticate("local", {
+    failureFlash: "Ayy lmao",
+    successRedirect: "/"
+  })
+);
+// router.post("/api/auth/signin", passport.authenticate("local"), (req, res) => {
+//   // If this function gets called, authentication was successful.
+//   // `req.user` contains the authenticated user.
+//   res.json(req.user);
+// });
 router.get("/api/auth/signout", authController.signout);
 
 /* User Routes */
@@ -53,14 +60,22 @@ router.get("/api/users/defaultphoto", userController.defaultPhoto);
 router.param("userId", userController.userByID);
 
 /* Post Routes */
-router.put("/api/posts/like", authController.isAuth, postController.like);
-router.put("/api/posts/unlike", authController.isAuth, postController.like);
+router.put("/api/posts/like", authController.isAuth, postController.toggleLike);
+router.put(
+  "/api/posts/unlike",
+  authController.isAuth,
+  postController.toggleLike
+);
 
-router.put("/api/posts/comment", authController.isAuth, postController.comment);
+router.put(
+  "/api/posts/comment",
+  authController.isAuth,
+  postController.toggleComment
+);
 router.put(
   "/api/posts/uncomment",
   authController.isAuth,
-  postController.uncomment
+  postController.toggleComment
 );
 
 router.delete(

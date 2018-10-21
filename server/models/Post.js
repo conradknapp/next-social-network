@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const postSchema = new mongoose.Schema({
   text: {
     type: String,
-    required: "Name is required"
+    required: "Post content is required"
   },
   photo: {
     data: Buffer,

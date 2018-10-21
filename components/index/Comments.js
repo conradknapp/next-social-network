@@ -5,8 +5,6 @@ import { Delete } from "@material-ui/icons";
 import Link from "next/link";
 import { distanceInWordsToNow } from "date-fns";
 
-import { commentPost, uncommentPost } from "../../lib/auth";
-
 class Comments extends React.Component {
   state = {
     text: ""
@@ -16,39 +14,17 @@ class Comments extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  addComment = event => {
-    const { postId, auth } = this.props;
+  handleComment = event => {
+    const { addComment, postId } = this.props;
     const { text } = this.state;
-    if (event.keyCode == 13 && event.target.value) {
-      const commentPayload = {
-        postId,
-        comment: {
-          text,
-          postedBy: auth.user._id
-        }
-      };
-      commentPost(commentPayload).then(data => {
-        console.log(data);
-        this.props.updateComments(data.comments);
-        this.setState({ text: "" });
-      });
+    if (event.keyCode == 13 && !!text) {
+      addComment(postId, text);
+      this.setState({ text: "" });
     }
   };
 
-  deleteComment = comment => {
-    const { updateComments, postId } = this.props;
-    const uncommentPayload = {
-      // userId: auth.user._id,
-      postId,
-      comment
-    };
-    uncommentPost(uncommentPayload).then(post => {
-      updateComments(post.comments);
-    });
-  };
-
   render() {
-    const { classes, comments, auth } = this.props;
+    const { classes, comments, auth, postId, removeComment } = this.props;
     const { text } = this.state;
 
     return (
@@ -62,12 +38,12 @@ class Comments extends React.Component {
           }
           title={
             <TextField
-              onKeyDown={this.addComment}
+              onKeyDown={this.handleComment}
               multiline
               name="text"
               value={text}
               onChange={this.handleChange}
-              placeholder="Write something..."
+              placeholder="Add a comment..."
               className={classes.commentField}
               margin="normal"
             />
@@ -83,7 +59,7 @@ class Comments extends React.Component {
                   src={`/api/users/photo/${item.postedBy._id}`}
                 />
               }
-              title={commentBody(classes, item, auth, this.deleteComment)}
+              title={commentBody(classes, item, auth, removeComment, postId)}
               className={classes.cardHeader}
               key={i}
             />
@@ -94,7 +70,7 @@ class Comments extends React.Component {
   }
 }
 
-const commentBody = (classes, item, auth, deleteComment) => (
+const commentBody = (classes, item, auth, removeComment, postId) => (
   <p className={classes.commentText}>
     <Link passHref href={`/user/${item.postedBy._id}`}>
       <a>{item.postedBy.name}</a>
@@ -108,7 +84,7 @@ const commentBody = (classes, item, auth, deleteComment) => (
       })}
       {auth.user._id === item.postedBy._id && (
         <Delete
-          onClick={() => deleteComment(item)}
+          onClick={() => removeComment(item, postId)}
           className={classes.commentDelete}
         />
       )}

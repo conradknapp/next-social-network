@@ -20,7 +20,9 @@ class Signin extends React.Component {
     this.setState({ error: "" });
     signinUser(user)
       .then(() => Router.push("/"))
-      .catch(this.setError);
+      .catch(err => {
+        this.setError(err);
+      });
   };
 
   handleChange = event => {
@@ -75,8 +77,10 @@ class Signin extends React.Component {
         </CardContent>
         <CardActions>
           <Button
-            color="primary"
+            type="submit"
+            fullWidth
             variant="contained"
+            color="primary"
             onClick={this.handleSubmit}
             className={classes.submit}
           >
@@ -92,7 +96,7 @@ Signin.getInitialProps = authInitialProps(true);
 
 const styles = theme => ({
   card: {
-    maxWidth: 600,
+    maxWidth: 400,
     margin: "auto",
     textAlign: "center",
     marginTop: theme.spacing.unit * 5,
@@ -111,8 +115,7 @@ const styles = theme => ({
     width: 300
   },
   submit: {
-    margin: "auto",
-    marginBottom: theme.spacing.unit * 2
+    marginTop: theme.spacing.unit * 2
   }
 });
 

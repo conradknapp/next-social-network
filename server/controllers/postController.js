@@ -1,32 +1,31 @@
 import mongoose from "mongoose";
-const Post = mongoose.model("Post");
 import _ from "lodash";
 import formidable from "formidable";
 import fs from "fs";
 
+const Post = mongoose.model("Post");
+
 export const create = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, (err, fields, files) => {
+  form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
         error: "Image could not be uploaded"
       });
     }
-    let post = new Post(fields);
-    post.postedBy = req.profile;
+    let post = await new Post(fields);
+    post.postedBy = req.user._id;
     if (files.photo) {
       post.photo.data = fs.readFileSync(files.photo.path);
       post.photo.contentType = files.photo.type;
     }
-    post.save((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Error"
-        });
-      }
-      res.json(result);
+    const newPost = await Post.populate(post, {
+      path: "postedBy",
+      select: "_id name"
     });
+    await newPost.save();
+    res.json(newPost);
   });
 };
 
@@ -60,8 +59,9 @@ export const listByUser = (req, res) => {
 };
 
 export const listNewsFeed = (req, res) => {
-  let following = req.profile.following;
-  following.push(req.profile._id);
+  const { following, _id } = req.profile;
+  following.push(_id);
+  console.log(following);
   Post.find({ postedBy: { $in: req.profile.following } })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
@@ -77,16 +77,10 @@ export const listNewsFeed = (req, res) => {
     });
 };
 
-export const remove = (req, res) => {
+export const remove = async (req, res) => {
   let post = req.post;
-  post.remove((err, deletedPost) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Error"
-      });
-    }
-    res.json(deletedPost);
-  });
+  const removedPost = await post.remove();
+  res.json(removedPost);
 };
 
 export const photo = (req, res) => {
@@ -94,9 +88,11 @@ export const photo = (req, res) => {
   return res.send(req.post.photo.data);
 };
 
-export const like = async (req, res) => {
-  const { userId, post } = req.body;
-  const likedPost = await Post.findOne({ _id: post._id });
+export const toggleLike = async (req, res) => {
+  const { userId, postId } = req.body;
+  const likedPost = await Post.findOne({ _id: postId })
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name");
   const likes = likedPost.likes.map(like => like.toString());
   if (likes.includes(userId)) {
     await likedPost.likes.pull(userId);
@@ -105,67 +101,26 @@ export const like = async (req, res) => {
   }
   await likedPost.save();
   res.json(likedPost);
-
-  // const { userId, post } = req.body;
-  // const likedPost = await Post.findOne({ _id: post._id });
-  // const operator = likes.includes(userId) ? "$pull" : "$addToSet";
-  // const result = await Post.findOneAndUpdate(
-  //   { _id: likedPost._id },
-  //   { [operator]: { likes: userId } },
-  //   { new: true }
-  // );
-  // res.json(result);
 };
 
-export const unlike = (req, res) => {
-  Post.findByIdAndUpdate(
-    req.body.postId,
-    { $pull: { likes: req.body.userId } },
-    { new: true }
-  ).exec((err, result) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Error"
-      });
-    }
-    res.json(result);
-  });
-};
-
-export const comment = (req, res) => {
+export const toggleComment = async (req, res) => {
   const { comment, postId } = req.body;
-  Post.findByIdAndUpdate(
-    postId,
-    { $push: { comments: comment } },
+  let operator;
+  let data;
+  if (req.url.includes("uncomment")) {
+    const { _id } = comment;
+    data = { _id };
+    operator = "$pull";
+  } else {
+    data = comment;
+    operator = "$push";
+  }
+  const newComment = await Post.findOneAndUpdate(
+    { _id: postId },
+    { [operator]: { comments: data } },
     { new: true }
   )
     .populate("comments.postedBy", "_id name")
-    .populate("postedBy", "_id name")
-    .exec((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Error"
-        });
-      }
-      res.json(result);
-    });
-};
-
-export const uncomment = (req, res) => {
-  const { comment, postId } = req.body;
-  Post.findByIdAndUpdate(
-    postId,
-    { $pull: { comments: { _id: comment._id } } },
-    { new: true }
-  )
-    .populate("comments.postedBy", "_id name")
-    .populate("postedBy", "_id name")
-    .exec((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Error"
-        });
-      }
-      res.json(result);
-    });
+    .populate("postedBy", "_id name");
+  res.json(newComment);
 };

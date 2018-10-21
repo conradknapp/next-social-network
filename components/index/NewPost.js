@@ -12,50 +12,17 @@ import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { withStyles } from "@material-ui/core/styles";
 
-import { create } from "../../lib/auth";
-
 class NewPost extends React.Component {
-  state = {
-    text: "",
-    photo: "",
-    error: "",
-    user: {}
-  };
-
-  componentDidMount() {
-    const { auth } = this.props;
-    this.postData = new FormData();
-    this.setState({ user: auth.user });
-  }
-
-  clickPost = () => {
-    const { auth, addUpdate } = this.props;
-
-    create(auth.user._id, this.postData).then(data => {
-      this.setState({ text: "", photo: "" });
-      addUpdate(data);
-    });
-  };
-
-  handleChange = event => {
-    const value =
-      event.target.name === "photo"
-        ? event.target.files[0]
-        : event.target.value;
-    this.postData.set(event.target.name, value);
-    this.setState({ [event.target.name]: value });
-  };
-
   render() {
-    const { classes } = this.props;
-    const { user, text, photo, error } = this.state;
+    const { auth, classes, addPost, handleChange, text, photo } = this.props;
+    // const { error } = this.state;
 
     return (
       <div className={classes.root}>
         <Card className={classes.card}>
           <CardHeader
-            avatar={<Avatar src={`/api/users/photo/${user._id}`} />}
-            title={user.name}
+            avatar={<Avatar src={`/api/users/photo/${auth.user._id}`} />}
+            title={auth.user.name}
             className={classes.cardHeader}
           />
           <CardContent className={classes.cardContent}>
@@ -65,15 +32,14 @@ class NewPost extends React.Component {
               rows="3"
               value={text}
               name="text"
-              onChange={this.handleChange}
+              onChange={handleChange}
               className={classes.textField}
               margin="normal"
             />
             <input
               accept="image/*"
               name="photo"
-              value={photo}
-              onChange={this.handleChange}
+              onChange={handleChange}
               className={classes.input}
               id="icon-button-file"
               type="file"
@@ -88,21 +54,21 @@ class NewPost extends React.Component {
               </IconButton>
             </label>{" "}
             <span className={classes.filename}>{photo ? photo.name : ""}</span>
-            {error && (
+            {/* {error && (
               <Typography component="p" color="error">
                 <Icon color="error" className={classes.error}>
                   error
                 </Icon>
                 {error}
               </Typography>
-            )}
+            )} */}
           </CardContent>
           <CardActions>
             <Button
               color="primary"
               variant="contained"
               disabled={!text}
-              onClick={this.clickPost}
+              onClick={addPost}
               className={classes.submit}
             >
               POST

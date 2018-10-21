@@ -1,9 +1,14 @@
 import React from "react";
 // prettier-ignore
-import { Typography, Card, CardContent, CardActions, TextField, Icon, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, withStyles} from '@material-ui/core';
+import { Typography, Card, CardContent, CardActions, TextField, Icon, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, withStyles, Slide } from '@material-ui/core';
+import { Face } from "@material-ui/icons";
 
 import Link from "next/link";
 import { signupUser } from "../lib/auth";
+
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
+}
 
 class Signup extends React.Component {
   state = {
@@ -11,7 +16,8 @@ class Signup extends React.Component {
     password: "",
     email: "",
     open: false,
-    error: ""
+    error: "",
+    createdUser: ""
   };
 
   handleChange = event => {
@@ -24,14 +30,25 @@ class Signup extends React.Component {
       password: this.state.password,
       email: this.state.email
     };
-    signupUser(user).then(() => {
-      this.setState({ error: "", open: true });
-    });
+    signupUser(user)
+      .then(createdUser => {
+        console.log(createdUser);
+        this.setState({ error: "", open: true, createdUser });
+      })
+      .catch(err => {
+        this.setError(err);
+      });
+  };
+
+  setError = err => {
+    const errorMessage = (err.response && err.response.data) || err.message;
+    console.log(errorMessage);
+    this.setState({ error: errorMessage.error });
   };
 
   render() {
     const { classes } = this.props;
-    const { name, email, password, open, error } = this.state;
+    const { createdUser, name, email, password, open, error } = this.state;
 
     return (
       <div>
@@ -94,19 +111,26 @@ class Signup extends React.Component {
         </Card>
 
         {/* Signup Dialog */}
-        <Dialog open={open} disableBackdropClick={true}>
-          <DialogTitle>New Account</DialogTitle>
+        <Dialog
+          open={open}
+          disableBackdropClick={true}
+          TransitionComponent={Transition}
+        >
+          <DialogTitle>
+            <Face className={classes.icon} />
+            New Account
+          </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              New account successfully created!
+              User {createdUser} successfully created!
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Link href="/signin">
-              <Button color="primary" autoFocus="autoFocus" variant="contained">
-                Sign In
-              </Button>
-            </Link>
+            <Button color="primary" autoFocus="autoFocus" variant="contained">
+              <Link href="/signin">
+                <a>Sign In</a>
+              </Link>
+            </Button>
           </DialogActions>
         </Dialog>
       </div>
@@ -128,6 +152,10 @@ const styles = theme => ({
   title: {
     marginTop: theme.spacing.unit * 2,
     color: theme.palette.openTitle
+  },
+  icon: {
+    padding: "0px 2px 2px 0px",
+    verticalAlign: "middle"
   },
   textField: {
     marginLeft: theme.spacing.unit,

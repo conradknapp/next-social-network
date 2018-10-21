@@ -12,6 +12,10 @@ class Index extends React.Component {
     defaultPage: true
   };
 
+  componentDidMount() {
+    this.isAuth();
+  }
+
   isAuth = () => {
     const { auth } = this.props;
     if (auth && auth.user && auth.user._id) {
@@ -24,10 +28,6 @@ class Index extends React.Component {
       });
     }
   };
-
-  componentDidMount() {
-    this.isAuth();
-  }
 
   render() {
     const { classes, auth } = this.props;

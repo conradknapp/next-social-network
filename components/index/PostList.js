@@ -1,9 +1,12 @@
 import Post from "./Post";
 
-const PostList = ({ posts, removeUpdate, auth }) => (
-  <div style={{ marginTop: "24px" }}>
+const PostList = ({ posts, removePost, auth, handleLike, addComment, removeComment }) => (
+  <div>
     {posts.map((item, i) => (
-      <Post auth={auth} post={item} key={i} onRemove={removeUpdate} />
+      <Post key={i} auth={auth} post={item} removePost={removePost}
+      addComment={addComment}
+      removeComment={removeComment}
+      handleLike={handleLike} />
     ))}
   </div>
 );

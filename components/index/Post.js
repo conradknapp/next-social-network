@@ -5,61 +5,48 @@ import { Delete, Favorite, FavoriteBorder, Comment } from "@material-ui/icons";
 import Link from "next/link";
 import { distanceInWordsToNow } from "date-fns";
 
-import { deleteUserPost, likeUserPost, unlikeUserPost } from "../../lib/auth";
 import Comments from "./Comments";
 
 class Post extends React.Component {
   state = {
     like: false,
     likes: 0,
-    comments: [],
-    loading: false
+    comments: []
   };
 
   componentDidMount() {
     const { post } = this.props;
-
     this.setState({
-      like: this.checkLike(post.likes),
+      like: this.isLiked(post.likes),
       likes: post.likes.length,
       comments: post.comments
     });
   }
 
-  checkLike = likes => {
+  componentWillReceiveProps = props => {
+    this.setState({
+      like: this.isLiked(props.post.likes),
+      likes: props.post.likes.length,
+      comments: props.post.comments
+    });
+  };
+
+  isLiked = likes => {
     const { auth } = this.props;
-    const isLiked = likes.indexOf(auth.user._id) !== -1;
-    return isLiked;
-  };
-
-  likePost = () => {
-    this.setState({ loading: true });
-    const { auth, post } = this.props;
-    const { like } = this.state;
-    const sendRequest = like ? unlikeUserPost : likeUserPost;
-    sendRequest({
-      userId: auth.user._id,
-      post
-    }).then(postData => {
-      console.log(postData);
-      this.setState({
-        like: !like,
-        likes: postData.likes.length,
-        loading: false
-      });
-    });
-  };
-
-  deletePost = () => {
-    const { post, onRemove } = this.props;
-    deleteUserPost(post._id).then(() => {
-      onRemove(post);
-    });
+    return likes.includes(auth.user._id);
   };
 
   render() {
-    const { classes, post, auth } = this.props;
-    const { comments, likes, like, loading } = this.state;
+    const {
+      classes,
+      post,
+      auth,
+      handleLike,
+      removePost,
+      addComment,
+      removeComment
+    } = this.props;
+    const { comments, likes, like } = this.state;
 
     return (
       <Card className={classes.card}>
@@ -67,13 +54,13 @@ class Post extends React.Component {
           avatar={<Avatar src={`/api/users/photo/${post.postedBy._id}`} />}
           action={
             post.postedBy._id === auth.user._id && (
-              <IconButton onClick={this.deletePost}>
-                <Delete />
+              <IconButton onClick={() => removePost(post)}>
+                <Delete className={classes.deleteIcon} />
               </IconButton>
             )
           }
           title={
-            <Link passHref href={`/user/${post.postedBy._id}`}>
+            <Link href={`/user/${post.postedBy._id}`}>
               <a>{post.postedBy.name}</a>
             </Link>
           }
@@ -99,8 +86,7 @@ class Post extends React.Component {
         <CardActions>
           {like ? (
             <IconButton
-              onClick={this.likePost}
-              disabled={loading}
+              onClick={() => handleLike(post)}
               className={classes.button}
               aria-label="Like"
               color="secondary"
@@ -109,9 +95,8 @@ class Post extends React.Component {
             </IconButton>
           ) : (
             <IconButton
-              onClick={this.likePost}
+              onClick={() => handleLike(post)}
               className={classes.button}
-              disabled={loading}
               aria-label="Unlike"
               color="secondary"
             >
@@ -133,6 +118,8 @@ class Post extends React.Component {
           auth={auth}
           postId={post._id}
           comments={comments}
+          addComment={addComment}
+          removeComment={removeComment}
           updateComments={comments => this.setState({ comments })}
         />
       </Card>
@@ -168,6 +155,9 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit
+  },
+  deleteIcon: {
+    color: "#e34234"
   }
 });
 

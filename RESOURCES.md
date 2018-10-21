@@ -80,3 +80,5 @@ Optional Chaining Proposal
 
 - https://babeljs.io/docs/en/next/babel-plugin-proposal-optional-chaining.html
 - auth?.user?.\_id
+
+- https://stackoverflow.com/questions/13525480/mongoose-populate-after-save
