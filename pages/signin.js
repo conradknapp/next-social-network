@@ -39,7 +39,7 @@ class Signin extends React.Component {
     this.setState({ error, open: true, loading: false });
   };
 
-  closeDialog = () => this.setState({ open: false });
+  handleClose = () => this.setState({ open: false });
 
   render() {
     const { classes } = this.props;
@@ -96,7 +96,7 @@ class Signin extends React.Component {
                 horizontal: "right"
               }}
               open={open}
-              onClose={this.closeDialog}
+              onClose={this.handleClose}
               autoHideDuration={6000}
               message={<span className={classes.snack}>{error}</span>}
             />

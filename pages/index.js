@@ -1,10 +1,10 @@
 import React from "react";
 // prettier-ignore
-import { withStyles, Card, CardContent, CardMedia, Typography, Grid } from '@material-ui/core';
+import { withStyles, Card, Drawer, CardContent, CardMedia, Divider, Typography, Grid } from '@material-ui/core';
 
 import defaultImage from "../static/profile-image.jpg";
 import FindPeople from "../components/index/FindPeople";
-import NewsFeed from "../components/index/NewsFeed";
+import PostFeed from "../components/index/PostFeed";
 import { authInitialProps } from "../lib/auth";
 
 class Index extends React.Component {
@@ -13,10 +13,10 @@ class Index extends React.Component {
   };
 
   componentDidMount() {
-    this.isAuth();
+    this.checkIfAuth();
   }
 
-  isAuth = () => {
+  checkIfAuth = () => {
     const { auth } = this.props;
     if (auth && auth.user && auth.user._id) {
       this.setState({
@@ -60,10 +60,19 @@ class Index extends React.Component {
         ) : (
           <Grid container spacing={24}>
             <Grid item xs={8} sm={7}>
-              <NewsFeed auth={auth} />
+              <PostFeed auth={auth} />
             </Grid>
             <Grid item xs={6} sm={5}>
-              <FindPeople auth={auth} />
+              <Drawer
+                className={classes.drawer}
+                variant="permanent"
+                anchor="right"
+                classes={{
+                  paper: classes.drawerPaper
+                }}
+              >
+                <FindPeople auth={auth} />
+              </Drawer>
             </Grid>
           </Grid>
         )}
@@ -76,8 +85,17 @@ Index.getInitialProps = authInitialProps();
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-    margin: 30
+    paddingTop: theme.spacing.unit * 10,
+    paddingLeft: theme.spacing.unit * 2,
+    flexGrow: 1
+  },
+  drawer: {
+    width: 400,
+    flexShrink: 0
+  },
+  drawerPaper: {
+    marginTop: 50,
+    width: 400
   },
   card: {
     maxWidth: 600,

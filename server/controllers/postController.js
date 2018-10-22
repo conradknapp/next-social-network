@@ -58,7 +58,7 @@ export const listByUser = (req, res) => {
     });
 };
 
-export const listNewsFeed = (req, res) => {
+export const listPostFeed = (req, res) => {
   const { following, _id } = req.user;
   following.push(_id);
   Post.find({ postedBy: { $in: following } })

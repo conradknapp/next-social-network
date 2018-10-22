@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 // prettier-ignore
 import { IconButton, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { Delete } from "@material-ui/icons";
@@ -6,14 +6,14 @@ import Router from "next/router";
 
 import { signoutUser, removeUser } from "../../lib/auth";
 
-class DeleteProfile extends React.Component {
+class DeleteProfile extends Component {
   state = {
     open: false
   };
 
-  handleDialogOpen = () => this.setState({ open: true });
+  handleOpen = () => this.setState({ open: true });
 
-  handleDialogClose = () => this.setState({ open: false });
+  handleClose = () => this.setState({ open: false });
 
   deleteAccount = () => {
     const { userId } = this.props;
@@ -28,13 +28,13 @@ class DeleteProfile extends React.Component {
       <span>
         <IconButton
           aria-label="Delete"
-          onClick={this.handleDialogOpen}
+          onClick={this.handleOpen}
           color="secondary"
         >
           <Delete />
         </IconButton>
 
-        <Dialog open={open} onClose={this.handleDialogClose}>
+        <Dialog open={open} onClose={this.handleClose}>
           <DialogTitle>Delete Account</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -42,7 +42,7 @@ class DeleteProfile extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleDialogClose} color="primary">
+            <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
             <Button

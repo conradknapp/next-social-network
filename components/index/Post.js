@@ -1,6 +1,6 @@
 import React from "react";
 // prettier-ignore
-import { Card, CardHeader, CardContent, CardActions, Typography, Avatar, IconButton, Divider, withStyles } from '@material-ui/core';
+import { Badge, Card, CardHeader, CardContent, CardActions, Typography, Avatar, IconButton, Divider, withStyles } from '@material-ui/core';
 import {
   DeleteTwoTone,
   Favorite,
@@ -50,7 +50,7 @@ class Post extends React.Component {
       classes,
       post,
       auth,
-      handleLike,
+      handleToggleLike,
       removePost,
       addComment,
       removeComment
@@ -93,34 +93,25 @@ class Post extends React.Component {
           )}
         </CardContent>
         <CardActions>
-          {isLiked ? (
-            <IconButton
-              onClick={() => handleLike(post)}
-              className={classes.button}
-              aria-label="Like"
-              color="secondary"
-            >
-              <Favorite />
-            </IconButton>
-          ) : (
-            <IconButton
-              onClick={() => handleLike(post)}
-              className={classes.button}
-              aria-label="Unlike"
-              color="secondary"
-            >
-              <FavoriteBorder />
-            </IconButton>
-          )}{" "}
-          <span>{likes}</span>
+          <IconButton
+            onClick={() => handleToggleLike(post)}
+            className={classes.button}
+            aria-label="Unlike"
+            color="secondary"
+          >
+            <Badge badgeContent={likes} color="secondary">
+              {isLiked ? <Favorite /> : <FavoriteBorder />}
+            </Badge>
+          </IconButton>
           <IconButton
             className={classes.button}
             aria-label="Comment"
             color="secondary"
           >
-            <Comment />
-          </IconButton>{" "}
-          <span>{comments.length}</span>
+            <Badge badgeContent={comments.length} color="primary">
+              <Comment />
+            </Badge>
+          </IconButton>
         </CardActions>
         <Divider />
         <Comments

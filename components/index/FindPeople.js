@@ -1,12 +1,12 @@
-import React from "react";
+import { Component } from "react";
 // prettier-ignore
-import { Paper, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, Button, IconButton, Typography, Snackbar, withStyles } from '@material-ui/core';
+import { Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, Button, IconButton, Typography, Snackbar, withStyles } from '@material-ui/core';
 import { Visibility } from "@material-ui/icons";
 import Link from "next/link";
 
 import { findPeople, followUser } from "../../lib/auth";
 
-class FindPeople extends React.Component {
+class FindPeople extends Component {
   state = {
     users: [],
     open: false
@@ -19,11 +19,13 @@ class FindPeople extends React.Component {
     });
   }
 
-  clickFollow = (user, index) => {
+  handleFollow = (user, index) => {
     const { auth } = this.props;
     followUser(auth.user._id, user._id).then(() => {
-      const updatedUsers = [...this.state.users];
-      updatedUsers.splice(index, 1);
+      const updatedUsers = [
+        ...this.state.users.slice(0, index),
+        ...this.state.user.slice(index + 1)
+      ];
       this.setState({
         users: updatedUsers,
         open: true,
@@ -32,8 +34,7 @@ class FindPeople extends React.Component {
     });
   };
 
-  handleDialogClose = () => this.setState({ open: false });
-
+  handleClose = () => this.setState({ open: false });
 
   render() {
     const { classes } = this.props;
@@ -41,51 +42,50 @@ class FindPeople extends React.Component {
 
     return (
       <div>
-        <Paper className={classes.root} elevation={4}>
-          <Typography type="title" className={classes.title}>
-            People to Follow
-          </Typography>
-          <List>
-            {users.map((user, i) => {
-              return (
-                <span key={user._id}>
-                  <ListItem>
-                    <ListItemAvatar className={classes.avatar}>
-                      <Avatar src={`/api/users/photo/${user._id}`} />
-                    </ListItemAvatar>
-                    <ListItemText primary={user.name} />
-                    <ListItemSecondaryAction className={classes.follow}>
-                      <Link href={`/user/${user._id}`}>
-                        <IconButton
-                          variant="contained"
-                          color="secondary"
-                          className={classes.viewButton}
-                        >
-                          <Visibility />
-                        </IconButton>
-                      </Link>
-                      <Button
-                        aria-label="Follow"
+        <Typography type="title" className={classes.title}>
+          People to Follow
+        </Typography>
+        <Divider />
+        <List>
+          {users.map((user, i) => {
+            return (
+              <span key={user._id}>
+                <ListItem>
+                  <ListItemAvatar className={classes.avatar}>
+                    <Avatar src={`/api/users/photo/${user._id}`} />
+                  </ListItemAvatar>
+                  <ListItemText primary={user.name} />
+                  <ListItemSecondaryAction className={classes.follow}>
+                    <Link href={`/user/${user._id}`}>
+                      <IconButton
                         variant="contained"
-                        color="primary"
-                        onClick={() => this.clickFollow(user, i)}
+                        color="secondary"
+                        className={classes.viewButton}
                       >
-                        Follow
-                      </Button>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                </span>
-              );
-            })}
-          </List>
-        </Paper>
+                        <Visibility />
+                      </IconButton>
+                    </Link>
+                    <Button
+                      aria-label="Follow"
+                      variant="contained"
+                      color="primary"
+                      onClick={() => this.handleFollow(user, i)}
+                    >
+                      Follow
+                    </Button>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </span>
+            );
+          })}
+        </List>
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "right"
           }}
           open={open}
-          onClose={this.handleDialogClose}
+          onClose={this.handleClose}
           autoHideDuration={6000}
           message={<span className={classes.snack}>{followMessage}</span>}
         />
@@ -96,9 +96,7 @@ class FindPeople extends React.Component {
 
 const styles = theme => ({
   root: theme.mixins.gutters({
-    padding: theme.spacing.unit,
-    margin: 0,
-    // position: "fixed"
+    padding: theme.spacing.unit
   }),
   title: {
     margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit}px ${theme.spacing

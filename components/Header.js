@@ -1,11 +1,20 @@
-import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  withStyles
+} from "@material-ui/core";
 import { ShareOutlined, Face } from "@material-ui/icons";
 
 import ActiveLink from "./ActiveLink";
 import { signoutUser } from "../lib/auth";
 
-const Header = ({ pageProps: { auth } }) => (
-  <AppBar position="static">
+const Header = ({ router, pageProps: { auth }, classes }) => (
+  <AppBar
+    position={router.pathname === "/" ? "fixed" : "static"}
+    className={classes.appBar}
+  >
     <Toolbar>
       <ActiveLink href="/">
         <ShareOutlined />
@@ -17,7 +26,7 @@ const Header = ({ pageProps: { auth } }) => (
         <div>
           <Button>
             <ActiveLink href={`/profile/${auth.user._id}`}>
-              My Profile <Face />
+              Profile <Face />
             </ActiveLink>
           </Button>
           <Button color="inherit" onClick={signoutUser}>
@@ -38,4 +47,10 @@ const Header = ({ pageProps: { auth } }) => (
   </AppBar>
 );
 
-export default Header;
+const styles = theme => ({
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1
+  }
+});
+
+export default withStyles(styles)(Header);

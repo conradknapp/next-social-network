@@ -1,11 +1,11 @@
 import React from "react";
 // prettier-ignore
-import { Card, Typography, Divider, withStyles } from '@material-ui/core';
+import { Paper, Typography, withStyles } from '@material-ui/core';
 
-import PostList from "./PostList";
+import Post from "./Post";
 import NewPost from "./NewPost";
 import {
-  listNewsFeed,
+  listPostFeed,
   create,
   unlikeUserPost,
   likeUserPost,
@@ -14,11 +14,12 @@ import {
   commentPost
 } from "../../lib/auth";
 
-class NewsFeed extends React.Component {
+class PostFeed extends React.Component {
   state = {
     posts: [],
     text: "",
-    photo: ""
+    photo: "",
+    loading: false
   };
 
   componentDidMount() {
@@ -28,7 +29,7 @@ class NewsFeed extends React.Component {
 
   loadPosts = () => {
     const { auth } = this.props;
-    listNewsFeed(auth.user._id).then(posts => {
+    listPostFeed(auth.user._id).then(posts => {
       this.setState({ posts });
     });
   };
@@ -44,6 +45,7 @@ class NewsFeed extends React.Component {
 
   addPost = () => {
     const { auth } = this.props;
+    this.setState({ loading: true });
     create(auth.user._id, this.postData)
       .then(post => {
         const updatedPosts = [post, ...this.state.posts];
@@ -53,9 +55,11 @@ class NewsFeed extends React.Component {
           photo: ""
         });
         this.postData.delete("photo");
+        this.setState({ loading: false });
       })
       .catch(err => {
         console.error(err);
+        this.setState({ loading: false });
       });
   };
 
@@ -72,7 +76,7 @@ class NewsFeed extends React.Component {
     });
   };
 
-  handleLike = post => {
+  handleToggleLike = post => {
     const { auth } = this.props;
     const isLiked = post.likes.includes(auth.user._id);
     const sendRequest = isLiked ? unlikeUserPost : likeUserPost;
@@ -138,50 +142,51 @@ class NewsFeed extends React.Component {
 
   render() {
     const { classes, auth } = this.props;
-    const { posts, text, photo } = this.state;
+    const { posts, text, photo, loading } = this.state;
 
     return (
-      <Card className={classes.card}>
-        <Typography variant="h1" className={classes.title}>
+      <Paper className={classes.card}>
+        <Typography variant="h4" className={classes.title}>
           Post Feed
         </Typography>
-        <Divider />
         <NewPost
           auth={auth}
           handleChange={this.handleChange}
           addPost={this.addPost}
+          loading={loading}
           text={text}
           photo={photo}
         />
-        <Divider />
-        <PostList
-          auth={auth}
-          removePost={this.removePost}
-          handleLike={this.handleLike}
-          addComment={this.addComment}
-          removeComment={this.removeComment}
-          posts={posts}
-        />
-      </Card>
+        {posts.map(post => (
+          <Post
+            key={post._id}
+            auth={auth}
+            post={post}
+            removePost={this.removePost}
+            addComment={this.addComment}
+            removeComment={this.removeComment}
+            handleToggleLike={this.handleToggleLike}
+          />
+        ))}
+      </Paper>
     );
   }
 }
 
 const styles = theme => ({
   card: {
-    margin: "auto",
-    paddingTop: 0,
-    paddingBottom: theme.spacing.unit * 3
+    backgroundColor: "#fafafa",
+    paddingBottom: theme.spacing.unit * 3,
+    boxShadow: "none"
   },
   title: {
     padding: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2.5}px ${theme
       .spacing.unit * 2}px`,
-    color: theme.palette.openTitle,
-    fontSize: "1em"
+    color: theme.palette.openTitle
   },
   media: {
     minHeight: 330
   }
 });
 
-export default withStyles(styles)(NewsFeed);
+export default withStyles(styles)(PostFeed);

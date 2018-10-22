@@ -74,7 +74,6 @@ router.put(
 router.delete(
   "/api/posts/:postId",
   authController.isAuth,
-  // postController.isPoster,
   postController.remove
 );
 
@@ -85,7 +84,7 @@ router.post(
 );
 router.get("/api/posts/photo/:postId", postController.photo);
 router.get("/api/posts/by/:userId", postController.listByUser);
-router.get("/api/posts/feed/:userId", postController.listNewsFeed);
+router.get("/api/posts/feed/:userId", postController.listPostFeed);
 
 router.param("userId", userController.userByID);
 router.param("postId", postController.postByID);

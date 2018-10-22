@@ -14,7 +14,7 @@ class Comments extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleComment = event => {
+  handleAddComment = event => {
     const { addComment, postId } = this.props;
     const { text } = this.state;
     if (event.keyCode === 13 && !!text) {
@@ -23,8 +23,34 @@ class Comments extends React.Component {
     }
   };
 
+  renderCommentBody = comment => {
+    const { postId, removeComment, auth, classes } = this.props;
+    return (
+      <p className={classes.commentText}>
+        <Link passHref href={`/user/${comment.postedBy._id}`}>
+          <a>{comment.postedBy.name}</a>
+        </Link>
+        <br />
+        {comment.text}
+        <span className={classes.commentDate}>
+          {distanceInWordsToNow(comment.created, {
+            includeSeconds: true,
+            addSuffix: true
+          })}
+          {auth.user._id === comment.postedBy._id && (
+            <Delete
+              onClick={() => removeComment(comment, postId)}
+              className={classes.commentDelete}
+              color="secondary"
+            />
+          )}
+        </span>
+      </p>
+    );
+  };
+
   render() {
-    const { classes, comments, auth, postId, removeComment } = this.props;
+    const { classes, comments, auth } = this.props;
     const { text } = this.state;
 
     return (
@@ -38,12 +64,12 @@ class Comments extends React.Component {
           }
           title={
             <TextField
-              onKeyDown={this.handleComment}
+              onKeyDown={this.handleAddComment}
               multiline
               name="text"
               value={text}
               onChange={this.handleChange}
-              placeholder="Add a comment..."
+              placeholder="Reply to this post"
               className={classes.commentField}
               margin="normal"
             />
@@ -59,7 +85,7 @@ class Comments extends React.Component {
                   src={`/api/users/photo/${comment.postedBy._id}`}
                 />
               }
-              title={commentBody(classes, comment, auth, removeComment, postId)}
+              title={this.renderCommentBody(comment)}
               className={classes.cardHeader}
               key={i}
             />
@@ -69,29 +95,6 @@ class Comments extends React.Component {
     );
   }
 }
-
-const commentBody = (classes, comment, auth, removeComment, postId) => (
-  <p className={classes.commentText}>
-    <Link passHref href={`/user/${comment.postedBy._id}`}>
-      <a>{comment.postedBy.name}</a>
-    </Link>
-    <br />
-    {comment.text}
-    <span className={classes.commentDate}>
-      {distanceInWordsToNow(comment.created, {
-        includeSeconds: true,
-        addSuffix: true
-      })}
-      {auth.user._id === comment.postedBy._id && (
-        <Delete
-          onClick={() => removeComment(comment, postId)}
-          className={classes.commentDelete}
-          color="secondary"
-        />
-      )}
-    </span>
-  </p>
-);
 
 const styles = theme => ({
   cardHeader: {
