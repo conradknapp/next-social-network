@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import logger from "morgan";
 import dotenv from "dotenv";
 import store from "connect-mongo";
-import flash from 'connect-flash';
 import expressValidator from "express-validator";
 const MongoStore = store(session);
 const passport = require("passport");
@@ -42,8 +41,11 @@ app.prepare().then(() => {
 
   const sessionConfig = {
     name: "next-social.sid",
+    // used to signed cookies into the session
     secret: process.env.COOKIE_SECRET,
+    // forces the session to be saved back to the store
     resave: false,
+    // don't save unmodified sessions
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
@@ -68,10 +70,7 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  server.use(flash());
-
   server.use((req, res, next) => {
-    // res.locals.flashes = req.flash();
     res.locals.user = req.user || null;
     next();
   });

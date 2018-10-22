@@ -17,7 +17,7 @@ class Comments extends React.Component {
   handleComment = event => {
     const { addComment, postId } = this.props;
     const { text } = this.state;
-    if (event.keyCode == 13 && !!text) {
+    if (event.keyCode === 13 && !!text) {
       addComment(postId, text);
       this.setState({ text: "" });
     }
@@ -50,16 +50,16 @@ class Comments extends React.Component {
           }
           className={classes.cardHeader}
         />
-        {comments.map((item, i) => {
+        {comments.map((comment, i) => {
           return (
             <CardHeader
               avatar={
                 <Avatar
                   className={classes.smallAvatar}
-                  src={`/api/users/photo/${item.postedBy._id}`}
+                  src={`/api/users/photo/${comment.postedBy._id}`}
                 />
               }
-              title={commentBody(classes, item, auth, removeComment, postId)}
+              title={commentBody(classes, comment, auth, removeComment, postId)}
               className={classes.cardHeader}
               key={i}
             />
@@ -70,22 +70,23 @@ class Comments extends React.Component {
   }
 }
 
-const commentBody = (classes, item, auth, removeComment, postId) => (
+const commentBody = (classes, comment, auth, removeComment, postId) => (
   <p className={classes.commentText}>
-    <Link passHref href={`/user/${item.postedBy._id}`}>
-      <a>{item.postedBy.name}</a>
+    <Link passHref href={`/user/${comment.postedBy._id}`}>
+      <a>{comment.postedBy.name}</a>
     </Link>
     <br />
-    {item.text}
+    {comment.text}
     <span className={classes.commentDate}>
-      {distanceInWordsToNow(item.created, {
+      {distanceInWordsToNow(comment.created, {
         includeSeconds: true,
         addSuffix: true
       })}
-      {auth.user._id === item.postedBy._id && (
+      {auth.user._id === comment.postedBy._id && (
         <Delete
-          onClick={() => removeComment(item, postId)}
+          onClick={() => removeComment(comment, postId)}
           className={classes.commentDelete}
+          color="secondary"
         />
       )}
     </span>

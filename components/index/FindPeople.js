@@ -32,9 +32,8 @@ class FindPeople extends React.Component {
     });
   };
 
-  handleDialogClose = () => {
-    this.setState({ open: false });
-  };
+  handleDialogClose = () => this.setState({ open: false });
+
 
   render() {
     const { classes } = this.props;
@@ -98,7 +97,8 @@ class FindPeople extends React.Component {
 const styles = theme => ({
   root: theme.mixins.gutters({
     padding: theme.spacing.unit,
-    margin: 0
+    margin: 0,
+    // position: "fixed"
   }),
   title: {
     margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit}px ${theme.spacing

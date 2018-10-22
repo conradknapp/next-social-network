@@ -82,3 +82,11 @@ Optional Chaining Proposal
 - auth?.user?.\_id
 
 - https://stackoverflow.com/questions/13525480/mongoose-populate-after-save
+
+- https://stackoverflow.com/questions/43326355/passport-doesnt-save-the-session
+
+Rudimentary Examples w/ HackerNews
+
+- https://aerolab.co/blog/react-nextjs-pwa
+
+Prefetching Example

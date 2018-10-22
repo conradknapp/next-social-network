@@ -2,7 +2,6 @@ import express from "express";
 import * as authController from "../controllers/authController";
 import * as userController from "../controllers/userController";
 import * as postController from "../controllers/postController";
-import passport from "passport";
 
 const router = express.Router();
 
@@ -12,18 +11,12 @@ router.post(
   authController.validateSignup,
   authController.signup
 );
-router.post(
-  "/api/auth/signin",
-  passport.authenticate("local", {
-    failureFlash: "Ayy lmao",
-    successRedirect: "/"
-  })
-);
 // router.post("/api/auth/signin", passport.authenticate("local"), (req, res) => {
 //   // If this function gets called, authentication was successful.
 //   // `req.user` contains the authenticated user.
 //   res.json(req.user);
 // });
+router.post("/api/auth/signin", authController.signin);
 router.get("/api/auth/signout", authController.signout);
 
 /* User Routes */

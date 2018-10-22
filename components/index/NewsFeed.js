@@ -10,6 +10,7 @@ import {
   unlikeUserPost,
   likeUserPost,
   uncommentPost,
+  removeUserPost,
   commentPost
 } from "../../lib/auth";
 
@@ -45,7 +46,6 @@ class NewsFeed extends React.Component {
     const { auth } = this.props;
     create(auth.user._id, this.postData)
       .then(post => {
-        console.log(post);
         const updatedPosts = [post, ...this.state.posts];
         this.setState({
           posts: updatedPosts,
@@ -60,14 +60,16 @@ class NewsFeed extends React.Component {
   };
 
   removePost = removedPost => {
-    const postIndex = this.state.posts.findIndex(
-      post => post._id === removedPost._id
-    );
-    const updatedPosts = [
-      ...this.state.posts.slice(0, postIndex),
-      ...this.state.posts.slice(postIndex + 1)
-    ];
-    this.setState({ posts: updatedPosts });
+    removeUserPost(removedPost._id).then(postData => {
+      const postIndex = this.state.posts.findIndex(
+        post => post._id === postData._id
+      );
+      const updatedPosts = [
+        ...this.state.posts.slice(0, postIndex),
+        ...this.state.posts.slice(postIndex + 1)
+      ];
+      this.setState({ posts: updatedPosts });
+    });
   };
 
   handleLike = post => {
@@ -87,9 +89,7 @@ class NewsFeed extends React.Component {
           postData,
           ...this.state.posts.slice(postIndex + 1)
         ];
-        this.setState({
-          posts: updatedPosts
-        });
+        this.setState({ posts: updatedPosts });
       })
       .catch(err => {
         console.error(err);
@@ -98,27 +98,24 @@ class NewsFeed extends React.Component {
 
   addComment = (postId, text) => {
     const { auth } = this.props;
-      const commentPayload = {
-        postId,
-        comment: {
-          text,
-          postedBy: auth.user._id
-        }
-      };
-      commentPost(commentPayload).then(postData => {
-        console.log(postData);
-        const postIndex = this.state.posts.findIndex(
-          post => post._id === postData._id
-        );
-        const updatedPosts = [
-          ...this.state.posts.slice(0, postIndex),
-          postData,
-          ...this.state.posts.slice(postIndex + 1)
-        ];
-        this.setState({
-          posts: updatedPosts
-        });
-      });
+    const commentPayload = {
+      postId,
+      comment: {
+        text,
+        postedBy: auth.user._id
+      }
+    };
+    commentPost(commentPayload).then(postData => {
+      const postIndex = this.state.posts.findIndex(
+        post => post._id === postData._id
+      );
+      const updatedPosts = [
+        ...this.state.posts.slice(0, postIndex),
+        postData,
+        ...this.state.posts.slice(postIndex + 1)
+      ];
+      this.setState({ posts: updatedPosts });
+    });
   };
 
   removeComment = (comment, postId) => {
@@ -135,9 +132,7 @@ class NewsFeed extends React.Component {
         postData,
         ...this.state.posts.slice(postIndex + 1)
       ];
-      this.setState({
-        posts: updatedPosts
-      });
+      this.setState({ posts: updatedPosts });
     });
   };
 

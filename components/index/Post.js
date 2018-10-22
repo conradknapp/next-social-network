@@ -1,7 +1,12 @@
 import React from "react";
 // prettier-ignore
 import { Card, CardHeader, CardContent, CardActions, Typography, Avatar, IconButton, Divider, withStyles } from '@material-ui/core';
-import { Delete, Favorite, FavoriteBorder, Comment } from "@material-ui/icons";
+import {
+  DeleteTwoTone,
+  Favorite,
+  FavoriteBorder,
+  Comment
+} from "@material-ui/icons";
 import Link from "next/link";
 import { distanceInWordsToNow } from "date-fns";
 
@@ -9,7 +14,7 @@ import Comments from "./Comments";
 
 class Post extends React.Component {
   state = {
-    like: false,
+    isLiked: false,
     likes: 0,
     comments: []
   };
@@ -17,21 +22,25 @@ class Post extends React.Component {
   componentDidMount() {
     const { post } = this.props;
     this.setState({
-      like: this.isLiked(post.likes),
+      isLiked: this.checkIfLiked(post.likes),
       likes: post.likes.length,
       comments: post.comments
     });
   }
 
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   console.log(nextProps, prevState);
+  // }
+
   componentWillReceiveProps = props => {
     this.setState({
-      like: this.isLiked(props.post.likes),
+      isLiked: this.checkIfLiked(props.post.likes),
       likes: props.post.likes.length,
       comments: props.post.comments
     });
   };
 
-  isLiked = likes => {
+  checkIfLiked = likes => {
     const { auth } = this.props;
     return likes.includes(auth.user._id);
   };
@@ -46,7 +55,7 @@ class Post extends React.Component {
       addComment,
       removeComment
     } = this.props;
-    const { comments, likes, like } = this.state;
+    const { comments, likes, isLiked } = this.state;
 
     return (
       <Card className={classes.card}>
@@ -55,7 +64,7 @@ class Post extends React.Component {
           action={
             post.postedBy._id === auth.user._id && (
               <IconButton onClick={() => removePost(post)}>
-                <Delete className={classes.deleteIcon} />
+                <DeleteTwoTone color="secondary" />
               </IconButton>
             )
           }
@@ -84,7 +93,7 @@ class Post extends React.Component {
           )}
         </CardContent>
         <CardActions>
-          {like ? (
+          {isLiked ? (
             <IconButton
               onClick={() => handleLike(post)}
               className={classes.button}
@@ -120,7 +129,6 @@ class Post extends React.Component {
           comments={comments}
           addComment={addComment}
           removeComment={removeComment}
-          updateComments={comments => this.setState({ comments })}
         />
       </Card>
     );
@@ -155,9 +163,6 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit
-  },
-  deleteIcon: {
-    color: "#e34234"
   }
 });
 

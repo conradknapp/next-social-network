@@ -43,7 +43,7 @@ export const postByID = (req, res, next, id) => {
 };
 
 export const listByUser = (req, res) => {
-  Post.find({ postedBy: req.profile._id })
+  Post.find({ postedBy: req.user._id })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
     .populate("postedBy", "_id name")
@@ -59,10 +59,9 @@ export const listByUser = (req, res) => {
 };
 
 export const listNewsFeed = (req, res) => {
-  const { following, _id } = req.profile;
+  const { following, _id } = req.user;
   following.push(_id);
-  console.log(following);
-  Post.find({ postedBy: { $in: req.profile.following } })
+  Post.find({ postedBy: { $in: following } })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
     .populate("postedBy", "_id name")
@@ -78,9 +77,9 @@ export const listNewsFeed = (req, res) => {
 };
 
 export const remove = async (req, res) => {
-  let post = req.post;
-  const removedPost = await post.remove();
-  res.json(removedPost);
+  const { _id } = req.post;
+  const deletedPost = await Post.findOneAndDelete({ _id });
+  res.json(deletedPost);
 };
 
 export const photo = (req, res) => {

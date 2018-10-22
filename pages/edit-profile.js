@@ -1,7 +1,7 @@
 import React from "react";
 // prettier-ignore
-import { Card, Button, CircularProgress, CardActions, CardContent, TextField, Typography, Icon, Avatar, withStyles } from '@material-ui/core';
-import { CloudUpload } from '@material-ui/icons';
+import { Card, Button, CircularProgress, CardActions, CardContent, TextField, Typography, Avatar, withStyles } from '@material-ui/core';
+import { CloudUpload, FaceTwoTone } from "@material-ui/icons";
 import Router from "next/router";
 
 import {
@@ -19,15 +19,18 @@ class EditProfile extends React.Component {
     email: "",
     password: "",
     error: "",
-    loading: false
+    loading: true
   };
 
   componentDidMount() {
     const { userId } = this.props;
     this.userData = new FormData();
-    getUserProfile(userId).then(user =>
-      this.setState({ ...this.state, ...user })
-    );
+    getUserProfile(userId)
+      .then(user => this.setState({ ...this.state, ...user, loading: false }))
+      .catch(err => {
+        console.error(err);
+        this.setState({ loading: false });
+      });
   }
 
   handleSubmit = () => {
@@ -38,12 +41,12 @@ class EditProfile extends React.Component {
   };
 
   handleChange = event => {
-    const value =
+    const inputValue =
       event.target.name === "photo"
         ? event.target.files[0]
         : event.target.value;
-    this.userData.set(event.target.name, value);
-    this.setState({ [event.target.name]: value });
+    this.userData.set(event.target.name, inputValue);
+    this.setState({ [event.target.name]: inputValue });
   };
 
   render() {
@@ -59,7 +62,13 @@ class EditProfile extends React.Component {
           <Typography variant="h4" className={classes.title}>
             Edit Profile
           </Typography>
-          <Avatar src={photoUrl} className={classes.bigAvatar} />
+          {loading ? (
+            <Avatar className={classes.bigAvatar}>
+              <FaceTwoTone />
+            </Avatar>
+          ) : (
+            <Avatar src={photoUrl} className={classes.bigAvatar} />
+          )}
           <br />
           <input
             accept="image/*"
@@ -70,7 +79,7 @@ class EditProfile extends React.Component {
             type="file"
           />
           <label htmlFor="icon-button-file">
-            <Button variant="contained" color="default" component="span">
+            <Button variant="contained" color="secondary" component="span">
               Upload <CloudUpload />
             </Button>
           </label>{" "}
@@ -120,14 +129,14 @@ class EditProfile extends React.Component {
             margin="normal"
           />
           <br />{" "}
-          {error && (
+          {/* {error && (
             <Typography component="p" color="error">
               <Icon color="error" className={classes.error}>
                 error
               </Icon>
               {error}
             </Typography>
-          )}
+          )} */}
         </CardContent>
         <CardActions className={classes.wrapper}>
           <Button
@@ -148,7 +157,7 @@ class EditProfile extends React.Component {
   }
 }
 
-EditProfile.getInitialProps = authInitialProps(false, true);
+EditProfile.getInitialProps = authInitialProps(true);
 
 const styles = theme => ({
   card: {

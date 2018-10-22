@@ -4,7 +4,7 @@ import { IconButton, Button, Dialog, DialogActions, DialogContent, DialogContent
 import { Delete } from "@material-ui/icons";
 import Router from "next/router";
 
-import { signoutUser, deleteUser } from "../../lib/auth";
+import { signoutUser, removeUser } from "../../lib/auth";
 
 class DeleteProfile extends React.Component {
   state = {
@@ -17,7 +17,7 @@ class DeleteProfile extends React.Component {
 
   deleteAccount = () => {
     const { userId } = this.props;
-    deleteUser(userId);
+    removeUser(userId);
     signoutUser();
     Router.push("/signup");
   };

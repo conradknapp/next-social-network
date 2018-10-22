@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import passport from "passport";
 
 const User = mongoose.model("User");
 
@@ -17,6 +18,7 @@ export const validateSignup = (req, res, next) => {
   req
     .checkBody("password", "Password must be between 4 and 10 characters")
     .isLength({ min: 4, max: 10 });
+
   const errors = req.validationErrors();
   if (errors) {
     const json = JSON.stringify(errors.map(err => err.msg));
@@ -25,19 +27,37 @@ export const validateSignup = (req, res, next) => {
   next();
 };
 
-export const signup = async (req, res, next) => {
+export const signup = async (req, res) => {
   const { name, email, password } = req.body;
   const user = await new User({ name, email, password });
   // passport local mongoose plugin gives us a register method that will hash our password and call .save();
-  User.register(user, password, (err, account) => {
+  User.register(user, password, (err, user) => {
     if (err) {
       return res.status(400).json({
         error: "Please provide email and/or password"
       });
     }
-    console.log("user registered!", account);
-    res.status(200).json(account.name);
+    // console.log("user registered!", user);
+    res.status(200).json(user.name);
   });
+};
+
+export const signin = (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    if (!user) {
+      return res.status(400).json(info.message);
+    }
+
+    req.logIn(user, err => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      res.json(user);
+    });
+  })(req, res, next);
 };
 
 export const signout = (req, res) => {

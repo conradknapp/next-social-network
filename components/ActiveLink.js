@@ -1,22 +1,38 @@
+import { Component } from "react";
 import { withRouter } from "next/router";
 
-const ActiveLink = ({ children, router, href }) => {
-  const style = {
-    fontWeight: router.pathname === href ? "bold" : "normal",
-    textDecoration: "none",
-    color: router.pathname === href ? "red" : "black"
-  };
+class ActiveLink extends Component {
+  componentDidMount() {
+    const { router, href } = this.props;
+    router.prefetch(href);
+    // console.log(`prefetching ${href}`);
+  }
 
-  const handleClick = event => {
+  handleClick = event => {
+    const { href, router } = this.props;
     event.preventDefault();
     router.push(href);
   };
 
-  return (
-    <a href={href} onClick={handleClick} style={style}>
-      {children}
-    </a>
-  );
-};
+  render() {
+    const { children, href, router } = this.props;
+    const isCurrentPath = router.pathname === href || router.asPath === href;
+    return (
+      <div>
+        <a
+          href={href}
+          onClick={this.handleClick}
+          style={{
+            textDecoration: "none",
+            fontWeight: isCurrentPath ? "bold" : "normal",
+            color: isCurrentPath ? "red" : "black"
+          }}
+        >
+          {children}
+        </a>
+      </div>
+    );
+  }
+}
 
 export default withRouter(ActiveLink);

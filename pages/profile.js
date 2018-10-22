@@ -1,11 +1,10 @@
 import React from "react";
 // prettier-ignore
-import { Paper, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, IconButton, Typography, CircularProgress, Divider } from '@material-ui/core';
+import { Paper, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, IconButton, Typography, CircularProgress, Divider, withStyles } from '@material-ui/core';
 import { Edit } from "@material-ui/icons";
 
 import DeleteProfile from "../components/profile/DeleteProfile";
 import FollowProfile from "../components/profile/FollowProfile";
-import { withStyles } from "@material-ui/core/styles";
 import Link from "next/link";
 import { getUserProfile, authInitialProps } from "../lib/auth";
 
@@ -19,24 +18,6 @@ class Profile extends React.Component {
     posts: [],
     loading: true,
     isAuth: false
-  };
-
-  init = userId => {
-    // const jwt = auth.isAuthenticated();
-    // read(
-    //   {
-    //     userId: userId
-    //   },
-    //   { t: jwt.token }
-    // ).then(data => {
-    //   if (data.error) {
-    //     this.setState({ redirectToSignin: true });
-    //   } else {
-    //     let following = this.checkFollow(data);
-    //     this.setState({ user: data, following: following });
-    //     this.loadPosts(data._id);
-    //   }
-    // });
   };
 
   componentDidMount() {
@@ -66,32 +47,6 @@ class Profile extends React.Component {
     sendRequest(auth.user._id, userId).then(() => {
       this.setState({ following: !this.state.following });
     });
-    // ...
-    // ).then(data => {
-    //   if (data.error) {
-    //     this.setState({ error: data.error });
-    //   } else {
-    //     this.setState({ user: data, following: !this.state.following });
-    //   }
-    // });
-  };
-
-  loadPosts = user => {
-    // const jwt = auth.isAuthenticated();
-    // listByUser(
-    //   {
-    //     userId: user
-    //   },
-    //   {
-    //     t: jwt.token
-    //   }
-    // ).then(data => {
-    //   if (data.error) {
-    //     console.log(data.error);
-    //   } else {
-    //     this.setState({ posts: data });
-    //   }
-    // });
   };
 
   removePost = post => {
@@ -152,7 +107,7 @@ class Profile extends React.Component {
 }
 
 // Profile is a protected route
-Profile.getInitialProps = authInitialProps(false, true);
+Profile.getInitialProps = authInitialProps(true);
 
 const styles = theme => ({
   root: theme.mixins.gutters({

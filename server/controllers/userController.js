@@ -173,7 +173,7 @@ export const findPeople = (req, res) => {
   User.find({ _id: { $nin: following } }, (err, users) => {
     if (err) {
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: "Error"
       });
     }
     res.status(200).json(users);

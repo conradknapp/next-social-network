@@ -54,14 +54,6 @@ class NewPost extends React.Component {
               </IconButton>
             </label>{" "}
             <span className={classes.filename}>{photo ? photo.name : ""}</span>
-            {/* {error && (
-              <Typography component="p" color="error">
-                <Icon color="error" className={classes.error}>
-                  error
-                </Icon>
-                {error}
-              </Typography>
-            )} */}
           </CardContent>
           <CardActions>
             <Button
