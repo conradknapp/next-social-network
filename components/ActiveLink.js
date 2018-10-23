@@ -24,8 +24,10 @@ class ActiveLink extends Component {
           onClick={this.handleClick}
           style={{
             textDecoration: "none",
+            margin: 0,
+            padding: 0,
             fontWeight: isCurrentPath ? "bold" : "normal",
-            color: isCurrentPath ? "red" : "black"
+            color: isCurrentPath ? "red" : "white"
           }}
         >
           {children}

@@ -1,7 +1,7 @@
 import React from "react";
 // prettier-ignore
-import { Typography, Card, CardContent, CardActions, TextField, Icon, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, withStyles, Slide } from '@material-ui/core';
-import { Face } from "@material-ui/icons";
+import { Typography, Avatar, FormControl, Paper, Input, InputLabel, Button, Snackbar, withStyles, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from '@material-ui/core';
+import { Gavel, VerifiedUserTwoTone } from "@material-ui/icons";
 
 import Link from "next/link";
 import { signupUser } from "../lib/auth";
@@ -16,6 +16,8 @@ class Signup extends React.Component {
     password: "",
     email: "",
     open: false,
+    openSuccess: false,
+    loading: false,
     error: "",
     createdUser: ""
   };
@@ -24,7 +26,9 @@ class Signup extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault();
+    this.setState({ error: "", loading: false });
     const user = {
       name: this.state.name,
       password: this.state.password,
@@ -33,91 +37,111 @@ class Signup extends React.Component {
     signupUser(user)
       .then(createdUser => {
         console.log(createdUser);
-        this.setState({ error: "", open: true, createdUser });
+        this.setState({
+          error: "",
+          openSuccess: true,
+          createdUser,
+          loading: false
+        });
       })
       .catch(err => {
-        this.setError(err);
+        this.showError(err);
       });
   };
 
-  setError = err => {
-    const errorMessage = (err.response && err.response.data) || err.message;
-    console.log(errorMessage);
-    this.setState({ error: errorMessage.error });
+  showError = err => {
+    const error = (err.response && err.response.data) || err.message;
+    console.log(error);
+    this.setState({ error, open: true, loading: false });
   };
+
+  handleClose = () => this.setState({ open: false });
 
   render() {
     const { classes } = this.props;
-    const { createdUser, name, email, password, open, error } = this.state;
+    const { createdUser, open, error, loading, openSuccess } = this.state;
 
     return (
-      <div>
-        <Card className={classes.card}>
-          <CardContent>
-            <Typography variant="h4" className={classes.title}>
-              Sign Up
-            </Typography>
-            <TextField
-              id="name"
-              label="Name"
-              name="name"
-              className={classes.textField}
-              value={name}
-              onChange={this.handleChange}
-              margin="normal"
-            />{" "}
-            <br />
-            <TextField
-              id="email"
-              type="email"
-              label="Email"
-              name="email"
-              className={classes.textField}
-              value={email}
-              onChange={this.handleChange}
-              margin="normal"
-            />
-            <br />
-            <TextField
-              id="password"
-              type="password"
-              label="Password"
-              name="password"
-              className={classes.textField}
-              value={password}
-              onChange={this.handleChange}
-              margin="normal"
-            />
-            <br />
-            {error && (
-              <Typography component="p" color="error">
-                <Icon color="error" className={classes.error}>
-                  error
-                </Icon>
-                {error}
-              </Typography>
-            )}
-          </CardContent>
-          <CardActions>
+      <div className={classes.layout}>
+        <Paper className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <Gavel />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <form onSubmit={this.handleSubmit} className={classes.form}>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="name">Name</InputLabel>
+              <Input
+                id="name"
+                name="name"
+                // autoComplete="name"
+                onChange={this.handleChange}
+                // autoFocus
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="email">Email Address</InputLabel>
+              <Input
+                id="email"
+                name="email"
+                // autoComplete="name"
+                onChange={this.handleChange}
+                // autoFocus
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <Input
+                onChange={this.handleChange}
+                name="password"
+                type="password"
+                id="password"
+                // autoComplete="current-password"
+              />
+            </FormControl>
             <Button
-              color="primary"
+              type="submit"
+              fullWidth
+              disabled={loading}
               variant="contained"
-              onClick={this.handleSubmit}
+              color="primary"
               className={classes.submit}
             >
-              Submit
+              Sign up
             </Button>
-          </CardActions>
-        </Card>
+          </form>
 
-        {/* Signup Dialog */}
+          {/* Error Snackbar */}
+          {error.length > 0 && (
+            <Snackbar
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right"
+              }}
+              open={open}
+              onClose={this.handleClose}
+              autoHideDuration={6000}
+              message={
+                <span className={classes.snack}>
+                  {error.map(err => (
+                    <li>{err}</li>
+                  ))}
+                </span>
+              }
+            />
+          )}
+        </Paper>
+
+        {/* Success Dialog */}
         <Dialog
-          open={open}
+          open={openSuccess}
           disableBackdropClick={true}
           TransitionComponent={Transition}
         >
           <DialogTitle>
-            <Face className={classes.icon} />
+            <VerifiedUserTwoTone className={classes.icon} />
             New Account
           </DialogTitle>
           <DialogContent>
@@ -139,32 +163,46 @@ class Signup extends React.Component {
 }
 
 const styles = theme => ({
-  card: {
-    maxWidth: 600,
-    margin: "auto",
-    textAlign: "center",
-    marginTop: theme.spacing.unit * 5,
-    paddingBottom: theme.spacing.unit * 2
+  layout: {
+    width: "auto",
+    display: "block", // Fix IE 11 issue.
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: "auto",
+      marginRight: "auto"
+    }
   },
-  error: {
-    verticalAlign: "middle"
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
   },
   title: {
     marginTop: theme.spacing.unit * 2,
     color: theme.palette.openTitle
   },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary.main
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing.unit
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 2
+  },
+  snack: {
+    color: theme.palette.protectedTitle
+  },
   icon: {
     padding: "0px 2px 2px 0px",
     verticalAlign: "middle"
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 300
-  },
-  submit: {
-    margin: "auto",
-    marginBottom: theme.spacing.unit * 2
   }
 });
 

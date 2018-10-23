@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import _ from "lodash";
 import formidable from "formidable";
 import fs from "fs";
 
@@ -29,51 +28,30 @@ export const create = (req, res) => {
   });
 };
 
-export const postByID = (req, res, next, id) => {
-  Post.findById(id)
-    .populate("postedBy", "_id name")
-    .exec((err, post) => {
-      if (err || !post)
-        return res.status(400).json({
-          error: "Post not found"
-        });
-      req.post = post;
-      next();
-    });
+export const postById = async (req, res, next, id) => {
+  const post = await Post.findOne({ _id: id }).populate("postedBy", "_id name");
+  req.post = post;
+  next();
 };
 
-export const listByUser = (req, res) => {
-  Post.find({ postedBy: req.user._id })
+export const listByUser = async (req, res) => {
+  const posts = await Post.find({ postedBy: req.user._id })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
     .populate("postedBy", "_id name")
-    .sort("-created")
-    .exec((err, posts) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Error"
-        });
-      }
-      res.json(posts);
-    });
+    .sort("-created");
+  res.json(posts);
 };
 
-export const listPostFeed = (req, res) => {
+export const listPostFeed = async (req, res) => {
   const { following, _id } = req.user;
   following.push(_id);
-  Post.find({ postedBy: { $in: following } })
+  const posts = await Post.find({ postedBy: { $in: following } })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
     .populate("postedBy", "_id name")
-    .sort("-created")
-    .exec((err, posts) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Error"
-        });
-      }
-      res.json(posts);
-    });
+    .sort("-created");
+  res.json(posts);
 };
 
 export const remove = async (req, res) => {
@@ -89,17 +67,17 @@ export const photo = (req, res) => {
 
 export const toggleLike = async (req, res) => {
   const { userId, postId } = req.body;
-  const likedPost = await Post.findOne({ _id: postId })
+  const post = await Post.findOne({ _id: postId })
     .populate("comments.postedBy", "_id name")
     .populate("postedBy", "_id name");
-  const likes = likedPost.likes.map(like => like.toString());
-  if (likes.includes(userId)) {
-    await likedPost.likes.pull(userId);
+  const userIds = post.likes.map(id => id.toString());
+  if (userIds.includes(userId)) {
+    await post.likes.pull(userId);
   } else {
-    await likedPost.likes.push(userId);
+    await post.likes.push(userId);
   }
-  await likedPost.save();
-  res.json(likedPost);
+  await post.save();
+  res.json(post);
 };
 
 export const toggleComment = async (req, res) => {

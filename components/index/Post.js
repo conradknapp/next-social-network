@@ -15,7 +15,7 @@ import Comments from "./Comments";
 class Post extends React.Component {
   state = {
     isLiked: false,
-    likes: 0,
+    numLikes: 0,
     comments: []
   };
 
@@ -23,22 +23,43 @@ class Post extends React.Component {
     const { post } = this.props;
     this.setState({
       isLiked: this.checkIfLiked(post.likes),
-      likes: post.likes.length,
+      numLikes: post.likes.length,
       comments: post.comments
     });
   }
 
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   console.log(nextProps, prevState);
-  // }
+  /* When props change, reset state to display new data in Post component */
+  // componentWillReceiveProps = props => {
+  //   this.setState({
+  //     isLiked: this.checkIfLiked(props.post.likes),
+  //     numLikes: props.post.likes.length,
+  //     comments: props.post.comments
+  //   });
+  // };
 
-  componentWillReceiveProps = props => {
-    this.setState({
-      isLiked: this.checkIfLiked(props.post.likes),
-      likes: props.post.likes.length,
-      comments: props.post.comments
-    });
-  };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.numLikes !== nextProps.post.likes.length) {
+      return {
+        numLikes: nextProps.post.likes.length
+      };
+    }
+
+    if (prevState.comments.length !== nextProps.post.comments.length) {
+      return {
+        comments: nextProps.post.comments
+      };
+    }
+    // Return null to indicate no change to state.
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.numLikes !== prevState.numLikes) {
+      this.setState({
+        isLiked: this.checkIfLiked(this.props.post.likes)
+      });
+    }
+  }
 
   checkIfLiked = likes => {
     const { auth } = this.props;
@@ -53,9 +74,10 @@ class Post extends React.Component {
       handleToggleLike,
       removePost,
       addComment,
-      removeComment
+      removeComment,
+      loading
     } = this.props;
-    const { comments, likes, isLiked } = this.state;
+    const { comments, numLikes, isLiked } = this.state;
 
     return (
       <Card className={classes.card}>
@@ -63,7 +85,7 @@ class Post extends React.Component {
           avatar={<Avatar src={`/api/users/photo/${post.postedBy._id}`} />}
           action={
             post.postedBy._id === auth.user._id && (
-              <IconButton onClick={() => removePost(post)}>
+              <IconButton disabled={loading} onClick={() => removePost(post)}>
                 <DeleteTwoTone color="secondary" />
               </IconButton>
             )
@@ -99,7 +121,7 @@ class Post extends React.Component {
             aria-label="Unlike"
             color="secondary"
           >
-            <Badge badgeContent={likes} color="secondary">
+            <Badge badgeContent={numLikes} color="secondary">
               {isLiked ? <Favorite /> : <FavoriteBorder />}
             </Badge>
           </IconButton>

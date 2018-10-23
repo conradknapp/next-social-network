@@ -1,7 +1,7 @@
 import { Component } from "react";
 // prettier-ignore
 import { Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, Button, IconButton, Typography, Snackbar, withStyles } from '@material-ui/core';
-import { Visibility } from "@material-ui/icons";
+import { AccountBox } from "@material-ui/icons";
 import Link from "next/link";
 
 import { findPeople, followUser } from "../../lib/auth";
@@ -24,7 +24,7 @@ class FindPeople extends Component {
     followUser(auth.user._id, user._id).then(() => {
       const updatedUsers = [
         ...this.state.users.slice(0, index),
-        ...this.state.user.slice(index + 1)
+        ...this.state.users.slice(index + 1)
       ];
       this.setState({
         users: updatedUsers,
@@ -62,7 +62,7 @@ class FindPeople extends Component {
                         color="secondary"
                         className={classes.viewButton}
                       >
-                        <Visibility />
+                        <AccountBox />
                       </IconButton>
                     </Link>
                     <Button

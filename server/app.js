@@ -4,9 +4,9 @@ import session from "express-session";
 import mongoose from "mongoose";
 import logger from "morgan";
 import dotenv from "dotenv";
-import store from "connect-mongo";
+import connect from "connect-mongo";
 import expressValidator from "express-validator";
-const MongoStore = store(session);
+const MongoStore = connect(session);
 const passport = require("passport");
 dotenv.config({ path: "variables.env" });
 
@@ -96,14 +96,19 @@ app.prepare().then(() => {
     return app.render(req, res, "/edit-profile", queryParams);
   });
 
-  // // give all Nextjs's request to Nextjs server
-  // server.get("/_next/*", (req, res) => {
-  //   handle(req, res);
-  // });
+  server.get("/user/:userId", (req, res) => {
+    const queryParams = Object.assign({}, req.params, req.query);
+    return app.render(req, res, "/user", queryParams);
+  });
 
-  // server.get("/static/*", (req, res) => {
-  //   handle(req, res);
-  // });
+  // give all Nextjs's request to Nextjs server
+  server.get("/_next/*", (req, res) => {
+    handle(req, res);
+  });
+
+  server.get("/static/*", (req, res) => {
+    handle(req, res);
+  });
 
   // Default Route
   // Allow Next to handle all other routes:

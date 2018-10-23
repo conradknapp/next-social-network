@@ -1,6 +1,6 @@
-import React from "react";
+import { Component } from "react";
 // prettier-ignore
-import { Paper, Typography, withStyles } from '@material-ui/core';
+import { Typography, withStyles } from '@material-ui/core';
 
 import Post from "./Post";
 import NewPost from "./NewPost";
@@ -14,7 +14,7 @@ import {
   commentPost
 } from "../../lib/auth";
 
-class PostFeed extends React.Component {
+class PostFeed extends Component {
   state = {
     posts: [],
     text: "",
@@ -23,11 +23,11 @@ class PostFeed extends React.Component {
   };
 
   componentDidMount() {
-    this.loadPosts();
+    this.getPosts();
     this.postData = new FormData();
   }
 
-  loadPosts = () => {
+  getPosts = () => {
     const { auth } = this.props;
     listPostFeed(auth.user._id).then(posts => {
       this.setState({ posts });
@@ -64,6 +64,7 @@ class PostFeed extends React.Component {
   };
 
   removePost = removedPost => {
+    this.setState({ loading: true })
     removeUserPost(removedPost._id).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
@@ -72,8 +73,12 @@ class PostFeed extends React.Component {
         ...this.state.posts.slice(0, postIndex),
         ...this.state.posts.slice(postIndex + 1)
       ];
-      this.setState({ posts: updatedPosts });
-    });
+      this.setState({ posts: updatedPosts, loading: false });
+    })
+    .catch(err => {
+      console.error(err);
+      this.setState({ loading: false });
+    });;
   };
 
   handleToggleLike = post => {
@@ -145,7 +150,7 @@ class PostFeed extends React.Component {
     const { posts, text, photo, loading } = this.state;
 
     return (
-      <Paper className={classes.card}>
+      <main className={classes.root}>
         <Typography variant="h4" className={classes.title}>
           Post Feed
         </Typography>
@@ -162,26 +167,27 @@ class PostFeed extends React.Component {
             key={post._id}
             auth={auth}
             post={post}
+            loading={loading}
             removePost={this.removePost}
             addComment={this.addComment}
             removeComment={this.removeComment}
             handleToggleLike={this.handleToggleLike}
           />
         ))}
-      </Paper>
+      </main>
     );
   }
 }
 
 const styles = theme => ({
-  card: {
+  root: {
     backgroundColor: "#fafafa",
     paddingBottom: theme.spacing.unit * 3,
     boxShadow: "none"
   },
   title: {
-    padding: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2.5}px ${theme
-      .spacing.unit * 2}px`,
+    padding: theme.spacing.unit * 2,
+    textAlign: "center",
     color: theme.palette.openTitle
   },
   media: {

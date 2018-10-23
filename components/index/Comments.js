@@ -1,33 +1,33 @@
-import React from "react";
+import { Component } from "react";
 // prettier-ignore
-import { CardHeader, TextField, Avatar, withStyles } from '@material-ui/core';
+import { CardHeader, FormControl, InputLabel, Input, Avatar, withStyles } from '@material-ui/core';
 import { Delete } from "@material-ui/icons";
 import Link from "next/link";
 import { distanceInWordsToNow } from "date-fns";
 
-class Comments extends React.Component {
+class Comments extends Component {
   state = {
     text: ""
   };
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({ text: event.target.value });
   };
 
-  handleAddComment = event => {
-    const { addComment, postId } = this.props;
+  handleSubmit = event => {
     const { text } = this.state;
-    if (event.keyCode === 13 && !!text) {
-      addComment(postId, text);
-      this.setState({ text: "" });
-    }
+    const { addComment, postId } = this.props;
+
+    event.preventDefault();
+    addComment(postId, text);
+    this.setState({ text: "" });
   };
 
-  renderCommentBody = comment => {
+  showComment = comment => {
     const { postId, removeComment, auth, classes } = this.props;
     return (
       <p className={classes.commentText}>
-        <Link passHref href={`/user/${comment.postedBy._id}`}>
+        <Link href={`/user/${comment.postedBy._id}`}>
           <a>{comment.postedBy.name}</a>
         </Link>
         <br />
@@ -55,6 +55,7 @@ class Comments extends React.Component {
 
     return (
       <div>
+        {/* Comment Input */}
         <CardHeader
           avatar={
             <Avatar
@@ -63,34 +64,37 @@ class Comments extends React.Component {
             />
           }
           title={
-            <TextField
-              onKeyDown={this.handleAddComment}
-              multiline
-              name="text"
-              value={text}
-              onChange={this.handleChange}
-              placeholder="Reply to this post"
-              className={classes.commentField}
-              margin="normal"
-            />
+            <form onSubmit={this.handleSubmit}>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="text">Comment</InputLabel>
+                <Input
+                  name="text"
+                  value={text}
+                  onChange={this.handleChange}
+                  placeholder="Reply to this post"
+                  className={classes.commentField}
+                  margin="normal"
+                />
+              </FormControl>
+            </form>
           }
           className={classes.cardHeader}
         />
-        {comments.map((comment, i) => {
-          return (
-            <CardHeader
-              avatar={
-                <Avatar
-                  className={classes.smallAvatar}
-                  src={`/api/users/photo/${comment.postedBy._id}`}
-                />
-              }
-              title={this.renderCommentBody(comment)}
-              className={classes.cardHeader}
-              key={i}
-            />
-          );
-        })}
+
+        {/* Comments */}
+        {comments.map(comment => (
+          <CardHeader
+            avatar={
+              <Avatar
+                className={classes.smallAvatar}
+                src={`/api/users/photo/${comment.postedBy._id}`}
+              />
+            }
+            title={this.showComment(comment)}
+            className={classes.cardHeader}
+            key={comment._id}
+          />
+        ))}
       </div>
     );
   }

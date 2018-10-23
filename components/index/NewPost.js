@@ -1,6 +1,6 @@
 // prettier-ignore
-import { Paper, Card, CardHeader, CardContent, CardActions, Button, TextField, Avatar, IconButton, withStyles } from '@material-ui/core';
-import { PhotoCamera } from "@material-ui/icons";
+import { Card, CardHeader, CardContent, CardActions, Button, TextField, Avatar, IconButton, withStyles } from '@material-ui/core';
+import { AddAPhoto } from "@material-ui/icons";
 
 const NewPost = ({
   auth,
@@ -11,7 +11,7 @@ const NewPost = ({
   photo,
   loading
 }) => (
-  <Paper className={classes.root}>
+  <div className={classes.root}>
     <Card className={classes.card}>
       <CardHeader
         avatar={<Avatar src={`/api/users/photo/${auth.user._id}`} />}
@@ -43,7 +43,7 @@ const NewPost = ({
             className={classes.photoButton}
             component="span"
           >
-            <PhotoCamera />
+            <AddAPhoto />
           </IconButton>
         </label>{" "}
         <span className={classes.filename}>{photo ? photo.name : ""}</span>
@@ -60,7 +60,7 @@ const NewPost = ({
         </Button>
       </CardActions>
     </Card>
-  </Paper>
+  </div>
 );
 
 const styles = theme => ({

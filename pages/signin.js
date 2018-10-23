@@ -4,7 +4,7 @@ import { Typography, Avatar, FormControl, Paper, Input, InputLabel, Button, Snac
 import { Lock } from "@material-ui/icons";
 import Router from "next/router";
 
-import { signinUser, authInitialProps } from "../lib/auth";
+import { signinUser } from "../lib/auth";
 
 class Signin extends React.Component {
   state = {
@@ -15,7 +15,8 @@ class Signin extends React.Component {
     loading: false
   };
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault();;
     this.setState({ error: "", loading: true });
     const userPayload = {
       email: this.state.email,
@@ -54,7 +55,7 @@ class Signin extends React.Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form}>
+          <form onSubmit={this.handleSubmit} className={classes.form}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
               <Input
@@ -107,7 +108,7 @@ class Signin extends React.Component {
   }
 }
 
-Signin.getInitialProps = authInitialProps();
+// Signin.getInitialProps = authInitialProps();
 
 const styles = theme => ({
   layout: {

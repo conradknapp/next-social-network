@@ -52,3 +52,13 @@ What is the difference between a 301 / 302 redirect?
 A 301 redirect is an indicator that the destination of the link has changed URL to a different URL, permanently.
 
 302 redirects are temporary, where we want to move the user temporarily to a different place. These considerations as to whether redirects are 301 or 302 are significant for SEO purposes
+
+- \_app?
+
+The Next application is wrapped in App, but we can create a custom \_app page
+\_app page is for keeping state between pages
+We can put everything on every page with it (such as a Header)
+
+- _document?
+
+To avoid FOUC, we need CSS at point of iniital render. Next has solved this with getInitialProps as well as _document (custom document). It is only rendered on the server and will inject the CSS in HTML. We need to restart the server upon changing the custom document

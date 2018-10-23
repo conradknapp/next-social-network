@@ -21,8 +21,8 @@ export const validateSignup = (req, res, next) => {
 
   const errors = req.validationErrors();
   if (errors) {
-    const json = JSON.stringify(errors.map(err => err.msg));
-    return res.status(400).json(json);
+    const json = errors.map(err => err.msg);
+    return res.status(400).send(json);
   }
   next();
 };
@@ -33,12 +33,10 @@ export const signup = async (req, res) => {
   // passport local mongoose plugin gives us a register method that will hash our password and call .save();
   User.register(user, password, (err, user) => {
     if (err) {
-      return res.status(400).json({
-        error: "Please provide email and/or password"
-      });
+      return res.sendStatus(500);
     }
     // console.log("user registered!", user);
-    res.status(200).json(user.name);
+    res.json(user.name);
   });
 };
 

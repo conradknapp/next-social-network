@@ -5,33 +5,37 @@ import {
   Button,
   withStyles
 } from "@material-ui/core";
-import { ShareOutlined, Face } from "@material-ui/icons";
+import {
+  ShareOutlined,
+  Face,
+  Gavel,
+  Lock,
+  ExitToApp
+} from "@material-ui/icons";
 
 import ActiveLink from "./ActiveLink";
 import { signoutUser } from "../lib/auth";
 
-const Header = ({ router, pageProps: { auth }, classes }) => (
+const Navbar = ({ router, pageProps: { auth }, classes }) => (
   <AppBar
     position={router.pathname === "/" ? "fixed" : "static"}
     className={classes.appBar}
   >
     <Toolbar>
+      {/* Main Title / Home Button */}
       <ActiveLink href="/">
-        <ShareOutlined />
+        <ShareOutlined className={classes.icon} />
       </ActiveLink>
-      <Typography variant="h5">
+      <Typography variant="h5" component="h1" className={classes.toolbarTitle}>
         <ActiveLink href="/">Next Social</ActiveLink>
       </Typography>
+
       {auth && auth.user && auth.user._id ? (
         <div>
           <Button>
-            <ActiveLink href={`/profile/${auth.user._id}`}>
-              Profile <Face />
-            </ActiveLink>
+            <ActiveLink href={`/profile/${auth.user._id}`}>Profile</ActiveLink>
           </Button>
-          <Button color="inherit" onClick={signoutUser}>
-            Sign out
-          </Button>
+          <Button onClick={signoutUser}>Sign out</Button>
         </div>
       ) : (
         <div>
@@ -49,8 +53,21 @@ const Header = ({ router, pageProps: { auth }, classes }) => (
 
 const styles = theme => ({
   appBar: {
+    // z-index 1 higher than the fixed drawer in home page to clip it under the navigation
     zIndex: theme.zIndex.drawer + 1
+    // marginLeft: 300,
+    // [theme.breakpoints.up("sm")]: {
+    //   width: `calc(100% - ${300}px)`
+    // }
+  },
+  toolbarTitle: {
+    flex: 1
+  },
+  icon: {
+    icon: {
+      marginRight: theme.spacing.unit * 2
+    }
   }
 });
 
-export default withStyles(styles)(Header);
+export default withStyles(styles)(Navbar);

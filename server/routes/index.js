@@ -50,8 +50,6 @@ router.get(
 );
 router.get("/api/users/defaultphoto", userController.defaultPhoto);
 
-router.param("userId", userController.userByID);
-
 /* Post Routes */
 router.put("/api/posts/like", authController.isAuth, postController.toggleLike);
 router.put(
@@ -86,8 +84,8 @@ router.get("/api/posts/photo/:postId", postController.photo);
 router.get("/api/posts/by/:userId", postController.listByUser);
 router.get("/api/posts/feed/:userId", postController.listPostFeed);
 
-router.param("userId", userController.userByID);
-router.param("postId", postController.postByID);
+// router.param("userId", userController.userByID);
+router.param("postId", postController.postById);
 
 /* Catches errors for async/await functions */
 const catchErrors = func => {
