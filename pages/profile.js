@@ -2,10 +2,11 @@ import React from "react";
 // prettier-ignore
 import { Paper, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, IconButton, Typography, CircularProgress, Divider, withStyles } from '@material-ui/core';
 import { Edit } from "@material-ui/icons";
+import Link from "next/link";
+import { format } from "date-fns";
 
 import DeleteProfile from "../components/profile/DeleteProfile";
 import FollowProfile from "../components/profile/FollowProfile";
-import Link from "next/link";
 import { getUserProfile, authInitialProps } from "../lib/auth";
 
 class Profile extends React.Component {
@@ -79,9 +80,11 @@ class Profile extends React.Component {
               {isAuth ? (
                 <ListItemSecondaryAction>
                   <Link href={`/edit-profile/${user._id}`}>
-                    <IconButton aria-label="Edit" color="primary">
-                      <Edit />
-                    </IconButton>
+                    <a>
+                      <IconButton color="primary">
+                        <Edit />
+                      </IconButton>
+                    </a>
                   </Link>
                   <DeleteProfile userId={user._id} />
                 </ListItemSecondaryAction>
@@ -96,7 +99,10 @@ class Profile extends React.Component {
             <ListItem>
               <ListItemText
                 primary={user.about}
-                secondary={`Joined: ${new Date(user.createdAt).toDateString()}`}
+                secondary={`Joined: ${format(
+                  user.createdAt,
+                  "dddd, MMMM Do, YYYY"
+                )}`}
               />
             </ListItem>
           </List>

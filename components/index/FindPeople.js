@@ -66,7 +66,6 @@ class FindPeople extends Component {
                       </IconButton>
                     </Link>
                     <Button
-                      aria-label="Follow"
                       variant="contained"
                       color="primary"
                       onClick={() => this.handleFollow(user, i)}

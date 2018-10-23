@@ -26,11 +26,7 @@ class DeleteProfile extends Component {
     const { open } = this.state;
     return (
       <span>
-        <IconButton
-          aria-label="Delete"
-          onClick={this.handleOpen}
-          color="secondary"
-        >
+        <IconButton onClick={this.handleOpen} color="secondary">
           <Delete />
         </IconButton>
 

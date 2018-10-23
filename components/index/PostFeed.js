@@ -64,21 +64,22 @@ class PostFeed extends Component {
   };
 
   removePost = removedPost => {
-    this.setState({ loading: true })
-    removeUserPost(removedPost._id).then(postData => {
-      const postIndex = this.state.posts.findIndex(
-        post => post._id === postData._id
-      );
-      const updatedPosts = [
-        ...this.state.posts.slice(0, postIndex),
-        ...this.state.posts.slice(postIndex + 1)
-      ];
-      this.setState({ posts: updatedPosts, loading: false });
-    })
-    .catch(err => {
-      console.error(err);
-      this.setState({ loading: false });
-    });;
+    this.setState({ loading: true });
+    removeUserPost(removedPost._id)
+      .then(postData => {
+        const postIndex = this.state.posts.findIndex(
+          post => post._id === postData._id
+        );
+        const updatedPosts = [
+          ...this.state.posts.slice(0, postIndex),
+          ...this.state.posts.slice(postIndex + 1)
+        ];
+        this.setState({ posts: updatedPosts, loading: false });
+      })
+      .catch(err => {
+        console.error(err);
+        this.setState({ loading: false });
+      });
   };
 
   handleToggleLike = post => {
@@ -151,7 +152,13 @@ class PostFeed extends Component {
 
     return (
       <main className={classes.root}>
-        <Typography variant="h4" className={classes.title}>
+        <Typography
+          variant="h4"
+          component="h1"
+          align="center"
+          color="primary"
+          className={classes.title}
+        >
           Post Feed
         </Typography>
         <NewPost
@@ -181,17 +188,10 @@ class PostFeed extends Component {
 
 const styles = theme => ({
   root: {
-    backgroundColor: "#fafafa",
-    paddingBottom: theme.spacing.unit * 3,
-    boxShadow: "none"
+    paddingBottom: theme.spacing.unit * 2
   },
   title: {
-    padding: theme.spacing.unit * 2,
-    textAlign: "center",
-    color: theme.palette.openTitle
-  },
-  media: {
-    minHeight: 330
+    padding: theme.spacing.unit * 2
   }
 });
 

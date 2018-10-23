@@ -1,5 +1,5 @@
 // prettier-ignore
-import { Card, CardHeader, CardContent, CardActions, Button, TextField, Avatar, IconButton, withStyles } from '@material-ui/core';
+import { Card, Typography, CardHeader, CardContent, CardActions, Button, TextField, Avatar, IconButton, withStyles } from '@material-ui/core';
 import { AddAPhoto } from "@material-ui/icons";
 
 const NewPost = ({
@@ -11,66 +11,70 @@ const NewPost = ({
   photo,
   loading
 }) => (
-  <div className={classes.root}>
-    <Card className={classes.card}>
-      <CardHeader
-        avatar={<Avatar src={`/api/users/photo/${auth.user._id}`} />}
-        title={auth.user.name}
-        className={classes.cardHeader}
+  <Card className={classes.card}>
+    <CardHeader
+      avatar={<Avatar src={`/api/users/photo/${auth.user._id}`} />}
+      title={
+        <Typography variant="h6" component="h2">
+          {auth.user.name}
+        </Typography>
+      }
+      className={classes.cardHeader}
+    />
+    <CardContent className={classes.cardContent}>
+      <TextField
+        id="outlined-full-width"
+        label="Add a status"
+        value={text}
+        name="text"
+        multiline
+        rows="2"
+        placeholder={`What's on your mind, ${auth.user.name}?`}
+        fullWidth
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+        InputLabelProps={{
+          shrink: true
+        }}
       />
-      <CardContent className={classes.cardContent}>
-        <TextField
-          placeholder="Share your thoughts"
-          multiline
-          rows="3"
-          value={text}
-          name="text"
-          onChange={handleChange}
-          className={classes.textField}
-          margin="normal"
-        />
-        <input
-          accept="image/*"
-          name="photo"
-          onChange={handleChange}
-          className={classes.input}
-          id="icon-button-file"
-          type="file"
-        />
-        <label htmlFor="icon-button-file">
-          <IconButton
-            color="secondary"
-            className={classes.photoButton}
-            component="span"
-          >
-            <AddAPhoto />
-          </IconButton>
-        </label>{" "}
-        <span className={classes.filename}>{photo ? photo.name : ""}</span>
-      </CardContent>
-      <CardActions>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={!text || loading}
-          onClick={addPost}
-          className={classes.submit}
+      <input
+        accept="image/*"
+        name="photo"
+        onChange={handleChange}
+        className={classes.input}
+        id="icon-button-file"
+        type="file"
+      />
+      <label htmlFor="icon-button-file">
+        <IconButton
+          color="secondary"
+          className={classes.photoButton}
+          component="span"
         >
-          POST
-        </Button>
-      </CardActions>
-    </Card>
-  </div>
+          <AddAPhoto />
+        </IconButton>
+      </label>{" "}
+      <span className={classes.filename}>{photo && photo.name}</span>
+    </CardContent>
+    <CardActions className={classes.cardActions}>
+      <Button
+        color="primary"
+        variant="contained"
+        disabled={!text || loading}
+        onClick={addPost}
+        className={classes.submit}
+      >
+        POST
+      </Button>
+    </CardActions>
+  </Card>
 );
 
 const styles = theme => ({
-  root: {
-    backgroundColor: "#fafafa"
-  },
   card: {
-    maxWidth: 600,
     marginBottom: theme.spacing.unit * 3,
-    backgroundColor: "rgba(65, 150, 136, 0.09)"
+    backgroundColor: "rgba(22, 214, 87, 0.2)"
   },
   cardContent: {
     backgroundColor: "white"
@@ -78,8 +82,9 @@ const styles = theme => ({
   input: {
     display: "none"
   },
-  textField: {
-    width: "100%"
+  cardActions: {
+    display: "flex",
+    flexDirection: "row-reverse"
   }
 });
 

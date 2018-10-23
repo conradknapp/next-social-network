@@ -27,7 +27,7 @@ class ActiveLink extends Component {
             margin: 0,
             padding: 0,
             fontWeight: isCurrentPath ? "bold" : "normal",
-            color: isCurrentPath ? "red" : "white"
+            color: isCurrentPath ? "#c62828" : "#fff"
           }}
         >
           {children}

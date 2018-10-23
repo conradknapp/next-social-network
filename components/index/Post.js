@@ -78,13 +78,15 @@ class Post extends React.Component {
       loading
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
+    const isPoster = post.postedBy._id === auth.user._id;
 
     return (
       <Card className={classes.card}>
+        {/* Post Header */}
         <CardHeader
           avatar={<Avatar src={`/api/users/photo/${post.postedBy._id}`} />}
           action={
-            post.postedBy._id === auth.user._id && (
+            isPoster && (
               <IconButton disabled={loading} onClick={() => removePost(post)}>
                 <DeleteTwoTone color="secondary" />
               </IconButton>
@@ -102,40 +104,44 @@ class Post extends React.Component {
           className={classes.cardHeader}
         />
         <CardContent className={classes.cardContent}>
-          <Typography component="p" className={classes.text}>
+          <Typography variant="body1" className={classes.text}>
             {post.text}
           </Typography>
+
+          {/* Post Image */}
           {post.photo && (
-            <div className={classes.photo}>
+            <div className={classes.imageContainer}>
               <img
-                className={classes.media}
+                className={classes.image}
                 src={`/api/posts/photo/${post._id}`}
               />
             </div>
           )}
         </CardContent>
+
+        {/* Post Buttons */}
         <CardActions>
           <IconButton
             onClick={() => handleToggleLike(post)}
             className={classes.button}
-            aria-label="Unlike"
-            color="secondary"
           >
             <Badge badgeContent={numLikes} color="secondary">
-              {isLiked ? <Favorite /> : <FavoriteBorder />}
+              {isLiked ? (
+                <Favorite className={classes.favoriteIcon} />
+              ) : (
+                <FavoriteBorder className={classes.favoriteIcon} />
+              )}
             </Badge>
           </IconButton>
-          <IconButton
-            className={classes.button}
-            aria-label="Comment"
-            color="secondary"
-          >
+          <IconButton className={classes.button}>
             <Badge badgeContent={comments.length} color="primary">
-              <Comment />
+              <Comment className={classes.commentIcon} />
             </Badge>
           </IconButton>
         </CardActions>
         <Divider />
+
+        {/* Comments Area */}
         <Comments
           auth={auth}
           postId={post._id}
@@ -150,32 +156,29 @@ class Post extends React.Component {
 
 const styles = theme => ({
   card: {
-    maxWidth: 600,
-    margin: "auto",
-    marginBottom: theme.spacing.unit * 3,
-    backgroundColor: "rgba(0, 0, 0, 0.06)"
+    marginBottom: theme.spacing.unit * 3
   },
   cardContent: {
-    backgroundColor: "white",
-    padding: `${theme.spacing.unit * 2}px 0px`
+    backgroundColor: "white"
   },
   cardHeader: {
     paddingTop: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit
+    paddingBottom: theme.spacing.unit,
+    backgroundColor: "rgba(11, 61, 130, 0.06)"
   },
-  text: {
-    margin: theme.spacing.unit * 2
-  },
-  photo: {
+  imageContainer: {
     textAlign: "center",
-    backgroundColor: "#f2f5f4",
+    // backgroundColor: "#f2f5f4",
     padding: theme.spacing.unit
   },
-  media: {
+  image: {
     height: 200
   },
-  button: {
-    margin: theme.spacing.unit
+  favoriteIcon: {
+    color: theme.palette.favoriteIcon
+  },
+  commentIcon: {
+    color: theme.palette.commentIcon
   }
 });
 

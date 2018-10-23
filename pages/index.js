@@ -36,12 +36,12 @@ class Index extends Component {
     const { defaultPage, loading } = this.state;
 
     return (
-      <div className={classes.root}>
+      <main className={classes.root}>
         {/* Loading Spinner  */}
         {loading ? (
           <CircularProgress className={classes.progress} thickness={7} />
         ) : defaultPage ? (
-          <main className={classes.layout}>
+          <div className={classes.layout}>
             {/* Hero */}
             <div className={classes.heroContent}>
               <Typography
@@ -51,7 +51,7 @@ class Index extends Component {
                 color="textPrimary"
                 gutterBottom
               >
-                Pricing
+                Next Social
               </Typography>
               <Typography
                 variant="h6"
@@ -59,12 +59,20 @@ class Index extends Component {
                 color="textSecondary"
                 component="p"
               >
-                Quickly build an effective pricing table for your potential
-                customers with this layout. It is built with default Material-UI
-                components with little customization.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
               </Typography>
             </div>
-            <Grid container align="center">
+
+            {/* Call to Action Card */}
+            <Grid
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
               <Grid align="center" item xs={12} sm={8} md={6}>
                 <Card>
                   <CardHeader
@@ -98,8 +106,9 @@ class Index extends Component {
                 </Card>
               </Grid>
             </Grid>
-          </main>
+          </div>
         ) : (
+          // Auth User Page
           <Grid container spacing={24}>
             <Grid item xs={8} sm={7}>
               <PostFeed auth={auth} />
@@ -118,7 +127,7 @@ class Index extends Component {
             </Grid>
           </Grid>
         )}
-      </div>
+      </main>
     );
   }
 }

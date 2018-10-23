@@ -25,8 +25,9 @@ class Comments extends Component {
 
   showComment = comment => {
     const { postId, removeComment, auth, classes } = this.props;
+    const isPoster = auth.user._id === comment.postedBy._id;
     return (
-      <p className={classes.commentText}>
+      <div>
         <Link href={`/user/${comment.postedBy._id}`}>
           <a>{comment.postedBy.name}</a>
         </Link>
@@ -37,7 +38,7 @@ class Comments extends Component {
             includeSeconds: true,
             addSuffix: true
           })}
-          {auth.user._id === comment.postedBy._id && (
+          {isPoster && (
             <Delete
               onClick={() => removeComment(comment, postId)}
               className={classes.commentDelete}
@@ -45,7 +46,7 @@ class Comments extends Component {
             />
           )}
         </span>
-      </p>
+      </div>
     );
   };
 
@@ -54,7 +55,7 @@ class Comments extends Component {
     const { text } = this.state;
 
     return (
-      <div>
+      <div className={classes.comments}>
         {/* Comment Input */}
         <CardHeader
           avatar={
@@ -66,7 +67,7 @@ class Comments extends Component {
           title={
             <form onSubmit={this.handleSubmit}>
               <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="text">Comment</InputLabel>
+                <InputLabel htmlFor="text">Add comment</InputLabel>
                 <Input
                   name="text"
                   value={text}
@@ -101,21 +102,15 @@ class Comments extends Component {
 }
 
 const styles = theme => ({
+  comments: {
+    backgroundColor: "rgba(11, 61, 130, 0.06)"
+  },
   cardHeader: {
     paddingTop: theme.spacing.unit,
     paddingBottom: theme.spacing.unit
   },
   smallAvatar: {
-    width: 25,
-    height: 25
-  },
-  commentField: {
-    width: "96%"
-  },
-  commentText: {
-    backgroundColor: "white",
-    padding: theme.spacing.unit,
-    margin: `2px ${theme.spacing.unit * 2}px 2px 2px`
+    margin: 10
   },
   commentDate: {
     display: "block",
