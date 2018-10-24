@@ -11,36 +11,39 @@ export const getUsers = async (req, res) => {
   res.json(users);
 };
 
-// export const userByID = (req, res, next, id) => {
-//   User.findById(id)
-//     .populate("following", "_id name")
-//     .populate("followers", "_id name")
-//     .exec((err, user) => {
-//       if (err || !user)
-//         return res.status("400").json({
-//           error: "User not found"
-//         });
-//       req.profile = user;
-//       next();
-//     });
-// };
+export const userByID = async (req, res, next, id) => {
+  const user = await User.findOne({ _id: id })
+    .populate("following", "_id name")
+    .populate("followers", "_id name");
+  req.profile = user;
+  next();
+    // .exec((err, user) => {
+    //   if (err || !user)
+    //     return res.status("400").json({
+    //       error: "User not found"
+    //     });
+    //   req.profile = user;
+    //   next();
+    // });
+};
 
-export const read = (req, res) => {
+export const me = (req, res) => {
   // req.profile.hashed_password = undefined;
   // req.profile.salt = undefined;
   res.json(req.user);
 };
 
-export const getUserProfile = async (req, res) => {
+export const getUser = async (req, res) => {
   const { userId } = req.params;
   const user = await User.findOne({ _id: userId })
     .populate("following", "_id name")
     .populate("followers", "_id name");
-  if (!user) {
-    return res.status(404).json({
-      message: "No user found"
-    });
-  }
+  console.log({ user })
+  // if (!user) {
+  //   return res.status(404).json({
+  //     message: "No user found"
+  //   });
+  // }
   res.json(user);
 };
 
@@ -93,7 +96,7 @@ export const addFollowing = async (req, res, next) => {
 };
 
 export const addFollower = async (req, res) => {
-  const { followId, userId } = req.body;
+  const { userId, followId } = req.body;
   const result = await User.findByIdAndUpdate(
     followId,
     { $push: { followers: userId } },
@@ -105,18 +108,18 @@ export const addFollower = async (req, res) => {
 };
 
 export const removeFollowing = async (req, res, next) => {
-  const { userId, unfollowId } = req.body;
+  const { userId, followId } = req.body;
   await User.findOneAndUpdate(
     { _id: userId },
-    { $pull: { following: unfollowId } }
+    { $pull: { following: followId } }
   );
   next();
 };
 
 export const removeFollower = async (req, res) => {
-  const { userId, unfollowId } = req.body;
+  const { userId, followId } = req.body;
   const result = await User.findOneAndUpdate(
-    { _id: unfollowId },
+    { _id: followId },
     { $pull: { followers: userId } },
     { new: true }
   )
@@ -125,7 +128,7 @@ export const removeFollower = async (req, res) => {
   res.json(result);
 };
 
-export const findPeople = async (req, res) => {
+export const findUsers = async (req, res) => {
   const { following, _id } = req.user;
   following.push(_id);
   const users = await User.find({ _id: { $nin: following } }).select("name");

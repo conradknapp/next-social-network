@@ -4,11 +4,7 @@ import { Card, Button, CircularProgress, CardActions, CardContent, TextField, Ty
 import { CloudUpload, FaceTwoTone } from "@material-ui/icons";
 import Router from "next/router";
 
-import {
-  getUserProfile,
-  updateUserProfile,
-  authInitialProps
-} from "../lib/auth";
+import { getAuthUser, updateUser, authInitialProps } from "../lib/auth";
 
 class EditProfile extends React.Component {
   state = {
@@ -23,10 +19,13 @@ class EditProfile extends React.Component {
   };
 
   componentDidMount() {
-    const { userId } = this.props;
+    const { auth } = this.props;
     this.userData = new FormData();
-    getUserProfile(userId)
-      .then(user => this.setState({ ...this.state, ...user, loading: false }))
+    getAuthUser(auth.user._id)
+      .then(user => {
+        console.log(user);
+        this.setState({ ...user, loading: false });
+      })
       .catch(err => {
         console.error(err);
         this.setState({ loading: false });
@@ -35,7 +34,11 @@ class EditProfile extends React.Component {
 
   handleSubmit = () => {
     this.setState({ loading: true });
-    updateUserProfile(this.userData, this.state._id).then(() => {
+    const updateUserPayload = {
+      userData: this.userData,
+      userId: this.state._id
+    };
+    updateUser(updateUserPayload).then(() => {
       Router.replace(`/profile/${this.state._id}`);
     });
   };
@@ -80,10 +83,10 @@ class EditProfile extends React.Component {
           />
           <label htmlFor="icon-button-file">
             <Button variant="contained" color="secondary" component="span">
-              Upload <CloudUpload />
+              Upload Image <CloudUpload />
             </Button>
           </label>{" "}
-          <span className={classes.filename}>{photo ? photo.name : ""}</span>
+          <span className={classes.filename}>{photo && photo.name}</span>
           <br />
           <TextField
             id="name"

@@ -4,7 +4,7 @@ import { Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListI
 import { AccountBox } from "@material-ui/icons";
 import Link from "next/link";
 
-import { findPeople, followUser } from "../../lib/auth";
+import { findUsers, followUser } from "../../lib/auth";
 
 class FindPeople extends Component {
   state = {
@@ -14,14 +14,18 @@ class FindPeople extends Component {
 
   componentDidMount() {
     const { auth } = this.props;
-    findPeople(auth.user._id).then(users => {
+    findUsers(auth.user._id).then(users => {
       this.setState({ users });
     });
   }
 
   handleFollow = (user, index) => {
     const { auth } = this.props;
-    followUser(auth.user._id, user._id).then(() => {
+    const followUserPayload = {
+      userId: auth.user._id,
+      followId: user._id
+    };
+    followUser(followUserPayload).then(() => {
       const updatedUsers = [
         ...this.state.users.slice(0, index),
         ...this.state.users.slice(index + 1)
@@ -56,7 +60,7 @@ class FindPeople extends Component {
                   </ListItemAvatar>
                   <ListItemText primary={user.name} />
                   <ListItemSecondaryAction className={classes.follow}>
-                    <Link href={`/user/${user._id}`}>
+                    <Link href={`/profile/${user._id}`}>
                       <IconButton
                         variant="contained"
                         color="secondary"

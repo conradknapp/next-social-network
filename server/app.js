@@ -10,13 +10,13 @@ const MongoStore = connect(session);
 const passport = require("passport");
 dotenv.config({ path: "variables.env" });
 
-// import models to use mongoose.model() Singleton
+// // import models to use mongoose.model() Singleton
 import "./models/Post";
 import "./models/User";
 
 import routes from "./routes";
 
-// Import passport config
+// // Import passport config
 import "./passport";
 
 mongoose.connect(
@@ -91,10 +91,10 @@ app.prepare().then(() => {
     return app.render(req, res, "/profile", queryParams);
   });
 
-  server.get("/edit-profile/:userId", (req, res) => {
-    const queryParams = Object.assign({}, req.params, req.query);
-    return app.render(req, res, "/edit-profile", queryParams);
-  });
+  // server.get("/edit-profile/:userId", (req, res) => {
+  //   const queryParams = Object.assign({}, req.params, req.query);
+  //   return app.render(req, res, "/edit-profile", queryParams);
+  // });
 
   server.get("/user/:userId", (req, res) => {
     const queryParams = Object.assign({}, req.params, req.query);

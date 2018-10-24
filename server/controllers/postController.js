@@ -4,7 +4,7 @@ import fs from "fs";
 
 const Post = mongoose.model("Post");
 
-export const create = (req, res) => {
+export const addPost = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, async (err, fields, files) => {
@@ -30,6 +30,7 @@ export const create = (req, res) => {
 
 export const postById = async (req, res, next, id) => {
   const post = await Post.findOne({ _id: id }).populate("postedBy", "_id name");
+  console.log({ post });
   req.post = post;
   next();
 };
@@ -54,7 +55,7 @@ export const listPostFeed = async (req, res) => {
   res.json(posts);
 };
 
-export const remove = async (req, res) => {
+export const removePost = async (req, res) => {
   const { _id } = req.post;
   const deletedPost = await Post.findOneAndDelete({ _id });
   res.json(deletedPost);

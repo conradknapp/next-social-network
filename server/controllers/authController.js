@@ -4,16 +4,24 @@ import passport from "passport";
 const User = mongoose.model("User");
 
 export const validateSignup = (req, res, next) => {
+  // Sanitize Form Values
   req.sanitizeBody("name");
   req.sanitizeBody("email");
+  req.sanitizeBody("password");
+
+  // Name is non-null and between 4 and 10 chars
   req.checkBody("name", "Name is required").notEmpty();
   req
     .checkBody("name", "Name must be between 4 and 10 characters")
     .isLength({ min: 4, max: 10 });
+
+  // Email is non-null, valid, and normalized
   req
     .checkBody("email", "Email is not valid")
     .isEmail()
     .normalizeEmail();
+
+  // Password is non-null and between 4 and 10 chars
   req.checkBody("password", "Password is required").notEmpty();
   req
     .checkBody("password", "Password must be between 4 and 10 characters")
@@ -64,7 +72,7 @@ export const signout = (req, res) => {
   res.json({ message: "You are now signed out!" });
 };
 
-export const isAuth = (req, res, next) => {
+export const checkAuth = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }

@@ -1,5 +1,5 @@
 // prettier-ignore
-import { Card, Typography, CardHeader, CardContent, CardActions, Button, TextField, Avatar, IconButton, withStyles } from '@material-ui/core';
+import { Card, Input, Typography, CardHeader, CardContent, CardActions, Button, TextField, Avatar, IconButton, withStyles } from '@material-ui/core';
 import { AddAPhoto } from "@material-ui/icons";
 
 const NewPost = ({
@@ -38,7 +38,7 @@ const NewPost = ({
           shrink: true
         }}
       />
-      <input
+      <Input
         accept="image/*"
         name="photo"
         onChange={handleChange}

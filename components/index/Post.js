@@ -73,8 +73,8 @@ class Post extends React.Component {
       auth,
       handleToggleLike,
       removePost,
-      addComment,
-      removeComment,
+      handleAddComment,
+      handleRemoveComment,
       loading
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
@@ -146,8 +146,8 @@ class Post extends React.Component {
           auth={auth}
           postId={post._id}
           comments={comments}
-          addComment={addComment}
-          removeComment={removeComment}
+          handleAddComment={handleAddComment}
+          handleRemoveComment={handleRemoveComment}
         />
       </Card>
     );

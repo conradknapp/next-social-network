@@ -6,12 +6,12 @@ import Post from "./Post";
 import NewPost from "./NewPost";
 import {
   listPostFeed,
-  create,
-  unlikeUserPost,
-  likeUserPost,
-  uncommentPost,
-  removeUserPost,
-  commentPost
+  addPost,
+  unlikePost,
+  likePost,
+  removeComment,
+  removePost,
+  addComment
 } from "../../lib/auth";
 
 class PostFeed extends Component {
@@ -29,6 +29,7 @@ class PostFeed extends Component {
 
   getPosts = () => {
     const { auth } = this.props;
+
     listPostFeed(auth.user._id).then(posts => {
       this.setState({ posts });
     });
@@ -45,8 +46,9 @@ class PostFeed extends Component {
 
   addPost = () => {
     const { auth } = this.props;
+
     this.setState({ loading: true });
-    create(auth.user._id, this.postData)
+    addPost(auth.user._id, this.postData)
       .then(post => {
         const updatedPosts = [post, ...this.state.posts];
         this.setState({
@@ -65,7 +67,7 @@ class PostFeed extends Component {
 
   removePost = removedPost => {
     this.setState({ loading: true });
-    removeUserPost(removedPost._id)
+    removePost(removedPost._id)
       .then(postData => {
         const postIndex = this.state.posts.findIndex(
           post => post._id === postData._id
@@ -84,8 +86,8 @@ class PostFeed extends Component {
 
   handleToggleLike = post => {
     const { auth } = this.props;
-    const isLiked = post.likes.includes(auth.user._id);
-    const sendRequest = isLiked ? unlikeUserPost : likeUserPost;
+    const isPostLiked = post.likes.includes(auth.user._id);
+    const sendRequest = isPostLiked ? unlikePost : likePost;
     sendRequest({
       userId: auth.user._id,
       postId: post._id
@@ -106,7 +108,7 @@ class PostFeed extends Component {
       });
   };
 
-  addComment = (postId, text) => {
+  handleAddComment = (postId, text) => {
     const { auth } = this.props;
     const commentPayload = {
       postId,
@@ -115,7 +117,7 @@ class PostFeed extends Component {
         postedBy: auth.user._id
       }
     };
-    commentPost(commentPayload).then(postData => {
+    addComment(commentPayload).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
       );
@@ -128,12 +130,12 @@ class PostFeed extends Component {
     });
   };
 
-  removeComment = (comment, postId) => {
+  handleRemoveComment = (comment, postId) => {
     const uncommentPayload = {
       postId,
       comment
     };
-    uncommentPost(uncommentPayload).then(postData => {
+    removeComment(uncommentPayload).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
       );
@@ -176,8 +178,8 @@ class PostFeed extends Component {
             post={post}
             loading={loading}
             removePost={this.removePost}
-            addComment={this.addComment}
-            removeComment={this.removeComment}
+            handleAddComment={this.handleAddComment}
+            handleRemoveComment={this.handleRemoveComment}
             handleToggleLike={this.handleToggleLike}
           />
         ))}

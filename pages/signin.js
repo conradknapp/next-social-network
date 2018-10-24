@@ -108,8 +108,6 @@ class Signin extends React.Component {
   }
 }
 
-// Signin.getInitialProps = authInitialProps();
-
 const styles = theme => ({
   layout: {
     width: "auto",

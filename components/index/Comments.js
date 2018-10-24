@@ -16,15 +16,15 @@ class Comments extends Component {
 
   handleSubmit = event => {
     const { text } = this.state;
-    const { addComment, postId } = this.props;
+    const { handleAddComment, postId } = this.props;
 
     event.preventDefault();
-    addComment(postId, text);
+    handleAddComment(postId, text);
     this.setState({ text: "" });
   };
 
   showComment = comment => {
-    const { postId, removeComment, auth, classes } = this.props;
+    const { postId, handleRemoveComment, auth, classes } = this.props;
     const isPoster = auth.user._id === comment.postedBy._id;
     return (
       <div>
@@ -40,7 +40,7 @@ class Comments extends Component {
           })}
           {isPoster && (
             <Delete
-              onClick={() => removeComment(comment, postId)}
+              onClick={() => handleRemoveComment(comment, postId)}
               className={classes.commentDelete}
               color="secondary"
             />
@@ -56,6 +56,7 @@ class Comments extends Component {
 
     return (
       <div className={classes.comments}>
+      
         {/* Comment Input */}
         <CardHeader
           avatar={
@@ -74,7 +75,6 @@ class Comments extends Component {
                   onChange={this.handleChange}
                   placeholder="Reply to this post"
                   className={classes.commentField}
-                  margin="normal"
                 />
               </FormControl>
             </form>

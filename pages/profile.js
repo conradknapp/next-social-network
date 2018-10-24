@@ -6,16 +6,13 @@ import Link from "next/link";
 import { format } from "date-fns";
 
 import DeleteProfile from "../components/profile/DeleteProfile";
-import FollowProfile from "../components/profile/FollowProfile";
-import { getUserProfile, authInitialProps } from "../lib/auth";
+import FollowUser from "../components/profile/FollowUser";
+import { getUser, authInitialProps } from "../lib/auth";
 
 class Profile extends React.Component {
   state = {
-    user: {
-      following: [],
-      followers: []
-    },
-    following: false,
+    user: {},
+    isFollowing: false,
     posts: [],
     loading: true,
     isAuth: false
@@ -23,46 +20,47 @@ class Profile extends React.Component {
 
   componentDidMount() {
     const { userId, auth } = this.props;
-    getUserProfile(userId).then(user => {
-      const isFollowing = this.checkFollow(user);
-      this.setState({ user, loading: false, following: isFollowing });
+    getUser(userId).then(user => {
+      const isFollowing = this.checkFollow(auth, user);
+      const isAuth = this.checkIfAuth(auth.user._id, userId);
+      this.setState({ user, isFollowing, isAuth, loading: false });
     });
-    this.isAuthUser(auth.user._id, userId);
   }
 
-  isAuthUser = (authId, userId) => {
-    const isAuth = authId === userId;
-    this.setState({ isAuth });
+  checkFollow = (auth, user) => {
+    return user.followers.find(follower => follower._id === auth.user._id);
   };
 
-  checkFollow = user => {
-    const { auth } = this.props;
-    const isFollowing = user.followers.find(follower => {
-      return follower._id === auth.user._id;
-    });
-    return isFollowing;
+  checkIfAuth = (authUserId, userId) => {
+    return authUserId === userId;
   };
 
-  clickFollowButton = sendRequest => {
+  toggleFollow = sendRequest => {
     const { auth, userId } = this.props;
-    sendRequest(auth.user._id, userId).then(() => {
-      this.setState({ following: !this.state.following });
+    const { isFollowing } = this.state;
+    const toggleFollowPayload = {
+      userId: auth.user._id,
+      followId: userId
+    };
+    sendRequest(toggleFollowPayload).then(() => {
+      this.setState({ isFollowing: !isFollowing });
     });
   };
 
-  removePost = post => {
-    const updatedPosts = [...this.state.posts];
-    const index = updatedPosts.indexOf(post);
-    updatedPosts.splice(index, 1);
-    this.setState({ posts: updatedPosts });
-  };
+  // removePost = post => {
+  //   const updatedPosts = [...this.state.posts];
+  //   const index = updatedPosts.indexOf(post);
+  //   updatedPosts.splice(index, 1);
+  //   this.setState({ posts: updatedPosts });
+  // };
 
   render() {
     const { classes } = this.props;
-    const { isAuth, user, following, loading, posts } = this.state;
+    const { isAuth, user, isFollowing, loading, posts } = this.state;
     const photoUrl = user._id
       ? `/api/users/photo/${user._id}?${Date.now()}`
       : "/api/users/defaultphoto";
+
     return (
       <Paper className={classes.root} elevation={4}>
         <Typography variant="h4" className={classes.title}>
@@ -79,7 +77,7 @@ class Profile extends React.Component {
               <ListItemText primary={user.name} secondary={user.email} />{" "}
               {isAuth ? (
                 <ListItemSecondaryAction>
-                  <Link href={`/edit-profile/${user._id}`}>
+                  <Link href="/edit-profile">
                     <a>
                       <IconButton color="primary">
                         <Edit />
@@ -89,9 +87,9 @@ class Profile extends React.Component {
                   <DeleteProfile userId={user._id} />
                 </ListItemSecondaryAction>
               ) : (
-                <FollowProfile
-                  following={following}
-                  onButtonClick={this.clickFollowButton}
+                <FollowUser
+                  isFollowing={isFollowing}
+                  toggleFollow={this.toggleFollow}
                 />
               )}
             </ListItem>

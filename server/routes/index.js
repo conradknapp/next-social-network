@@ -21,27 +21,27 @@ router.get("/api/auth/signout", authController.signout);
 
 /* User Routes */
 router.get("/api/users", userController.getUsers);
-router.get("/api/users/profile/:userId", userController.read);
+router.get("/api/users/profile/:userId", userController.getUser);
 
 router.put(
   "/api/users/follow",
-  authController.isAuth,
+  authController.checkAuth,
   userController.addFollowing,
   userController.addFollower
 );
 router.put(
   "/api/users/unfollow",
-  authController.isAuth,
+  authController.checkAuth,
   userController.removeFollowing,
   userController.removeFollower
 );
 
-router.get("/api/users/findpeople/:userId", userController.findPeople);
+router.get("/api/users/findusers/:userId", userController.findUsers);
 router
   .route("/api/users/:userId")
-  .get(userController.read)
-  .put(authController.isAuth, userController.updateUser)
-  .delete(authController.isAuth, userController.deleteUser);
+  .get(userController.me)
+  .put(authController.checkAuth, userController.updateUser)
+  .delete(authController.checkAuth, userController.deleteUser);
 
 router.get(
   "/api/users/photo/:userId",
@@ -51,40 +51,44 @@ router.get(
 router.get("/api/users/defaultphoto", userController.defaultPhoto);
 
 /* Post Routes */
-router.put("/api/posts/like", authController.isAuth, postController.toggleLike);
+router.put(
+  "/api/posts/like",
+  authController.checkAuth,
+  postController.toggleLike
+);
 router.put(
   "/api/posts/unlike",
-  authController.isAuth,
+  authController.checkAuth,
   postController.toggleLike
 );
 
 router.put(
   "/api/posts/comment",
-  authController.isAuth,
+  authController.checkAuth,
   postController.toggleComment
 );
 router.put(
   "/api/posts/uncomment",
-  authController.isAuth,
+  authController.checkAuth,
   postController.toggleComment
 );
 
 router.delete(
   "/api/posts/:postId",
-  authController.isAuth,
-  postController.remove
+  authController.checkAuth,
+  postController.removePost
 );
 
 router.post(
   "/api/posts/new/:userId",
-  authController.isAuth,
-  postController.create
+  authController.checkAuth,
+  postController.addPost
 );
 router.get("/api/posts/photo/:postId", postController.photo);
 router.get("/api/posts/by/:userId", postController.listByUser);
 router.get("/api/posts/feed/:userId", postController.listPostFeed);
 
-// router.param("userId", userController.userByID);
+router.param("userId", userController.userByID);
 router.param("postId", postController.postById);
 
 /* Catches errors for async/await functions */

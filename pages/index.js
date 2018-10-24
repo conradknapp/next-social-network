@@ -1,6 +1,7 @@
 import { Component } from "react";
 // prettier-ignore
 import { withStyles, CircularProgress, Card, Drawer, CardHeader, CardActions, Button, CardContent, Typography, Grid } from '@material-ui/core';
+import Router from "next/router";
 
 import FindPeople from "../components/index/FindPeople";
 import PostFeed from "../components/index/PostFeed";
@@ -39,7 +40,9 @@ class Index extends Component {
       <main className={classes.root}>
         {/* Loading Spinner  */}
         {loading ? (
-          <CircularProgress className={classes.progress} thickness={7} />
+          <div className={classes.progressContainer}>
+            <CircularProgress className={classes.progress} thickness={7} />
+          </div>
         ) : defaultPage ? (
           <div className={classes.layout}>
             {/* Hero */}
@@ -99,7 +102,12 @@ class Index extends Component {
                     </Typography>
                   </CardContent>
                   <CardActions className={classes.cardActions}>
-                    <Button fullWidth variant="contained" color="primary">
+                    <Button
+                      onClick={() => Router.push("/signup")}
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                    >
                       Get Started
                     </Button>
                   </CardActions>
@@ -109,11 +117,11 @@ class Index extends Component {
           </div>
         ) : (
           // Auth User Page
-          <Grid container spacing={24}>
+          <Grid container>
             <Grid item xs={8} sm={7}>
               <PostFeed auth={auth} />
             </Grid>
-            <Grid item xs={6} sm={5}>
+            <Grid item>
               <Drawer
                 className={classes.drawer}
                 variant="permanent"
@@ -137,30 +145,25 @@ Index.getInitialProps = authInitialProps();
 const styles = theme => ({
   root: {
     paddingTop: theme.spacing.unit * 10,
-    paddingLeft: theme.spacing.unit * 2,
-    flexGrow: 1
+    paddingLeft: theme.spacing.unit * 5
+  },
+  progressContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    height: "80vh"
   },
   progress: {
     margin: theme.spacing.unit * 2,
     color: "pink"
   },
   drawer: {
-    width: 400,
-    flexShrink: 0
+    width: 400
   },
   drawerPaper: {
     marginTop: 50,
     width: 400
-  },
-  card: {
-    maxWidth: 600,
-    margin: "auto",
-    marginTop: theme.spacing.unit * 5
-  },
-  title: {
-    padding: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2.5}px ${theme
-      .spacing.unit * 2}px`,
-    color: theme.palette.text.secondary
   },
   layout: {
     width: "auto",
