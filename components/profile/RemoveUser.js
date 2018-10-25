@@ -6,7 +6,7 @@ import Router from "next/router";
 
 import { signoutUser, removeUser } from "../../lib/auth";
 
-class DeleteProfile extends Component {
+class RemoveUser extends Component {
   state = {
     open: false
   };
@@ -15,21 +15,24 @@ class DeleteProfile extends Component {
 
   handleClose = () => this.setState({ open: false });
 
-  deleteAccount = () => {
-    const { userId } = this.props;
-    removeUser(userId);
+  handleRemoveUser = () => {
+    const { auth } = this.props;
+    removeUser(auth.user._id);
     signoutUser();
     Router.push("/signup");
   };
 
   render() {
     const { open } = this.state;
+
     return (
-      <span>
+      <div>
+        {/* Delete Button */}
         <IconButton onClick={this.handleOpen} color="secondary">
           <Delete />
         </IconButton>
 
+        {/* Delete User Dialog */}
         <Dialog open={open} onClose={this.handleClose}>
           <DialogTitle>Delete Account</DialogTitle>
           <DialogContent>
@@ -42,7 +45,7 @@ class DeleteProfile extends Component {
               Cancel
             </Button>
             <Button
-              onClick={this.deleteAccount}
+              onClick={this.handleRemoveUser}
               color="secondary"
               autoFocus="autoFocus"
             >
@@ -50,9 +53,9 @@ class DeleteProfile extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-      </span>
+      </div>
     );
   }
 }
 
-export default DeleteProfile;
+export default RemoveUser;

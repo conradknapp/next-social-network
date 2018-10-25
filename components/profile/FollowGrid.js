@@ -19,7 +19,7 @@ class FollowGrid extends React.Component {
             <GridListTile style={{ height: 120 }} key={person._id}>
               <Link href={`/user/${person._id}`}>
                 <Avatar
-                  src={`/api/users/photo/${person._id}`}
+                  src={`/api/users/image/${person._id}`}
                   className={classes.bigAvatar}
                 />
                 <Typography className={classes.tileText}>

@@ -28,14 +28,14 @@ export const addPost = (req, res) => {
   });
 };
 
-export const postById = async (req, res, next, id) => {
+export const getPostById = async (req, res, next, id) => {
   const post = await Post.findOne({ _id: id }).populate("postedBy", "_id name");
   console.log({ post });
   req.post = post;
   next();
 };
 
-export const listByUser = async (req, res) => {
+export const getPostsByUser = async (req, res) => {
   const posts = await Post.find({ postedBy: req.user._id })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
@@ -44,7 +44,7 @@ export const listByUser = async (req, res) => {
   res.json(posts);
 };
 
-export const listPostFeed = async (req, res) => {
+export const getPostFeed = async (req, res) => {
   const { following, _id } = req.user;
   following.push(_id);
   const posts = await Post.find({ postedBy: { $in: following } })
@@ -61,7 +61,7 @@ export const removePost = async (req, res) => {
   res.json(deletedPost);
 };
 
-export const photo = (req, res) => {
+export const getPostImage = (req, res) => {
   res.set("Content-Type", req.post.photo.contentType);
   return res.send(req.post.photo.data);
 };

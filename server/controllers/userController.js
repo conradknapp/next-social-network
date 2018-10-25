@@ -11,7 +11,7 @@ export const getUsers = async (req, res) => {
   res.json(users);
 };
 
-export const userByID = async (req, res, next, id) => {
+export const getUserById = async (req, res, next, id) => {
   const user = await User.findOne({ _id: id })
     .populate("following", "_id name")
     .populate("followers", "_id name");
@@ -27,7 +27,7 @@ export const userByID = async (req, res, next, id) => {
     // });
 };
 
-export const me = (req, res) => {
+export const getMe = (req, res) => {
   // req.profile.hashed_password = undefined;
   // req.profile.salt = undefined;
   res.json(req.user);
@@ -74,7 +74,7 @@ export const deleteUser = async (req, res) => {
   res.json(deletedUser);
 };
 
-export const photo = (req, res, next) => {
+export const getImage = (req, res, next) => {
   if (req.user.photo.data) {
     res.set("Content-Type", req.user.photo.contentType);
     return res.send(req.user.photo.data);
@@ -82,24 +82,24 @@ export const photo = (req, res, next) => {
   next();
 };
 
-export const defaultPhoto = (req, res) => {
+export const getDefaultImage = (req, res) => {
   res.sendFile(process.cwd() + profileImage);
 };
 
 export const addFollowing = async (req, res, next) => {
-  const { userId, followId } = req.body;
+  const { authUserId, followId } = req.body;
   await User.findOneAndUpdate(
-    { _id: userId },
+    { _id: authUserId },
     { $push: { following: followId } }
   );
   next();
 };
 
 export const addFollower = async (req, res) => {
-  const { userId, followId } = req.body;
-  const result = await User.findByIdAndUpdate(
-    followId,
-    { $push: { followers: userId } },
+  const { authUserId, followId } = req.body;
+  const result = await User.findOneAndUpdate(
+    { _id: followId },
+    { $push: { followers: authUserId } },
     { new: true }
   )
     .populate("following", "_id name")
@@ -108,19 +108,19 @@ export const addFollower = async (req, res) => {
 };
 
 export const removeFollowing = async (req, res, next) => {
-  const { userId, followId } = req.body;
+  const { authUserId, followId } = req.body;
   await User.findOneAndUpdate(
-    { _id: userId },
+    { _id: authUserId },
     { $pull: { following: followId } }
   );
   next();
 };
 
 export const removeFollower = async (req, res) => {
-  const { userId, followId } = req.body;
+  const { authUserId, followId } = req.body;
   const result = await User.findOneAndUpdate(
     { _id: followId },
-    { $pull: { followers: userId } },
+    { $pull: { followers: authUserId } },
     { new: true }
   )
     .populate("following", "_id name")

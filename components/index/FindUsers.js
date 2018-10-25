@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { findUsers, followUser } from "../../lib/auth";
 
-class FindPeople extends Component {
+class FindUsers extends Component {
   state = {
     users: [],
     open: false
@@ -19,16 +19,16 @@ class FindPeople extends Component {
     });
   }
 
-  handleFollow = (user, index) => {
+  handleFollow = (user, userIndex) => {
     const { auth } = this.props;
-    const followUserPayload = {
-      userId: auth.user._id,
-      followId: user._id
-    };
-    followUser(followUserPayload).then(() => {
+    // const followUserPayload = {
+    //   userId: auth.user._id,
+    //   followId: user._id
+    // };
+    followUser(auth.user._id, user._id).then(() => {
       const updatedUsers = [
-        ...this.state.users.slice(0, index),
-        ...this.state.users.slice(index + 1)
+        ...this.state.users.slice(0, userIndex),
+        ...this.state.users.slice(userIndex + 1)
       ];
       this.setState({
         users: updatedUsers,
@@ -46,8 +46,8 @@ class FindPeople extends Component {
 
     return (
       <div>
-        <Typography type="title" className={classes.title}>
-          People to Follow
+        <Typography type="title" align="center" className={classes.title}>
+          Users to Follow
         </Typography>
         <Divider />
         <List>
@@ -56,7 +56,7 @@ class FindPeople extends Component {
               <span key={user._id}>
                 <ListItem>
                   <ListItemAvatar className={classes.avatar}>
-                    <Avatar src={`/api/users/photo/${user._id}`} />
+                    <Avatar src={`/api/users/image/${user._id}`} />
                   </ListItemAvatar>
                   <ListItemText primary={user.name} />
                   <ListItemSecondaryAction className={classes.follow}>
@@ -121,4 +121,4 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(FindPeople);
+export default withStyles(styles)(FindUsers);

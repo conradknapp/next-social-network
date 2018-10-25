@@ -27,7 +27,7 @@ const Navbar = ({ router, pageProps: { auth }, classes }) => (
         <ShareOutlined className={classes.icon} />
       </ActiveLink>
       <Typography variant="h5" component="h1" className={classes.toolbarTitle}>
-        <ActiveLink href="/">Next Social</ActiveLink>
+        <ActiveLink href="/">NextConnect</ActiveLink>
       </Typography>
 
       {auth && auth.user && auth.user._id ? (
@@ -35,7 +35,9 @@ const Navbar = ({ router, pageProps: { auth }, classes }) => (
           <Button>
             <ActiveLink href={`/profile/${auth.user._id}`}>Profile</ActiveLink>
           </Button>
-          <Button onClick={signoutUser}>Sign out</Button>
+          <Button variant="outlined" onClick={signoutUser}>
+            Sign out
+          </Button>
         </div>
       ) : (
         <div>
@@ -55,18 +57,12 @@ const styles = theme => ({
   appBar: {
     // z-index 1 higher than the fixed drawer in home page to clip it under the navigation
     zIndex: theme.zIndex.drawer + 1
-    // marginLeft: 300,
-    // [theme.breakpoints.up("sm")]: {
-    //   width: `calc(100% - ${300}px)`
-    // }
   },
   toolbarTitle: {
     flex: 1
   },
   icon: {
-    icon: {
-      marginRight: theme.spacing.unit * 2
-    }
+    marginRight: theme.spacing.unit
   }
 });
 

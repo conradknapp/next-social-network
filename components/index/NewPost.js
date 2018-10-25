@@ -5,15 +5,15 @@ import { AddAPhoto } from "@material-ui/icons";
 const NewPost = ({
   auth,
   classes,
-  addPost,
+  handleAddPost,
   handleChange,
   text,
   photo,
-  loading
+  isAddingPost
 }) => (
   <Card className={classes.card}>
     <CardHeader
-      avatar={<Avatar src={`/api/users/photo/${auth.user._id}`} />}
+      avatar={<Avatar src={`/api/users/image/${auth.user._id}`} />}
       title={
         <Typography variant="h6" component="h2">
           {auth.user.name}
@@ -23,7 +23,6 @@ const NewPost = ({
     />
     <CardContent className={classes.cardContent}>
       <TextField
-        id="outlined-full-width"
         label="Add a status"
         value={text}
         name="text"
@@ -61,11 +60,11 @@ const NewPost = ({
       <Button
         color="primary"
         variant="contained"
-        disabled={!text || loading}
-        onClick={addPost}
+        disabled={!text || isAddingPost}
+        onClick={handleAddPost}
         className={classes.submit}
       >
-        POST
+        {isAddingPost ? "Posting" : "Post"}
       </Button>
     </CardActions>
   </Card>

@@ -72,10 +72,10 @@ class Post extends React.Component {
       post,
       auth,
       handleToggleLike,
-      removePost,
+      handleRemovePost,
       handleAddComment,
       handleRemoveComment,
-      loading
+      isRemovingPost
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
     const isPoster = post.postedBy._id === auth.user._id;
@@ -84,10 +84,10 @@ class Post extends React.Component {
       <Card className={classes.card}>
         {/* Post Header */}
         <CardHeader
-          avatar={<Avatar src={`/api/users/photo/${post.postedBy._id}`} />}
+          avatar={<Avatar src={`/api/users/image/${post.postedBy._id}`} />}
           action={
             isPoster && (
-              <IconButton disabled={loading} onClick={() => removePost(post)}>
+              <IconButton disabled={isRemovingPost} onClick={() => handleRemovePost(post)}>
                 <DeleteTwoTone color="secondary" />
               </IconButton>
             )
@@ -113,7 +113,7 @@ class Post extends React.Component {
             <div className={classes.imageContainer}>
               <img
                 className={classes.image}
-                src={`/api/posts/photo/${post._id}`}
+                src={`/api/posts/image/${post._id}`}
               />
             </div>
           )}

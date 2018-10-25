@@ -3,7 +3,7 @@ import { Component } from "react";
 import { withStyles, CircularProgress, Card, Drawer, CardHeader, CardActions, Button, CardContent, Typography, Grid } from '@material-ui/core';
 import Router from "next/router";
 
-import FindPeople from "../components/index/FindPeople";
+import FindUsers from "../components/index/FindUsers";
 import PostFeed from "../components/index/PostFeed";
 import { authInitialProps } from "../lib/auth";
 
@@ -54,7 +54,7 @@ class Index extends Component {
                 color="textPrimary"
                 gutterBottom
               >
-                Next Social
+                A Better Social Network
               </Typography>
               <Typography
                 variant="h6"
@@ -69,7 +69,7 @@ class Index extends Component {
               </Typography>
             </div>
 
-            {/* Call to Action Card */}
+            {/* Call-to-Action Card */}
             <Grid
               container
               direction="row"
@@ -79,8 +79,8 @@ class Index extends Component {
               <Grid align="center" item xs={12} sm={8} md={6}>
                 <Card>
                   <CardHeader
-                    title="Pro"
-                    subheader="Most popular"
+                    title="Sign Up Now"
+                    subheader="100% Free"
                     className={classes.cardHeader}
                   />
                   <CardContent>
@@ -118,10 +118,10 @@ class Index extends Component {
         ) : (
           // Auth User Page
           <Grid container>
-            <Grid item xs={8} sm={7}>
+            <Grid item xs={12} sm={12} md={7}>
               <PostFeed auth={auth} />
             </Grid>
-            <Grid item>
+            <Grid item className={classes.drawerContainer}>
               <Drawer
                 className={classes.drawer}
                 variant="permanent"
@@ -130,7 +130,7 @@ class Index extends Component {
                   paper: classes.drawerPaper
                 }}
               >
-                <FindPeople auth={auth} />
+                <FindUsers auth={auth} />
               </Drawer>
             </Grid>
           </Grid>
@@ -145,7 +145,10 @@ Index.getInitialProps = authInitialProps();
 const styles = theme => ({
   root: {
     paddingTop: theme.spacing.unit * 10,
-    paddingLeft: theme.spacing.unit * 5
+    paddingLeft: theme.spacing.unit * 5,
+    [theme.breakpoints.down("sm")]: {
+      paddingRight: theme.spacing.unit * 5
+    }
   },
   progressContainer: {
     display: "flex",
@@ -158,12 +161,17 @@ const styles = theme => ({
     margin: theme.spacing.unit * 2,
     color: "pink"
   },
+  drawerContainer: {
+    [theme.breakpoints.down("sm")]: {
+      display: "none"
+    }
+  },
   drawer: {
-    width: 400
+    width: 350
   },
   drawerPaper: {
     marginTop: 50,
-    width: 400
+    width: 350
   },
   layout: {
     width: "auto",

@@ -39,16 +39,16 @@ router.put(
 router.get("/api/users/findusers/:userId", userController.findUsers);
 router
   .route("/api/users/:userId")
-  .get(userController.me)
+  .get(userController.getMe)
   .put(authController.checkAuth, userController.updateUser)
   .delete(authController.checkAuth, userController.deleteUser);
 
 router.get(
-  "/api/users/photo/:userId",
-  userController.photo,
-  userController.defaultPhoto
+  "/api/users/image/:userId",
+  userController.getImage,
+  userController.getDefaultImage
 );
-router.get("/api/users/defaultphoto", userController.defaultPhoto);
+router.get("/api/users/defaultimage", userController.getDefaultImage);
 
 /* Post Routes */
 router.put(
@@ -84,12 +84,12 @@ router.post(
   authController.checkAuth,
   postController.addPost
 );
-router.get("/api/posts/photo/:postId", postController.photo);
-router.get("/api/posts/by/:userId", postController.listByUser);
-router.get("/api/posts/feed/:userId", postController.listPostFeed);
+router.get("/api/posts/image/:postId", postController.getPostImage);
+router.get("/api/posts/by/:userId", postController.getPostsByUser);
+router.get("/api/posts/feed/:userId", postController.getPostFeed);
 
-router.param("userId", userController.userByID);
-router.param("postId", postController.postById);
+router.param("userId", userController.getUserById);
+router.param("postId", postController.getPostById);
 
 /* Catches errors for async/await functions */
 const catchErrors = func => {

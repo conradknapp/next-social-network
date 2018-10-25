@@ -1,6 +1,6 @@
 import React from "react";
 // prettier-ignore
-import { Card, Button, CircularProgress, CardActions, CardContent, TextField, Typography, Avatar, withStyles } from '@material-ui/core';
+import { Card, Button, CardActions, CardContent, TextField, Typography, Avatar, withStyles } from '@material-ui/core';
 import { CloudUpload, FaceTwoTone } from "@material-ui/icons";
 import Router from "next/router";
 
@@ -15,7 +15,8 @@ class EditProfile extends React.Component {
     email: "",
     password: "",
     error: "",
-    loading: true
+    loading: true,
+    isSaving: false
   };
 
   componentDidMount() {
@@ -33,12 +34,12 @@ class EditProfile extends React.Component {
   }
 
   handleSubmit = () => {
-    this.setState({ loading: true });
-    const updateUserPayload = {
-      userData: this.userData,
-      userId: this.state._id
-    };
-    updateUser(updateUserPayload).then(() => {
+    this.setState({ isSaving: true });
+    // const updateUserPayload = {
+    //   userData: this.userData,
+    //   userId: this.state._id
+    // };
+    updateUser(this.state._id, this.userData).then(() => {
       Router.replace(`/profile/${this.state._id}`);
     });
   };
@@ -55,10 +56,10 @@ class EditProfile extends React.Component {
   render() {
     const { classes } = this.props;
     // prettier-ignore
-    const { _id, name, password, email, about, error, photo, loading } = this.state;
+    const { _id, name, password, email, about, error, photo, loading, isSaving } = this.state;
     const photoUrl = _id
-      ? `/api/users/photo/${_id}?${Date.now()}`
-      : "/api/users/defaultphoto";
+      ? `/api/users/image/${_id}?${Date.now()}`
+      : "/api/users/defaultimage";
     return (
       <Card className={classes.card}>
         <CardContent>
@@ -121,7 +122,7 @@ class EditProfile extends React.Component {
             margin="normal"
           />
           <br />
-          <TextField
+          {/* <TextField
             id="password"
             type="password"
             label="Password"
@@ -131,7 +132,7 @@ class EditProfile extends React.Component {
             onChange={this.handleChange}
             margin="normal"
           />
-          <br />{" "}
+          <br />{" "} */}
           {/* {error && (
             <Typography component="p" color="error">
               <Icon color="error" className={classes.error}>
@@ -145,15 +146,12 @@ class EditProfile extends React.Component {
           <Button
             color="primary"
             variant="contained"
-            disabled={loading}
+            disabled={loading || isSaving}
             onClick={this.handleSubmit}
             className={classes.submit}
           >
-            Submit
+            {isSaving ? "Saving" : "Save"}
           </Button>
-          {loading && (
-            <CircularProgress size={24} className={classes.buttonProgress} />
-          )}
         </CardActions>
       </Card>
     );
@@ -196,17 +194,6 @@ const styles = theme => ({
   },
   filename: {
     marginLeft: "10px"
-  },
-  buttonProgress: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -18,
-    marginLeft: -12
-  },
-  wrapper: {
-    margin: theme.spacing.unit,
-    position: "relative"
   }
 });
 

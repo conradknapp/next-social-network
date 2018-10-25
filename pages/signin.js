@@ -16,13 +16,13 @@ class Signin extends React.Component {
   };
 
   handleSubmit = event => {
-    event.preventDefault();;
+    event.preventDefault();
     this.setState({ error: "", loading: true });
-    const userPayload = {
+    const user = {
       email: this.state.email,
       password: this.state.password
     };
-    signinUser(userPayload)
+    signinUser(user)
       .then(() => {
         Router.push("/");
       })
@@ -85,7 +85,7 @@ class Signin extends React.Component {
               color="primary"
               className={classes.submit}
             >
-              Sign in
+              {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
 

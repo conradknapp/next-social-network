@@ -5,7 +5,7 @@ import { Edit } from "@material-ui/icons";
 import Link from "next/link";
 import { format } from "date-fns";
 
-import DeleteProfile from "../components/profile/DeleteProfile";
+import RemoveUser from "../components/profile/RemoveUser";
 import FollowUser from "../components/profile/FollowUser";
 import { getUser, authInitialProps } from "../lib/auth";
 
@@ -38,11 +38,11 @@ class Profile extends React.Component {
   toggleFollow = sendRequest => {
     const { auth, userId } = this.props;
     const { isFollowing } = this.state;
-    const toggleFollowPayload = {
-      userId: auth.user._id,
-      followId: userId
-    };
-    sendRequest(toggleFollowPayload).then(() => {
+    // const toggleFollowPayload = {
+    //   authUserId: auth.user._id,
+    //   followId: userId
+    // };
+    sendRequest(auth.user._id, userId).then(() => {
       this.setState({ isFollowing: !isFollowing });
     });
   };
@@ -55,11 +55,11 @@ class Profile extends React.Component {
   // };
 
   render() {
-    const { classes } = this.props;
+    const { classes, auth } = this.props;
     const { isAuth, user, isFollowing, loading, posts } = this.state;
     const photoUrl = user._id
-      ? `/api/users/photo/${user._id}?${Date.now()}`
-      : "/api/users/defaultphoto";
+      ? `/api/users/image/${user._id}?${Date.now()}`
+      : "/api/users/defaultimage";
 
     return (
       <Paper className={classes.root} elevation={4}>
@@ -84,7 +84,7 @@ class Profile extends React.Component {
                       </IconButton>
                     </a>
                   </Link>
-                  <DeleteProfile userId={user._id} />
+                  <RemoveUser auth={auth} />
                 </ListItemSecondaryAction>
               ) : (
                 <FollowUser

@@ -56,13 +56,12 @@ class Comments extends Component {
 
     return (
       <div className={classes.comments}>
-      
         {/* Comment Input */}
         <CardHeader
           avatar={
             <Avatar
               className={classes.smallAvatar}
-              src={`/api/users/photo/${auth.user._id}`}
+              src={`/api/users/image/${auth.user._id}`}
             />
           }
           title={
@@ -70,6 +69,7 @@ class Comments extends Component {
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="text">Add comment</InputLabel>
                 <Input
+                  id="text"
                   name="text"
                   value={text}
                   onChange={this.handleChange}
@@ -88,7 +88,7 @@ class Comments extends Component {
             avatar={
               <Avatar
                 className={classes.smallAvatar}
-                src={`/api/users/photo/${comment.postedBy._id}`}
+                src={`/api/users/image/${comment.postedBy._id}`}
               />
             }
             title={this.showComment(comment)}

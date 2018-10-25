@@ -5,7 +5,7 @@ import { Typography, withStyles } from '@material-ui/core';
 import Post from "./Post";
 import NewPost from "./NewPost";
 import {
-  listPostFeed,
+  getPostFeed,
   addPost,
   unlikePost,
   likePost,
@@ -19,7 +19,9 @@ class PostFeed extends Component {
     posts: [],
     text: "",
     photo: "",
-    loading: false
+    loading: false,
+    isAddingPost: false,
+    isRemovingPost: false
   };
 
   componentDidMount() {
@@ -30,7 +32,7 @@ class PostFeed extends Component {
   getPosts = () => {
     const { auth } = this.props;
 
-    listPostFeed(auth.user._id).then(posts => {
+    getPostFeed(auth.user._id).then(posts => {
       this.setState({ posts });
     });
   };
@@ -44,10 +46,10 @@ class PostFeed extends Component {
     this.setState({ [event.target.name]: inputValue });
   };
 
-  addPost = () => {
+  handleAddPost = () => {
     const { auth } = this.props;
 
-    this.setState({ loading: true });
+    this.setState({ isAddingPost: true });
     addPost(auth.user._id, this.postData)
       .then(post => {
         const updatedPosts = [post, ...this.state.posts];
@@ -57,16 +59,16 @@ class PostFeed extends Component {
           photo: ""
         });
         this.postData.delete("photo");
-        this.setState({ loading: false });
+        this.setState({ isAddingPost: false });
       })
       .catch(err => {
         console.error(err);
-        this.setState({ loading: false });
+        this.setState({ isAddingPost: false });
       });
   };
 
-  removePost = removedPost => {
-    this.setState({ loading: true });
+  handleRemovePost = removedPost => {
+    this.setState({ isRemovingPost: true });
     removePost(removedPost._id)
       .then(postData => {
         const postIndex = this.state.posts.findIndex(
@@ -76,11 +78,11 @@ class PostFeed extends Component {
           ...this.state.posts.slice(0, postIndex),
           ...this.state.posts.slice(postIndex + 1)
         ];
-        this.setState({ posts: updatedPosts, loading: false });
+        this.setState({ posts: updatedPosts, isRemovingPost: false });
       })
       .catch(err => {
         console.error(err);
-        this.setState({ loading: false });
+        this.setState({ isRemovingPost: false });
       });
   };
 
@@ -110,14 +112,14 @@ class PostFeed extends Component {
 
   handleAddComment = (postId, text) => {
     const { auth } = this.props;
-    const commentPayload = {
+    const addCommentPayload = {
       postId,
       comment: {
         text,
         postedBy: auth.user._id
       }
     };
-    addComment(commentPayload).then(postData => {
+    addComment(addCommentPayload).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
       );
@@ -131,11 +133,11 @@ class PostFeed extends Component {
   };
 
   handleRemoveComment = (comment, postId) => {
-    const uncommentPayload = {
+    const removeCommentPayload = {
       postId,
       comment
     };
-    removeComment(uncommentPayload).then(postData => {
+    removeComment(removeCommentPayload).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
       );
@@ -150,7 +152,7 @@ class PostFeed extends Component {
 
   render() {
     const { classes, auth } = this.props;
-    const { posts, text, photo, loading } = this.state;
+    const { posts, text, photo, isAddingPost, isRemovingPost } = this.state;
 
     return (
       <main className={classes.root}>
@@ -166,8 +168,8 @@ class PostFeed extends Component {
         <NewPost
           auth={auth}
           handleChange={this.handleChange}
-          addPost={this.addPost}
-          loading={loading}
+          handleAddPost={this.handleAddPost}
+          isAddingPost={isAddingPost}
           text={text}
           photo={photo}
         />
@@ -176,8 +178,8 @@ class PostFeed extends Component {
             key={post._id}
             auth={auth}
             post={post}
-            loading={loading}
-            removePost={this.removePost}
+            isRemovingPost={isRemovingPost}
+            handleRemovePost={this.handleRemovePost}
             handleAddComment={this.handleAddComment}
             handleRemoveComment={this.handleRemoveComment}
             handleToggleLike={this.handleToggleLike}
