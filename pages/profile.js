@@ -63,7 +63,7 @@ class Profile extends React.Component {
 
     return (
       <Paper className={classes.root} elevation={4}>
-        <Typography variant="h4" className={classes.title}>
+        <Typography variant="h5" component="h1" className={classes.title}>
           Profile
         </Typography>
         {loading ? (
@@ -114,16 +114,14 @@ class Profile extends React.Component {
 Profile.getInitialProps = authInitialProps(true);
 
 const styles = theme => ({
-  root: theme.mixins.gutters({
+  root: {
     maxWidth: 600,
-    margin: "auto",
     padding: theme.spacing.unit * 3,
-    marginTop: theme.spacing.unit * 5
-  }),
+    marginTop: theme.spacing.unit * 5,
+    margin: "auto"
+  },
   title: {
-    margin: `${theme.spacing.unit * 2}px ${theme.spacing.unit}px 0`,
-    color: theme.palette.title,
-    fontSize: "1em"
+    color: theme.palette.openTitle
   },
   progress: {
     margin: theme.spacing.unit * 2

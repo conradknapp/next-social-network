@@ -106,10 +106,6 @@ app.prepare().then(() => {
     handle(req, res);
   });
 
-  server.get("/static/*", (req, res) => {
-    handle(req, res);
-  });
-
   // Default Route
   // Allow Next to handle all other routes:
   // - Includes the numerous `/_next/...` routes which must be exposed

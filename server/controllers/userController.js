@@ -17,14 +17,14 @@ export const getUserById = async (req, res, next, id) => {
     .populate("followers", "_id name");
   req.profile = user;
   next();
-    // .exec((err, user) => {
-    //   if (err || !user)
-    //     return res.status("400").json({
-    //       error: "User not found"
-    //     });
-    //   req.profile = user;
-    //   next();
-    // });
+  // .exec((err, user) => {
+  //   if (err || !user)
+  //     return res.status("400").json({
+  //       error: "User not found"
+  //     });
+  //   req.profile = user;
+  //   next();
+  // });
 };
 
 export const getMe = (req, res) => {
@@ -38,7 +38,7 @@ export const getUser = async (req, res) => {
   const user = await User.findOne({ _id: userId })
     .populate("following", "_id name")
     .populate("followers", "_id name");
-  console.log({ user })
+  console.log({ user });
   // if (!user) {
   //   return res.status(404).json({
   //     message: "No user found"
@@ -68,8 +68,13 @@ export const updateUser = (req, res) => {
   });
 };
 
-export const deleteUser = async (req, res) => {
+export const removeUser = async (req, res) => {
   const { userId } = req.params;
+  if (userId !== req.user._id) {
+    return res.status(403).json({
+      message: "You are not authorized to perform this action"
+    });
+  }
   const deletedUser = await User.findOneAndDelete({ _id: userId });
   res.json(deletedUser);
 };
@@ -83,7 +88,7 @@ export const getImage = (req, res, next) => {
 };
 
 export const getDefaultImage = (req, res) => {
-  res.sendFile(process.cwd() + profileImage);
+  res.sendFile(`${process.cwd()}${profileImage}`);
 };
 
 export const addFollowing = async (req, res, next) => {

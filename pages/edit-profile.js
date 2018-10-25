@@ -122,17 +122,6 @@ class EditProfile extends React.Component {
             margin="normal"
           />
           <br />
-          {/* <TextField
-            id="password"
-            type="password"
-            label="Password"
-            name="password"
-            className={classes.textField}
-            value={password}
-            onChange={this.handleChange}
-            margin="normal"
-          />
-          <br />{" "} */}
           {/* {error && (
             <Typography component="p" color="error">
               <Icon color="error" className={classes.error}>

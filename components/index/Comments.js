@@ -26,6 +26,7 @@ class Comments extends Component {
   showComment = comment => {
     const { postId, handleRemoveComment, auth, classes } = this.props;
     const isPoster = auth.user._id === comment.postedBy._id;
+
     return (
       <div>
         <Link href={`/user/${comment.postedBy._id}`}>

@@ -46,7 +46,7 @@ class FindUsers extends Component {
 
     return (
       <div>
-        <Typography type="title" align="center" className={classes.title}>
+        <Typography type="title" variant="h6" component="h2" align="center">
           Users to Follow
         </Typography>
         <Divider />
@@ -98,14 +98,8 @@ class FindUsers extends Component {
 }
 
 const styles = theme => ({
-  root: theme.mixins.gutters({
+  root: {
     padding: theme.spacing.unit
-  }),
-  title: {
-    margin: `${theme.spacing.unit * 3}px ${theme.spacing.unit}px ${theme.spacing
-      .unit * 2}px`,
-    color: theme.palette.openTitle,
-    fontSize: "1em"
   },
   avatar: {
     marginRight: theme.spacing.unit * 1

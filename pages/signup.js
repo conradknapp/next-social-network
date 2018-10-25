@@ -28,7 +28,7 @@ class Signup extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.setState({ error: "", loading: false });
+    this.setState({ error: "", loading: true });
     const user = {
       name: this.state.name,
       password: this.state.password,
@@ -36,7 +36,7 @@ class Signup extends React.Component {
     };
     signupUser(user)
       .then(createdUser => {
-        console.log(createdUser);
+        // console.log(createdUser);
         this.setState({
           error: "",
           openSuccess: true,
@@ -152,7 +152,7 @@ class Signup extends React.Component {
           <DialogActions>
             <Button color="primary" autoFocus="autoFocus" variant="contained">
               <Link href="/signin">
-                <a>Sign In</a>
+                <a className={classes.signinLink}>Sign In</a>
               </Link>
             </Button>
           </DialogActions>
@@ -170,8 +170,7 @@ const styles = theme => ({
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
       width: 400,
-      marginLeft: "auto",
-      marginRight: "auto"
+      margin: "auto"
     }
   },
   paper: {
@@ -179,8 +178,11 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: theme.spacing.unit * 2
+  },
+  signinLink: {
+    textDecoration: "none",
+    color: "white"
   },
   title: {
     marginTop: theme.spacing.unit * 2,

@@ -8,7 +8,8 @@ import { signoutUser, removeUser } from "../../lib/auth";
 
 class RemoveUser extends Component {
   state = {
-    open: false
+    open: false,
+    isRemovingUser: false
   };
 
   handleOpen = () => this.setState({ open: true });
@@ -17,13 +18,21 @@ class RemoveUser extends Component {
 
   handleRemoveUser = () => {
     const { auth } = this.props;
-    removeUser(auth.user._id);
-    signoutUser();
-    Router.push("/signup");
+
+    this.setState({ isRemovingUser: true });
+    removeUser(auth.user._id)
+      .then(() => {
+        signoutUser();
+        Router.push("/signup");
+      })
+      .catch(err => {
+        console.error(err);
+        this.setState({ isRemovingUser: false });
+      });
   };
 
   render() {
-    const { open } = this.state;
+    const { open, isRemovingUser } = this.state;
 
     return (
       <div>
@@ -49,7 +58,7 @@ class RemoveUser extends Component {
               color="secondary"
               autoFocus="autoFocus"
             >
-              Confirm
+              {isRemovingUser ? "Confirm" : "Deleting"}
             </Button>
           </DialogActions>
         </Dialog>

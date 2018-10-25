@@ -73,7 +73,7 @@ const NewPost = ({
 const styles = theme => ({
   card: {
     marginBottom: theme.spacing.unit * 3,
-    backgroundColor: "rgba(22, 214, 87, 0.2)"
+    backgroundColor: theme.palette.primary.light,
   },
   cardContent: {
     backgroundColor: "white"

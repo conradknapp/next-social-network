@@ -40,81 +40,52 @@ class Index extends Component {
       <main className={classes.root}>
         {/* Loading Spinner  */}
         {loading ? (
-          <div className={classes.progressContainer}>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            className={classes.progressContainer}
+          >
             <CircularProgress className={classes.progress} thickness={7} />
-          </div>
+          </Grid>
         ) : defaultPage ? (
-          <div className={classes.layout}>
-            {/* Hero */}
-            <div className={classes.heroContent}>
-              <Typography
-                component="h1"
-                variant="h2"
-                align="center"
-                color="textPrimary"
-                gutterBottom
-              >
-                A Better Social Network
-              </Typography>
-              <Typography
-                variant="h6"
-                align="center"
-                color="textSecondary"
-                component="p"
-              >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </Typography>
-            </div>
-
-            {/* Call-to-Action Card */}
-            <Grid
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            className={classes.heroContent}
+          >
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="textPrimary"
+              gutterBottom
             >
-              <Grid align="center" item xs={12} sm={8} md={6}>
-                <Card>
-                  <CardHeader
-                    title="Sign Up Now"
-                    subheader="100% Free"
-                    className={classes.cardHeader}
-                  />
-                  <CardContent>
-                    <div className={classes.cardPricing}>
-                      <Typography
-                        component="h2"
-                        variant="h3"
-                        color="textPrimary"
-                      >
-                        $15
-                      </Typography>
-                      <Typography variant="h6" color="textSecondary">
-                        /mo
-                      </Typography>
-                    </div>
-                    <Typography variant="subtitle1" align="center">
-                      20 users included, 10 GB of storage, Help center access,
-                      Priority email support
-                    </Typography>
-                  </CardContent>
-                  <CardActions className={classes.cardActions}>
-                    <Button
-                      onClick={() => Router.push("/signup")}
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                    >
-                      Get Started
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            </Grid>
-          </div>
+              A Better Social Network
+            </Typography>
+            <Typography
+              variant="h6"
+              align="center"
+              color="textSecondary"
+              component="p"
+            >
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </Typography>
+            <Button
+              className={classes.fabButton}
+              onClick={() => Router.push("/signup")}
+              variant="extendedFab"
+              color="primary"
+            >
+              Get Started
+            </Button>
+          </Grid>
         ) : (
           // Auth User Page
           <Grid container>
@@ -151,15 +122,11 @@ const styles = theme => ({
     }
   },
   progressContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
     height: "80vh"
   },
   progress: {
     margin: theme.spacing.unit * 2,
-    color: "pink"
+    color: theme.palette.primary.light
   },
   drawerContainer: {
     [theme.breakpoints.down("sm")]: {
@@ -170,32 +137,17 @@ const styles = theme => ({
     width: 350
   },
   drawerPaper: {
-    marginTop: 50,
+    marginTop: 70,
     width: 350
   },
-  layout: {
-    width: "auto",
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(900 + theme.spacing.unit * 3 * 2)]: {
-      width: 900,
-      marginLeft: "auto",
-      marginRight: "auto"
-    }
+  fabButton: {
+    margin: theme.spacing.unit * 3
   },
   heroContent: {
     maxWidth: 600,
-    margin: "0 auto",
-    padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`
-  },
-  cardHeader: {
-    backgroundColor: theme.palette.grey[200]
-  },
-  cardPricing: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "baseline",
-    marginBottom: theme.spacing.unit * 2
+    paddingTop: theme.spacing.unit * 8,
+    paddingBottom: theme.spacing.unit * 6,
+    margin: "0 auto"
   }
 });
 

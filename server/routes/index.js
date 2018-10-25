@@ -41,7 +41,7 @@ router
   .route("/api/users/:userId")
   .get(userController.getMe)
   .put(authController.checkAuth, userController.updateUser)
-  .delete(authController.checkAuth, userController.deleteUser);
+  .delete(authController.checkAuth, userController.removeUser);
 
 router.get(
   "/api/users/image/:userId",
