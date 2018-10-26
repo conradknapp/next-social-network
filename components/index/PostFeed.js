@@ -19,7 +19,6 @@ class PostFeed extends Component {
     posts: [],
     text: "",
     photo: "",
-    loading: false,
     isAddingPost: false,
     isRemovingPost: false
   };

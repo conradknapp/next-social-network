@@ -64,7 +64,7 @@ const NewPost = ({
         onClick={handleAddPost}
         className={classes.submit}
       >
-        {isAddingPost ? "Posting" : "Post"}
+        {isAddingPost ? "Sending" : "Post"}
       </Button>
     </CardActions>
   </Card>
@@ -73,7 +73,7 @@ const NewPost = ({
 const styles = theme => ({
   card: {
     marginBottom: theme.spacing.unit * 3,
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: theme.palette.primary.light
   },
   cardContent: {
     backgroundColor: "white"

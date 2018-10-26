@@ -1,4 +1,6 @@
 {
+  "name": "next-connect",
+  "alias": "next-connect",
   "env": {
     "NODE_ENV": "production"
   },

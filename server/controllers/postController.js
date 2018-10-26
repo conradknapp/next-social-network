@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
-import formidable from "formidable";
-import fs from "fs";
+const mongoose = require("mongoose");
+const formidable = require("formidable");
+const fs = require("fs");
 
 const Post = mongoose.model("Post");
 
-export const addPost = (req, res) => {
+exports.addPost = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, async (err, fields, files) => {
@@ -28,14 +28,14 @@ export const addPost = (req, res) => {
   });
 };
 
-export const getPostById = async (req, res, next, id) => {
+exports.getPostById = async (req, res, next, id) => {
   const post = await Post.findOne({ _id: id }).populate("postedBy", "_id name");
   console.log({ post });
   req.post = post;
   next();
 };
 
-export const getPostsByUser = async (req, res) => {
+exports.getPostsByUser = async (req, res) => {
   const posts = await Post.find({ postedBy: req.user._id })
     .populate("comments", "text created")
     .populate("comments.postedBy", "_id name")
@@ -44,7 +44,7 @@ export const getPostsByUser = async (req, res) => {
   res.json(posts);
 };
 
-export const getPostFeed = async (req, res) => {
+exports.getPostFeed = async (req, res) => {
   const { following, _id } = req.user;
   following.push(_id);
   const posts = await Post.find({ postedBy: { $in: following } })
@@ -55,18 +55,18 @@ export const getPostFeed = async (req, res) => {
   res.json(posts);
 };
 
-export const removePost = async (req, res) => {
+exports.removePost = async (req, res) => {
   const { _id } = req.post;
   const deletedPost = await Post.findOneAndDelete({ _id });
   res.json(deletedPost);
 };
 
-export const getPostImage = (req, res) => {
+exports.getPostImage = (req, res) => {
   res.set("Content-Type", req.post.photo.contentType);
   return res.send(req.post.photo.data);
 };
 
-export const toggleLike = async (req, res) => {
+exports.toggleLike = async (req, res) => {
   const { userId, postId } = req.body;
   const post = await Post.findOne({ _id: postId })
     .populate("comments.postedBy", "_id name")
@@ -81,7 +81,7 @@ export const toggleLike = async (req, res) => {
   res.json(post);
 };
 
-export const toggleComment = async (req, res) => {
+exports.toggleComment = async (req, res) => {
   const { comment, postId } = req.body;
   let operator;
   let data;

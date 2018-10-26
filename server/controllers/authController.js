@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
-import passport from "passport";
+const mongoose = require("mongoose");
+const passport = require("passport");
 
 const User = mongoose.model("User");
 
-export const validateSignup = (req, res, next) => {
+exports.validateSignup = (req, res, next) => {
   // Sanitize Form Values
   req.sanitizeBody("name");
   req.sanitizeBody("email");
@@ -35,7 +35,7 @@ export const validateSignup = (req, res, next) => {
   next();
 };
 
-export const signup = async (req, res) => {
+exports.signup = async (req, res) => {
   const { name, email, password } = req.body;
   const user = await new User({ name, email, password });
   // passport local mongoose plugin gives us a register method that will hash our password and call .save();
@@ -48,7 +48,7 @@ export const signup = async (req, res) => {
   });
 };
 
-export const signin = (req, res, next) => {
+exports.signin = (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return res.status(500).json(err);
@@ -66,13 +66,13 @@ export const signin = (req, res, next) => {
   })(req, res, next);
 };
 
-export const signout = (req, res) => {
+exports.signout = (req, res) => {
   res.clearCookie("next-social.sid");
   req.logout();
   res.json({ message: "You are now signed out!" });
 };
 
-export const checkAuth = (req, res, next) => {
+exports.checkAuth = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }

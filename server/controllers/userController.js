@@ -1,17 +1,16 @@
-import mongoose from "mongoose";
-import formidable from "formidable";
-import fs from "fs";
-import _ from "lodash";
-import profileImage from "./profile-image.jpg";
+const mongoose = require("mongoose");
+const formidable = require("formidable");
+const fs = require("fs");
+const _ = require("lodash");
 
 const User = mongoose.model("User");
 
-export const getUsers = async (req, res) => {
+exports.getUsers = async (req, res) => {
   const users = await User.find({}).select("name email updatedAt createdAt");
   res.json(users);
 };
 
-export const getUserById = async (req, res, next, id) => {
+exports.getUserById = async (req, res, next, id) => {
   const user = await User.findOne({ _id: id })
     .populate("following", "_id name")
     .populate("followers", "_id name");
@@ -27,18 +26,17 @@ export const getUserById = async (req, res, next, id) => {
   // });
 };
 
-export const getMe = (req, res) => {
+exports.getMe = (req, res) => {
   // req.profile.hashed_password = undefined;
   // req.profile.salt = undefined;
   res.json(req.user);
 };
 
-export const getUser = async (req, res) => {
+exports.getUser = async (req, res) => {
   const { userId } = req.params;
   const user = await User.findOne({ _id: userId })
     .populate("following", "_id name")
     .populate("followers", "_id name");
-  console.log({ user });
   // if (!user) {
   //   return res.status(404).json({
   //     message: "No user found"
@@ -47,7 +45,7 @@ export const getUser = async (req, res) => {
   res.json(user);
 };
 
-export const updateUser = (req, res) => {
+exports.updateUser = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, async (err, fields, files) => {
@@ -68,7 +66,7 @@ export const updateUser = (req, res) => {
   });
 };
 
-export const removeUser = async (req, res) => {
+exports.removeUser = async (req, res) => {
   const { userId } = req.params;
   if (userId !== req.user._id) {
     return res.status(403).json({
@@ -79,19 +77,15 @@ export const removeUser = async (req, res) => {
   res.json(deletedUser);
 };
 
-export const getImage = (req, res, next) => {
-  if (req.user.photo.data) {
-    res.set("Content-Type", req.user.photo.contentType);
-    return res.send(req.user.photo.data);
+exports.getUserImage = (req, res, next) => {
+  if (req.profile.photo.data) {
+    res.set("Content-Type", req.profile.photo.contentType);
+    return res.send(req.profile.photo.data);
   }
-  next();
+  return res.sendFile("profile-image.jpg", { root: "./public/images" });
 };
 
-export const getDefaultImage = (req, res) => {
-  res.sendFile(`${process.cwd()}${profileImage}`);
-};
-
-export const addFollowing = async (req, res, next) => {
+exports.addFollowing = async (req, res, next) => {
   const { authUserId, followId } = req.body;
   await User.findOneAndUpdate(
     { _id: authUserId },
@@ -100,7 +94,7 @@ export const addFollowing = async (req, res, next) => {
   next();
 };
 
-export const addFollower = async (req, res) => {
+exports.addFollower = async (req, res) => {
   const { authUserId, followId } = req.body;
   const result = await User.findOneAndUpdate(
     { _id: followId },
@@ -112,7 +106,7 @@ export const addFollower = async (req, res) => {
   res.json(result);
 };
 
-export const removeFollowing = async (req, res, next) => {
+exports.removeFollowing = async (req, res, next) => {
   const { authUserId, followId } = req.body;
   await User.findOneAndUpdate(
     { _id: authUserId },
@@ -121,7 +115,7 @@ export const removeFollowing = async (req, res, next) => {
   next();
 };
 
-export const removeFollower = async (req, res) => {
+exports.removeFollower = async (req, res) => {
   const { authUserId, followId } = req.body;
   const result = await User.findOneAndUpdate(
     { _id: followId },
@@ -133,7 +127,7 @@ export const removeFollower = async (req, res) => {
   res.json(result);
 };
 
-export const findUsers = async (req, res) => {
+exports.findUsers = async (req, res) => {
   const { following, _id } = req.user;
   following.push(_id);
   const users = await User.find({ _id: { $nin: following } }).select("name");

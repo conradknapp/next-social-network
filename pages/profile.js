@@ -57,9 +57,6 @@ class Profile extends React.Component {
   render() {
     const { classes, auth } = this.props;
     const { isAuth, user, isFollowing, loading, posts } = this.state;
-    const photoUrl = user._id
-      ? `/api/users/image/${user._id}?${Date.now()}`
-      : "/api/users/defaultimage";
 
     return (
       <Paper className={classes.root} elevation={4}>
@@ -72,7 +69,7 @@ class Profile extends React.Component {
           <List dense>
             <ListItem>
               <ListItemAvatar>
-                <Avatar src={photoUrl} className={classes.bigAvatar} />
+                <Avatar src={`/api/users/image/${user._id}`} className={classes.bigAvatar} />
               </ListItemAvatar>
               <ListItemText primary={user.name} secondary={user.email} />{" "}
               {isAuth ? (

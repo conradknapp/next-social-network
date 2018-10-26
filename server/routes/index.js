@@ -1,7 +1,7 @@
-import express from "express";
-import * as authController from "../controllers/authController";
-import * as userController from "../controllers/userController";
-import * as postController from "../controllers/postController";
+const express = require("express");
+const authController = require("../controllers/authController");
+const userController = require("../controllers/userController");
+const postController = require("../controllers/postController");
 
 const router = express.Router();
 
@@ -45,10 +45,9 @@ router
 
 router.get(
   "/api/users/image/:userId",
-  userController.getImage,
-  userController.getDefaultImage
+  userController.getUserImage
 );
-router.get("/api/users/defaultimage", userController.getDefaultImage);
+// router.get("/api/users/defaultimage", userController.getDefaultImage);
 
 /* Post Routes */
 router.put(
@@ -98,4 +97,4 @@ const catchErrors = func => {
   };
 };
 
-export default router;
+module.exports = router;

@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
-import mongodbErrorHandler from "mongoose-mongodb-errors";
-import passportLocalMongoose from "passport-local-mongoose";
+const mongoose = require("mongoose");
+const mongodbErrorHandler = require("mongoose-mongodb-errors");
+const passportLocalMongoose = require("passport-local-mongoose");
+const md5 = require('md5');
 
 const userSchema = new mongoose.Schema(
   {
@@ -39,4 +40,4 @@ userSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 // Gives us a better 'unique' error (rather than 11000 duplicate key)
 userSchema.plugin(mongodbErrorHandler);
 
-export default mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);

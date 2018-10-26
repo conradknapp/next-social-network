@@ -57,9 +57,7 @@ class EditProfile extends React.Component {
     const { classes } = this.props;
     // prettier-ignore
     const { _id, name, password, email, about, error, photo, loading, isSaving } = this.state;
-    const photoUrl = _id
-      ? `/api/users/image/${_id}?${Date.now()}`
-      : "/api/users/defaultimage";
+
     return (
       <Card className={classes.card}>
         <CardContent>
@@ -71,7 +69,7 @@ class EditProfile extends React.Component {
               <FaceTwoTone />
             </Avatar>
           ) : (
-            <Avatar src={photoUrl} className={classes.bigAvatar} />
+            <Avatar src={`/api/users/image/${_id}`} className={classes.bigAvatar} />
           )}
           <br />
           <input
@@ -79,18 +77,14 @@ class EditProfile extends React.Component {
             name="photo"
             onChange={this.handleChange}
             className={classes.input}
-            id="icon-button-file"
             type="file"
           />
-          <label htmlFor="icon-button-file">
             <Button variant="contained" color="secondary" component="span">
               Upload Image <CloudUpload />
             </Button>
-          </label>{" "}
           <span className={classes.filename}>{photo && photo.name}</span>
           <br />
           <TextField
-            id="name"
             label="Name"
             name="name"
             className={classes.textField}
@@ -100,7 +94,6 @@ class EditProfile extends React.Component {
           />
           <br />
           <TextField
-            id="multiline-flexible"
             label="About"
             multiline
             name="about"
@@ -112,7 +105,6 @@ class EditProfile extends React.Component {
           />
           <br />
           <TextField
-            id="email"
             type="email"
             label="Email"
             name="email"

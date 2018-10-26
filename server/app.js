@@ -1,30 +1,37 @@
-import express from "express";
-import next from "next";
-import session from "express-session";
-import mongoose from "mongoose";
-import logger from "morgan";
-import dotenv from "dotenv";
-import connect from "connect-mongo";
-import expressValidator from "express-validator";
+const express = require("express");
+const next = require("next");
+const session = require("express-session");
+const mongoose = require("mongoose");
+const logger = require("morgan");
+const dotenv = require("dotenv");
+const connect = require("connect-mongo");
+const expressValidator = require("express-validator");
 const MongoStore = connect(session);
 const passport = require("passport");
+const helmet = require("helmet");
+const compression = require("compression");
 dotenv.config({ path: "variables.env" });
 
 // // import models to use mongoose.model() Singleton
-import "./models/Post";
-import "./models/User";
+require("./models/Post");
+require("./models/User");
 
-import routes from "./routes";
+const routes = require("./routes");
 
 // // Import passport config
-import "./passport";
+require("./passport");
+
+const options = {
+  useNewUrlParser: true
+  // useCreateIndex: true,
+  // useFindAndModify: false
+};
 
 mongoose.connect(
   process.env.MONGO_URI,
-  {
-    useNewUrlParser: true
-  }
+  options
 );
+mongoose.set("useFindAndModify", false);
 
 mongoose.connection.on("error", err => {
   console.log(`DB connection error: ${err.message}`);
@@ -32,12 +39,26 @@ mongoose.connection.on("error", err => {
 
 const dev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
-const ROOT_URL = dev ? `http://localhost:${port}` : "<production-url>";
+const ROOT_URL = dev ? `http://localhost:${port}` : process.env.PRODUCTION_URL;
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = express();
+
+  // server.use(express.static(path.join(__dirname, "dist")));
+  // server.use("/public", express.static(__dirname + "/public"));
+  server.use("/public", express.static("public"));
+  server.use(helmet());
+  server.use(compression());
+  /* Body Parser built-in to Express as of version 4.16 */
+  server.use(express.json());
+  server.use(expressValidator());
+
+  // give all Nextjs's request to Nextjs server
+  server.get("/_next/*", (req, res) => {
+    handle(req, res);
+  });
 
   const sessionConfig = {
     name: "next-social.sid",
@@ -61,9 +82,6 @@ app.prepare().then(() => {
     server.set("trust proxy", 1); // trust first proxy
   }
 
-  /* Body Parser built-in to Express as of version 4.16 */
-  server.use(express.json());
-  server.use(expressValidator());
   server.use(session(sessionConfig));
 
   /* Passport Middleware */
@@ -99,11 +117,6 @@ app.prepare().then(() => {
   server.get("/user/:userId", (req, res) => {
     const queryParams = Object.assign({}, req.params, req.query);
     return app.render(req, res, "/user", queryParams);
-  });
-
-  // give all Nextjs's request to Nextjs server
-  server.get("/_next/*", (req, res) => {
-    handle(req, res);
   });
 
   // Default Route
