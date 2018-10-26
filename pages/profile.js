@@ -5,9 +5,17 @@ import { Edit } from "@material-ui/icons";
 import Link from "next/link";
 import { format } from "date-fns";
 
+import ProfileTabs from "../components/profile/ProfileTabs";
 import RemoveUser from "../components/profile/RemoveUser";
 import FollowUser from "../components/profile/FollowUser";
-import { getUser, authInitialProps } from "../lib/auth";
+import {
+  getUser,
+  authInitialProps,
+  removePost,
+  getPostsByUser,
+  likePost,
+  unlikePost
+} from "../lib/auth";
 
 class Profile extends React.Component {
   state = {
@@ -20,20 +28,36 @@ class Profile extends React.Component {
 
   componentDidMount() {
     const { userId, auth } = this.props;
-    getUser(userId).then(user => {
+    getUser(userId).then(async user => {
       const isFollowing = this.checkFollow(auth, user);
       const isAuth = this.checkIfAuth(auth.user._id, userId);
-      this.setState({ user, isFollowing, isAuth, loading: false });
+      // const posts = this.getUserPosts(userId);
+      const posts = await getPostsByUser(userId);
+      this.setState({ user, posts, isFollowing, isAuth, loading: false });
     });
   }
 
   checkFollow = (auth, user) => {
-    return user.followers.find(follower => follower._id === auth.user._id);
+    return (
+      user.followers.findIndex(follower => follower._id === auth.user._id) > -1
+    );
   };
 
   checkIfAuth = (authUserId, userId) => {
     return authUserId === userId;
   };
+
+  // getUserPosts = userId => {
+  //   let userPosts;
+  //   getPostsByUser(userId).then(posts => {
+  //     console.log(posts);
+  //     userPosts = posts;
+  //   }).catch(err => {
+  //     console.error(err);
+  //     userPosts = [];
+  //   });
+  //   return userPosts;
+  // };
 
   toggleFollow = sendRequest => {
     const { auth, userId } = this.props;
@@ -54,9 +78,53 @@ class Profile extends React.Component {
   //   this.setState({ posts: updatedPosts });
   // };
 
+  handleRemovePost = removedPost => {
+    // this.setState({ isRemovingPost: true });
+    removePost(removedPost._id)
+      .then(postData => {
+        const postIndex = this.state.posts.findIndex(
+          post => post._id === postData._id
+        );
+        const updatedPosts = [
+          ...this.state.posts.slice(0, postIndex),
+          ...this.state.posts.slice(postIndex + 1)
+        ];
+        this.setState({ posts: updatedPosts });
+      })
+      .catch(err => {
+        console.error(err);
+        // this.setState({ isRemovingPost: false });
+      });
+  };
+
+  handleToggleLike = post => {
+    const { auth } = this.props;
+    const isPostLiked = post.likes.includes(auth.user._id);
+    const sendRequest = isPostLiked ? unlikePost : likePost;
+    sendRequest({
+      userId: auth.user._id,
+      postId: post._id
+    })
+      .then(postData => {
+        const postIndex = this.state.posts.findIndex(
+          post => post._id === postData._id
+        );
+        const updatedPosts = [
+          ...this.state.posts.slice(0, postIndex),
+          postData,
+          ...this.state.posts.slice(postIndex + 1)
+        ];
+        this.setState({ posts: updatedPosts });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+
   render() {
     const { classes, auth } = this.props;
     const { isAuth, user, isFollowing, loading, posts } = this.state;
+    console.log(posts);
 
     return (
       <Paper className={classes.root} elevation={4}>
@@ -69,7 +137,10 @@ class Profile extends React.Component {
           <List dense>
             <ListItem>
               <ListItemAvatar>
-                <Avatar src={`/api/users/image/${user._id}`} className={classes.bigAvatar} />
+                <Avatar
+                  src={`/api/users/image/${user._id}`}
+                  className={classes.bigAvatar}
+                />
               </ListItemAvatar>
               <ListItemText primary={user.name} secondary={user.email} />{" "}
               {isAuth ? (
@@ -100,6 +171,13 @@ class Profile extends React.Component {
                 )}`}
               />
             </ListItem>
+            <ProfileTabs
+              user={user}
+              auth={auth}
+              posts={posts}
+              handleToggleLike={this.handleToggleLike}
+              handleRemovePost={this.handleRemovePost}
+            />
           </List>
         )}
       </Paper>

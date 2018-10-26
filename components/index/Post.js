@@ -75,7 +75,8 @@ class Post extends React.Component {
       handleRemovePost,
       handleAddComment,
       handleRemoveComment,
-      isRemovingPost
+      isRemovingPost,
+      hideComments
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
     const isPoster = post.postedBy._id === auth.user._id;
@@ -87,13 +88,16 @@ class Post extends React.Component {
           avatar={<Avatar src={`/api/users/image/${post.postedBy._id}`} />}
           action={
             isPoster && (
-              <IconButton disabled={isRemovingPost} onClick={() => handleRemovePost(post)}>
+              <IconButton
+                disabled={isRemovingPost}
+                onClick={() => handleRemovePost(post)}
+              >
                 <DeleteTwoTone color="secondary" />
               </IconButton>
             )
           }
           title={
-            <Link href={`/user/${post.postedBy._id}`}>
+            <Link href={`/profile/${post.postedBy._id}`}>
               <a>{post.postedBy.name}</a>
             </Link>
           }
@@ -142,13 +146,16 @@ class Post extends React.Component {
         <Divider />
 
         {/* Comments Area */}
-        <Comments
-          auth={auth}
-          postId={post._id}
-          comments={comments}
-          handleAddComment={handleAddComment}
-          handleRemoveComment={handleRemoveComment}
-        />
+
+        {!hideComments && (
+          <Comments
+            auth={auth}
+            postId={post._id}
+            comments={comments}
+            handleAddComment={handleAddComment}
+            handleRemoveComment={handleRemoveComment}
+          />
+        )}
       </Card>
     );
   }

@@ -10,21 +10,23 @@ import Link from "next/link";
 
 class FollowGrid extends React.Component {
   render() {
-    const { classes, people } = this.props;
+    const { classes, users } = this.props;
 
     return (
       <div className={classes.root}>
         <GridList cellHeight={160} className={classes.gridList} cols={4}>
-          {people.map(person => (
-            <GridListTile style={{ height: 120 }} key={person._id}>
-              <Link href={`/user/${person._id}`}>
+          {users.map(user => (
+            <GridListTile style={{ height: 120 }} key={user._id}>
+              <Link href={`/profile/${user._id}`}>
+                <a>
                 <Avatar
-                  src={`/api/users/image/${person._id}`}
+                  src={`/api/users/image/${user._id}`}
                   className={classes.bigAvatar}
                 />
                 <Typography className={classes.tileText}>
-                  {person.name}
+                  {user.name}
                 </Typography>
+                </a>
               </Link>
             </GridListTile>
           ))}
@@ -36,12 +38,11 @@ class FollowGrid extends React.Component {
 
 const styles = theme => ({
   root: {
-    paddingTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing.unit * 2,
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
-    background: theme.palette.background.paper
   },
   bigAvatar: {
     width: 60,

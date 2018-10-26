@@ -47,7 +47,11 @@ class Index extends Component {
             alignItems="center"
             className={classes.progressContainer}
           >
-            <CircularProgress className={classes.progress} thickness={7} />
+            <CircularProgress
+              className={classes.progress}
+              thickness={7}
+              size={50}
+            />
           </Grid>
         ) : defaultPage ? (
           <Grid
