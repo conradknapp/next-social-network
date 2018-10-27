@@ -1,5 +1,5 @@
 {
-  "name": "next-social-network",
+  "name": "next-connect",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "start": "NODE_ENV=production node server/app.js",
     "dev": "next",
     "build": "next build",
-    "serve": "nodemon --watch server server/app.js",
+    "serve": "nodemon server/app.js --watch server",
     "deploy": "now --public && now alias",
     "remove:deploy": "now rm next-connect"
   },
