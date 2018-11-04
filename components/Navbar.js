@@ -3,47 +3,55 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import ShareOutlined from "@material-ui/icons/ShareOutlined";
-import { withStyles } from "@material-ui/core";
+import withStyles from "@material-ui/core/styles/withStyles";
 
 import ActiveLink from "./ActiveLink";
 import { signoutUser } from "../lib/auth";
 
-const Navbar = ({ router, pageProps: { auth }, classes }) => (
-  <AppBar
-    position={router.pathname === "/" ? "fixed" : "static"}
-    className={classes.appBar}
-  >
-    <Toolbar>
-      {/* Main Title / Home Button */}
-      <ActiveLink href="/">
-        <ShareOutlined className={classes.icon} />
-      </ActiveLink>
-      <Typography variant="h5" component="h1" className={classes.toolbarTitle}>
-        <ActiveLink href="/">NextConnect</ActiveLink>
-      </Typography>
+const Navbar = ({ router, pageProps: { auth }, classes }) => {
+  const { user = {} } = auth || {};
 
-      {auth && auth.user && auth.user._id ? (
-        <div>
-          <Button>
-            <ActiveLink href={`/profile/${auth.user._id}`}>Profile</ActiveLink>
-          </Button>
-          <Button variant="outlined" onClick={signoutUser}>
-            Sign out
-          </Button>
-        </div>
-      ) : (
-        <div>
-          <Button>
-            <ActiveLink href="/signin">Sign In</ActiveLink>
-          </Button>
-          <Button>
-            <ActiveLink href="/signup">Sign up</ActiveLink>
-          </Button>
-        </div>
-      )}
-    </Toolbar>
-  </AppBar>
-);
+  return (
+    <AppBar
+      position={router.pathname === "/" ? "fixed" : "static"}
+      className={classes.appBar}
+    >
+      <Toolbar>
+        {/* Main Title / Home Button */}
+        <ActiveLink href="/">
+          <ShareOutlined className={classes.icon} />
+        </ActiveLink>
+        <Typography
+          variant="h5"
+          component="h1"
+          className={classes.toolbarTitle}
+        >
+          <ActiveLink href="/">NextConnect</ActiveLink>
+        </Typography>
+
+        {user._id ? (
+          <div>
+            <Button>
+              <ActiveLink href={`/profile/${user._id}`}>Profile</ActiveLink>
+            </Button>
+            <Button variant="outlined" onClick={signoutUser}>
+              Sign out
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <Button>
+              <ActiveLink href="/signin">Sign In</ActiveLink>
+            </Button>
+            <Button>
+              <ActiveLink href="/signup">Sign up</ActiveLink>
+            </Button>
+          </div>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
+};
 
 const styles = theme => ({
   appBar: {

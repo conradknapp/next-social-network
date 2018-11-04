@@ -43,12 +43,6 @@ router
   .put(authController.checkAuth, userController.updateUser)
   .delete(authController.checkAuth, userController.deleteUser);
 
-router.get(
-  "/api/users/image/:userId",
-  userController.getUserImage
-);
-// router.get("/api/users/defaultimage", userController.getDefaultImage);
-
 /* Post Routes */
 router.put(
   "/api/posts/like",
@@ -81,6 +75,8 @@ router.delete(
 router.post(
   "/api/posts/new/:userId",
   authController.checkAuth,
+  postController.uploadImage,
+  postController.resizeImage,
   postController.addPost
 );
 // router.get("/api/posts/image/:postId", postController.getPostImage);
@@ -89,12 +85,5 @@ router.get("/api/posts/feed/:userId", postController.getPostFeed);
 
 router.param("userId", userController.getUserById);
 router.param("postId", postController.getPostById);
-
-/* Catches errors for async/await functions */
-const catchErrors = func => {
-  return function(req, res, next) {
-    return func(req, res, next).catch(next);
-  };
-};
 
 module.exports = router;

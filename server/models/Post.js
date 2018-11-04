@@ -8,8 +8,7 @@ const postSchema = new mongoose.Schema(
       required: "Post content is required"
     },
     image: {
-      data: Buffer,
-      contentType: String
+      type: String
     },
     likes: [{ type: ObjectId, ref: "User" }],
     comments: [
@@ -32,7 +31,8 @@ const postSchema = new mongoose.Schema(
 // Kind of like a middleware function after creating our schema (since we have access to next).
 // Must be a function declaration (not an arrow function), because we want to use 'this' to reference our schema
 const autoPopulatePostedBy = function(next) {
-  this.populate("postedBy", "_id name");
+  this.populate("postedBy", "_id name avatar");
+  this.populate('comments.postedBy', '_id name avatar');
   next();
 };
 

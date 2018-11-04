@@ -8,7 +8,7 @@ import Delete from "@material-ui/icons/Delete";
 import Link from "next/link";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 
-class Comments extends React.Component {
+class Comments extends React.PureComponent {
   state = {
     text: ""
   };
@@ -26,6 +26,12 @@ class Comments extends React.Component {
     this.setState({ text: "" });
   };
 
+  formatTimeAdded = time =>
+    distanceInWordsToNow(time, {
+      includeSeconds: true,
+      addSuffix: true
+    });
+
   showComment = comment => {
     const { postId, handleRemoveComment, auth, classes } = this.props;
     const isPoster = auth.user._id === comment.postedBy._id;
@@ -38,10 +44,7 @@ class Comments extends React.Component {
         <br />
         {comment.text}
         <span className={classes.commentDate}>
-          {distanceInWordsToNow(comment.createdAt, {
-            includeSeconds: true,
-            addSuffix: true
-          })}
+          {this.formatTimeAdded(comment.createdAt)}
           {isPoster && (
             <Delete
               onClick={() => handleRemoveComment(postId, comment)}
@@ -68,9 +71,9 @@ class Comments extends React.Component {
           title={
             <form onSubmit={this.handleSubmit}>
               <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="text">Add comment</InputLabel>
+                <InputLabel htmlFor="add-comment">Add comment</InputLabel>
                 <Input
-                  id="text"
+                  id="add-comment"
                   name="text"
                   value={text}
                   onChange={this.handleChange}
@@ -89,7 +92,7 @@ class Comments extends React.Component {
             avatar={
               <Avatar
                 className={classes.smallAvatar}
-                // src={`/api/users/image/${comment.postedBy._id}`}
+                src={comment.postedBy.avatar}
               />
             }
             title={this.showComment(comment)}

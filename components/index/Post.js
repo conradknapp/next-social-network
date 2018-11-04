@@ -6,6 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
+import Avatar from "@material-ui/core/Avatar";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Comment from "@material-ui/icons/Comment";
 import DeleteTwoTone from "@material-ui/icons/DeleteTwoTone";
@@ -54,6 +55,12 @@ class Post extends React.PureComponent {
     return likes.includes(auth.user._id);
   };
 
+  formatTimePosted = time =>
+    distanceInWordsToNow(time, {
+      includeSeconds: true,
+      addSuffix: true
+    });
+
   render() {
     const {
       classes,
@@ -73,7 +80,7 @@ class Post extends React.PureComponent {
       <Card className={classes.card}>
         {/* Post Header */}
         <CardHeader
-          // avatar={<Avatar src={`/api/users/image/${post.postedBy._id}`} />}
+          avatar={<Avatar src={post.postedBy.avatar} />}
           action={
             isPostAuthor && (
               <IconButton
@@ -89,10 +96,7 @@ class Post extends React.PureComponent {
               <a>{post.postedBy.name}</a>
             </Link>
           }
-          subheader={distanceInWordsToNow(post.createdAt, {
-            includeSeconds: true,
-            addSuffix: true
-          })}
+          subheader={this.formatTimePosted(post.createdAt)}
           className={classes.cardHeader}
         />
         <CardContent className={classes.cardContent}>
@@ -103,10 +107,7 @@ class Post extends React.PureComponent {
           {/* Post Image */}
           {post.image && (
             <div className={classes.imageContainer}>
-              <img
-                className={classes.image}
-                src={`/api/posts/image/${post._id}`}
-              />
+              <img className={classes.image} src={post.image} />
             </div>
           )}
         </CardContent>
@@ -136,6 +137,7 @@ class Post extends React.PureComponent {
         {/* Comments Area */}
         {!hideComments && (
           <Comments
+            key={post._id}
             auth={auth}
             postId={post._id}
             comments={comments}

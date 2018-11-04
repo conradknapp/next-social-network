@@ -103,9 +103,7 @@ class Profile extends React.Component {
         ];
         this.setState({ posts: updatedPosts });
       })
-      .catch(err => {
-        console.error(err);
-      });
+      .catch(err => console.error(err));
   };
 
   formatDate = date => format(date, "dddd, MMMM Do, YYYY");
@@ -117,15 +115,20 @@ class Profile extends React.Component {
     return (
       <Paper className={classes.root} elevation={4}>
         <Typography
-          align="center"
-          variant="h5"
           component="h1"
+          variant="h4"
+          align="center"
           className={classes.title}
+          gutterBottom
         >
           Profile
         </Typography>
         {isLoading ? (
-          <CircularProgress className={classes.progress} size={50} />
+          <CircularProgress
+            className={classes.progress}
+            size={55}
+            thickness={5}
+          />
         ) : (
           <List dense>
             <ListItem>

@@ -1,5 +1,4 @@
 import Card from "@material-ui/core/Card";
-import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -46,22 +45,20 @@ const NewPost = ({
           shrink: true
         }}
       />
-      <Input
+      <input
         accept="image/*"
         name="image"
         onChange={handleChange}
-        className={classes.input}
+        // className={classes.input}
         type="file"
       />
-      <label htmlFor="icon-button-file">
-        <IconButton
-          color="secondary"
-          className={classes.photoButton}
-          component="span"
-        >
-          <AddAPhoto />
-        </IconButton>
-      </label>{" "}
+      {/* <IconButton
+        color="secondary"
+        className={classes.photoButton}
+        component="span"
+      >
+        <AddAPhoto />
+      </IconButton> */}
       <span className={classes.filename}>{image && image.name}</span>
     </CardContent>
     <CardActions className={classes.cardActions}>
