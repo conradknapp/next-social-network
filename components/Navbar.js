@@ -1,17 +1,9 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  withStyles
-} from "@material-ui/core";
-import {
-  ShareOutlined,
-  Face,
-  Gavel,
-  Lock,
-  ExitToApp
-} from "@material-ui/icons";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import ShareOutlined from "@material-ui/icons/ShareOutlined";
+import { withStyles } from "@material-ui/core";
 
 import ActiveLink from "./ActiveLink";
 import { signoutUser } from "../lib/auth";

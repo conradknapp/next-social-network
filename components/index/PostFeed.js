@@ -1,6 +1,5 @@
-import { Component } from "react";
-// prettier-ignore
-import { Typography, withStyles } from '@material-ui/core';
+import Typography from "@material-ui/core/Typography";
+import withStyles from "@material-ui/core/styles/withStyles";
 
 import Post from "./Post";
 import NewPost from "./NewPost";
@@ -9,18 +8,18 @@ import {
   addPost,
   unlikePost,
   likePost,
-  removeComment,
-  removePost,
+  deleteComment,
+  deletePost,
   addComment
-} from "../../lib/auth";
+} from "../../lib/api";
 
-class PostFeed extends Component {
+class PostFeed extends React.Component {
   state = {
     posts: [],
     text: "",
-    photo: "",
+    image: "",
     isAddingPost: false,
-    isRemovingPost: false
+    isDeletingPost: false
   };
 
   componentDidMount() {
@@ -38,7 +37,7 @@ class PostFeed extends Component {
 
   handleChange = event => {
     const inputValue =
-      event.target.name === "photo"
+      event.target.name === "image"
         ? event.target.files[0]
         : event.target.value;
     this.postData.set(event.target.name, inputValue);
@@ -55,9 +54,9 @@ class PostFeed extends Component {
         this.setState({
           posts: updatedPosts,
           text: "",
-          photo: ""
+          image: ""
         });
-        this.postData.delete("photo");
+        this.postData.delete("image");
         this.setState({ isAddingPost: false });
       })
       .catch(err => {
@@ -66,9 +65,9 @@ class PostFeed extends Component {
       });
   };
 
-  handleRemovePost = removedPost => {
-    this.setState({ isRemovingPost: true });
-    removePost(removedPost._id)
+  handleRemovePost = deletedPost => {
+    this.setState({ isDeletingPost: true });
+    deletePost(deletedPost._id)
       .then(postData => {
         const postIndex = this.state.posts.findIndex(
           post => post._id === postData._id
@@ -77,16 +76,17 @@ class PostFeed extends Component {
           ...this.state.posts.slice(0, postIndex),
           ...this.state.posts.slice(postIndex + 1)
         ];
-        this.setState({ posts: updatedPosts, isRemovingPost: false });
+        this.setState({ posts: updatedPosts, isDeletingPost: false });
       })
       .catch(err => {
         console.error(err);
-        this.setState({ isRemovingPost: false });
+        this.setState({ isDeletingPost: false });
       });
   };
 
   handleToggleLike = post => {
     const { auth } = this.props;
+
     const isPostLiked = post.likes.includes(auth.user._id);
     const sendRequest = isPostLiked ? unlikePost : likePost;
     sendRequest({
@@ -111,14 +111,12 @@ class PostFeed extends Component {
 
   handleAddComment = (postId, text) => {
     const { auth } = this.props;
-    const addCommentPayload = {
-      postId,
-      comment: {
-        text,
-        postedBy: auth.user._id
-      }
+
+    const comment = {
+      text,
+      postedBy: auth.user._id
     };
-    addComment(addCommentPayload).then(postData => {
+    addComment(postId, comment).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
       );
@@ -131,12 +129,8 @@ class PostFeed extends Component {
     });
   };
 
-  handleRemoveComment = (comment, postId) => {
-    const removeCommentPayload = {
-      postId,
-      comment
-    };
-    removeComment(removeCommentPayload).then(postData => {
+  handleRemoveComment = (postId, comment) => {
+    deleteComment(postId, comment).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
       );
@@ -151,7 +145,7 @@ class PostFeed extends Component {
 
   render() {
     const { classes, auth } = this.props;
-    const { posts, text, photo, isAddingPost, isRemovingPost } = this.state;
+    const { posts, text, image, isAddingPost, isDeletingPost } = this.state;
 
     return (
       <main className={classes.root}>
@@ -170,14 +164,14 @@ class PostFeed extends Component {
           handleAddPost={this.handleAddPost}
           isAddingPost={isAddingPost}
           text={text}
-          photo={photo}
+          image={image}
         />
         {posts.map(post => (
           <Post
             key={post._id}
             auth={auth}
             post={post}
-            isRemovingPost={isRemovingPost}
+            isDeletingPost={isDeletingPost}
             handleRemovePost={this.handleRemovePost}
             handleAddComment={this.handleAddComment}
             handleRemoveComment={this.handleRemoveComment}

@@ -1,7 +1,20 @@
-import React from "react";
-// prettier-ignore
-import { Typography, Avatar, FormControl, Paper, Input, InputLabel, Button, Snackbar, withStyles, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from '@material-ui/core';
-import { Gavel, VerifiedUserTwoTone } from "@material-ui/icons";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
+import FormControl from "@material-ui/core/FormControl";
+import Paper from "@material-ui/core/Paper";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
+import Gavel from "@material-ui/icons/Gavel";
+import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 
 import Link from "next/link";
 import { signupUser } from "../lib/auth";
@@ -17,7 +30,7 @@ class Signup extends React.Component {
     email: "",
     open: false,
     openSuccess: false,
-    loading: false,
+    isLoading: false,
     error: "",
     createdUser: ""
   };
@@ -28,7 +41,7 @@ class Signup extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.setState({ error: "", loading: true });
+    this.setState({ error: "", isLoading: true });
     const user = {
       name: this.state.name,
       password: this.state.password,
@@ -38,31 +51,28 @@ class Signup extends React.Component {
       .then(createdUser => {
         // console.log(createdUser);
         this.setState({
+          createdUser,
           error: "",
           openSuccess: true,
-          createdUser,
-          loading: false
+          isLoading: false
         });
       })
-      .catch(err => {
-        this.showError(err);
-      });
+      .catch(this.showError);
   };
 
   showError = err => {
     const error = (err.response && err.response.data) || err.message;
-    console.log(error);
-    this.setState({ error, open: true, loading: false });
+    this.setState({ error, open: true, isLoading: false });
   };
 
   handleClose = () => this.setState({ open: false });
 
   render() {
     const { classes } = this.props;
-    const { createdUser, open, error, loading, openSuccess } = this.state;
+    const { createdUser, open, error, isLoading, openSuccess } = this.state;
 
     return (
-      <div className={classes.layout}>
+      <div className={classes.root}>
         <Paper className={classes.paper}>
           <Avatar className={classes.avatar}>
             <Gavel />
@@ -74,21 +84,17 @@ class Signup extends React.Component {
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="name">Name</InputLabel>
               <Input
-                id="name"
                 name="name"
-                // autoComplete="name"
+                type="text"
                 onChange={this.handleChange}
-                // autoFocus
               />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
               <Input
-                id="email"
                 name="email"
-                // autoComplete="name"
+                type="email"
                 onChange={this.handleChange}
-                // autoFocus
               />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
@@ -97,19 +103,17 @@ class Signup extends React.Component {
                 onChange={this.handleChange}
                 name="password"
                 type="password"
-                id="password"
-                // autoComplete="current-password"
               />
             </FormControl>
             <Button
               type="submit"
               fullWidth
-              disabled={loading}
+              disabled={isLoading}
               variant="contained"
               color="primary"
               className={classes.submit}
             >
-              {loading ? "Signing up..." : "Sign up"}
+              {isLoading ? "Signing up..." : "Sign up"}
             </Button>
           </form>
 
@@ -150,7 +154,7 @@ class Signup extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" autoFocus="autoFocus" variant="contained">
+            <Button color="primary" variant="contained">
               <Link href="/signin">
                 <a className={classes.signinLink}>Sign In</a>
               </Link>
@@ -163,14 +167,15 @@ class Signup extends React.Component {
 }
 
 const styles = theme => ({
-  layout: {
+  root: {
     width: "auto",
-    display: "block", // Fix IE 11 issue.
+    display: "block",
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+    [theme.breakpoints.up("md")]: {
       width: 400,
-      margin: "auto"
+      marginLeft: "auto",
+      marginRight: "auto"
     }
   },
   paper: {

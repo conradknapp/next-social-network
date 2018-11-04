@@ -2,12 +2,11 @@
   "name": "next-connect",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/app.js",
   "scripts": {
-    "start": "NODE_ENV=production node server/app.js",
-    "dev": "next",
+    "dev": "nodemon server/app.js --watch server",
+    "start": "node server/app.js",
     "build": "next build",
-    "serve": "nodemon server/app.js --watch server",
     "deploy": "now --public && now alias",
     "remove:deploy": "now rm next-connect"
   },
@@ -16,7 +15,6 @@
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.1.2",
-    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
     "@material-ui/core": "^3.3.0",
     "@material-ui/icons": "^3.0.1",
     "axios": "^0.18.0",
@@ -31,7 +29,6 @@
     "helmet": "^3.14.0",
     "jss": "^9.8.7",
     "lodash": "^4.17.11",
-    "md5": "^2.2.1",
     "mongoose": "^5.3.3",
     "mongoose-mongodb-errors": "0.0.2",
     "morgan": "^1.9.1",

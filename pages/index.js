@@ -1,45 +1,50 @@
-import { Component } from "react";
-// prettier-ignore
-import { withStyles, CircularProgress, Card, Drawer, CardHeader, CardActions, Button, CardContent, Typography, Grid } from '@material-ui/core';
+import withStyles from "@material-ui/core/styles/withStyles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Drawer from "@material-ui/core/Drawer";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import Router from "next/router";
 
 import FindUsers from "../components/index/FindUsers";
 import PostFeed from "../components/index/PostFeed";
 import { authInitialProps } from "../lib/auth";
 
-class Index extends Component {
+class Index extends React.Component {
   state = {
-    defaultPage: true,
-    loading: true
+    splashPage: true,
+    isLoading: true
   };
 
   componentDidMount() {
-    this.checkIfAuth();
+    this.checkAuth();
   }
 
-  checkIfAuth = () => {
+  checkAuth = () => {
     const { auth } = this.props;
-    if (auth && auth.user && auth.user._id) {
+    const { user = {} } = auth || {};
+
+    if (user._id) {
       this.setState({
-        defaultPage: false,
-        loading: false
+        splashPage: false,
+        isLoading: false
       });
     } else {
       this.setState({
-        defaultPage: true,
-        loading: false
+        splashPage: true,
+        isLoading: false
       });
     }
   };
 
   render() {
     const { classes, auth } = this.props;
-    const { defaultPage, loading } = this.state;
+    const { splashPage, isLoading } = this.state;
 
     return (
       <main className={classes.root}>
         {/* Loading Spinner  */}
-        {loading ? (
+        {isLoading ? (
           <Grid
             container
             direction="row"
@@ -49,11 +54,11 @@ class Index extends Component {
           >
             <CircularProgress
               className={classes.progress}
-              thickness={7}
-              size={50}
+              thickness={5}
+              size={70}
             />
           </Grid>
-        ) : defaultPage ? (
+        ) : splashPage ? (
           <Grid
             container
             direction="row"
@@ -130,7 +135,7 @@ const styles = theme => ({
   },
   progress: {
     margin: theme.spacing.unit * 2,
-    color: theme.palette.primary.light
+    color: theme.palette.secondary.light
   },
   drawerContainer: {
     [theme.breakpoints.down("sm")]: {

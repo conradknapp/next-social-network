@@ -1,38 +1,43 @@
-import { Component } from "react";
-// prettier-ignore
-import { IconButton, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import { Delete } from "@material-ui/icons";
+import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Delete from "@material-ui/icons/Delete";
 import Router from "next/router";
 
-import { signoutUser, removeUser } from "../../lib/auth";
+import { signoutUser } from "../../lib/auth";
+import { deleteUser } from "../../lib/api";
 
-class RemoveUser extends Component {
+class RemoveUser extends React.Component {
   state = {
     open: false,
-    isRemovingUser: false
+    isDeleting: false
   };
 
   handleOpen = () => this.setState({ open: true });
 
   handleClose = () => this.setState({ open: false });
 
-  handleRemoveUser = () => {
+  handleDeleteUser = () => {
     const { auth } = this.props;
 
-    this.setState({ isRemovingUser: true });
-    removeUser(auth.user._id)
+    this.setState({ isDeleting: true });
+    deleteUser(auth.user._id)
       .then(() => {
         signoutUser();
         Router.push("/signup");
       })
       .catch(err => {
         console.error(err);
-        this.setState({ isRemovingUser: false });
+        this.setState({ isDeleting: false });
       });
   };
 
   render() {
-    const { open, isRemovingUser } = this.state;
+    const { open, isDeleting } = this.state;
 
     return (
       <div>
@@ -54,11 +59,12 @@ class RemoveUser extends Component {
               Cancel
             </Button>
             <Button
-              onClick={this.handleRemoveUser}
+              onClick={this.handleDeleteUser}
               color="secondary"
               autoFocus="autoFocus"
+              disabled={isDeleting}
             >
-              {isRemovingUser ? "Confirm" : "Deleting"}
+              {isDeleting ? "Deleting" : "Confirm"}
             </Button>
           </DialogActions>
         </Dialog>

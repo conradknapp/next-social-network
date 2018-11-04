@@ -1,6 +1,6 @@
 import Button from "@material-ui/core/Button";
 
-import { unfollowUser, followUser } from "../../lib/auth";
+import { unfollowUser, followUser } from "../../lib/api";
 
 const FollowUser = ({ isFollowing, toggleFollow }) => {
   const request = isFollowing ? unfollowUser : followUser;

@@ -1,5 +1,5 @@
-import React from "react";
 import App, { Container } from "next/app";
+import Head from 'next/head';
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import JssProvider from "react-jss/lib/JssProvider";
@@ -9,15 +9,6 @@ import getPageContext from "../lib/getPageContext";
 
 import withNProgress from "next-nprogress";
 import NProgressStyles from "next-nprogress/styles";
-
-// Loading Bar imports
-// import Router from "next/router";
-// import NProgress from "nprogress";
-
-// Loading Bar w/ Router
-// Router.onRouteChangeStart = () => NProgress.start();
-// Router.onRouteChangeComplete = () => NProgress.done();
-// Router.onRouteChangeError = () => NProgress.done();
 
 class MyApp extends App {
   constructor(props) {
@@ -35,8 +26,12 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps } = this.props;
+
     return (
       <Container>
+        <Head>
+          <title>NextConnect</title>
+        </Head>
         {/* Wrap every page in Jss and Theme providers */}
         <JssProvider
           registry={this.pageContext.sheetsRegistry}

@@ -32,8 +32,8 @@ router.put(
 router.put(
   "/api/users/unfollow",
   authController.checkAuth,
-  userController.removeFollowing,
-  userController.removeFollower
+  userController.deleteFollowing,
+  userController.deleteFollower
 );
 
 router.get("/api/users/findusers/:userId", userController.findUsers);
@@ -41,7 +41,7 @@ router
   .route("/api/users/:userId")
   .get(userController.getMe)
   .put(authController.checkAuth, userController.updateUser)
-  .delete(authController.checkAuth, userController.removeUser);
+  .delete(authController.checkAuth, userController.deleteUser);
 
 router.get(
   "/api/users/image/:userId",
@@ -75,7 +75,7 @@ router.put(
 router.delete(
   "/api/posts/:postId",
   authController.checkAuth,
-  postController.removePost
+  postController.deletePost
 );
 
 router.post(
@@ -83,7 +83,7 @@ router.post(
   authController.checkAuth,
   postController.addPost
 );
-router.get("/api/posts/image/:postId", postController.getPostImage);
+// router.get("/api/posts/image/:postId", postController.getPostImage);
 router.get("/api/posts/by/:userId", postController.getPostsByUser);
 router.get("/api/posts/feed/:userId", postController.getPostFeed);
 

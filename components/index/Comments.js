@@ -1,11 +1,14 @@
-import { Component } from "react";
-// prettier-ignore
-import { CardHeader, FormControl, InputLabel, Input, Avatar, withStyles } from '@material-ui/core';
-import { Delete } from "@material-ui/icons";
+import CardHeader from "@material-ui/core/CardHeader";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import Avatar from "@material-ui/core/Avatar";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Delete from "@material-ui/icons/Delete";
 import Link from "next/link";
-import { distanceInWordsToNow } from "date-fns";
+import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 
-class Comments extends Component {
+class Comments extends React.Component {
   state = {
     text: ""
   };
@@ -29,19 +32,19 @@ class Comments extends Component {
 
     return (
       <div>
-        <Link href={`/user/${comment.postedBy._id}`}>
+        <Link href={`/profile/${comment.postedBy._id}`}>
           <a>{comment.postedBy.name}</a>
         </Link>
         <br />
         {comment.text}
         <span className={classes.commentDate}>
-          {distanceInWordsToNow(comment.created, {
+          {distanceInWordsToNow(comment.createdAt, {
             includeSeconds: true,
             addSuffix: true
           })}
           {isPoster && (
             <Delete
-              onClick={() => handleRemoveComment(comment, postId)}
+              onClick={() => handleRemoveComment(postId, comment)}
               className={classes.commentDelete}
               color="secondary"
             />
@@ -60,10 +63,7 @@ class Comments extends Component {
         {/* Comment Input */}
         <CardHeader
           avatar={
-            <Avatar
-              className={classes.smallAvatar}
-              src={`/api/users/image/${auth.user._id}`}
-            />
+            <Avatar className={classes.smallAvatar} src={auth.user.avatar} />
           }
           title={
             <form onSubmit={this.handleSubmit}>
@@ -89,7 +89,7 @@ class Comments extends Component {
             avatar={
               <Avatar
                 className={classes.smallAvatar}
-                src={`/api/users/image/${comment.postedBy._id}`}
+                // src={`/api/users/image/${comment.postedBy._id}`}
               />
             }
             title={this.showComment(comment)}

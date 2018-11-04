@@ -1,23 +1,29 @@
-import React from "react";
-// prettier-ignore
-import { Typography, Avatar, FormControl, Paper, Input, InputLabel, Button, Snackbar, withStyles } from '@material-ui/core';
-import { Lock } from "@material-ui/icons";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
+import FormControl from "@material-ui/core/FormControl";
+import Paper from "@material-ui/core/Paper";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Lock from "@material-ui/icons/Lock";
 import Router from "next/router";
 
 import { signinUser } from "../lib/auth";
 
 class Signin extends React.Component {
   state = {
-    email: "",
-    password: "",
+    email: "reed@gmail.com",
+    password: "reeder",
     error: "",
     open: false,
-    loading: false
+    isLoading: false
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    this.setState({ error: "", loading: true });
+    this.setState({ error: "", isLoading: true });
     const user = {
       email: this.state.email,
       password: this.state.password
@@ -26,9 +32,7 @@ class Signin extends React.Component {
       .then(() => {
         Router.push("/");
       })
-      .catch(err => {
-        this.showError(err);
-      });
+      .catch(this.showError);
   };
 
   handleChange = event => {
@@ -37,17 +41,17 @@ class Signin extends React.Component {
 
   showError = err => {
     const error = (err.response && err.response.data) || err.message;
-    this.setState({ error, open: true, loading: false });
+    this.setState({ error, open: true, isLoading: false });
   };
 
   handleClose = () => this.setState({ open: false });
 
   render() {
     const { classes } = this.props;
-    const { error, open, loading } = this.state;
+    const { error, open, isLoading, email, password } = this.state;
 
     return (
-      <div className={classes.layout}>
+      <div className={classes.root}>
         <Paper className={classes.paper}>
           <Avatar className={classes.avatar}>
             <Lock />
@@ -61,9 +65,9 @@ class Signin extends React.Component {
               <Input
                 id="email"
                 name="email"
-                autoComplete="email"
+                type="email"
+                value={email}
                 onChange={this.handleChange}
-                // autoFocus
               />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
@@ -73,19 +77,19 @@ class Signin extends React.Component {
                 name="password"
                 type="password"
                 id="password"
-                // autoComplete="current-password"
+                value={password}
               />
             </FormControl>
             <Button
               type="submit"
               fullWidth
               onClick={this.handleSubmit}
-              disabled={loading}
+              disabled={isLoading}
               variant="contained"
               color="primary"
               className={classes.submit}
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {isLoading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
 
@@ -109,12 +113,12 @@ class Signin extends React.Component {
 }
 
 const styles = theme => ({
-  layout: {
+  root: {
     width: "auto",
-    display: "block", // Fix IE 11 issue.
+    display: "block",
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+    [theme.breakpoints.up("md")]: {
       width: 400,
       marginLeft: "auto",
       marginRight: "auto"
@@ -125,8 +129,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+    padding: theme.spacing.unit * 2
   },
   title: {
     marginTop: theme.spacing.unit * 2,

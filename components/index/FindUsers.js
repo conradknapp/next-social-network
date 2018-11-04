@@ -1,12 +1,19 @@
-import { Component } from "react";
-// prettier-ignore
-import { Divider, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, Button, IconButton, Typography, Snackbar, withStyles } from '@material-ui/core';
-import { AccountBox } from "@material-ui/icons";
+import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import Snackbar from "@material-ui/core/Snackbar";
+import withStyles from "@material-ui/core/styles/withStyles";
+import AccountBox from "@material-ui/icons/AccountBox";
 import Link from "next/link";
 
-import { findUsers, followUser } from "../../lib/auth";
+import { findUsers, followUser } from "../../lib/api";
 
-class FindUsers extends Component {
+class FindUsers extends React.Component {
   state = {
     users: [],
     open: false
@@ -14,6 +21,7 @@ class FindUsers extends Component {
 
   componentDidMount() {
     const { auth } = this.props;
+
     findUsers(auth.user._id).then(users => {
       this.setState({ users });
     });
@@ -21,10 +29,7 @@ class FindUsers extends Component {
 
   handleFollow = (user, userIndex) => {
     const { auth } = this.props;
-    // const followUserPayload = {
-    //   userId: auth.user._id,
-    //   followId: user._id
-    // };
+
     followUser(auth.user._id, user._id).then(() => {
       const updatedUsers = [
         ...this.state.users.slice(0, userIndex),
@@ -47,7 +52,7 @@ class FindUsers extends Component {
     return (
       <div>
         <Typography type="title" variant="h6" component="h2" align="center">
-          Users to Follow
+          Browse Users
         </Typography>
         <Divider />
         <List>
@@ -55,9 +60,9 @@ class FindUsers extends Component {
             return (
               <span key={user._id}>
                 <ListItem>
-                  <ListItemAvatar className={classes.avatar}>
+                  {/* <ListItemAvatar className={classes.avatar}>
                     <Avatar src={`/api/users/image/${user._id}`} />
-                  </ListItemAvatar>
+                  </ListItemAvatar> */}
                   <ListItemText primary={user.name} />
                   <ListItemSecondaryAction className={classes.follow}>
                     <Link href={`/profile/${user._id}`}>
@@ -102,7 +107,7 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   avatar: {
-    marginRight: theme.spacing.unit * 1
+    marginRight: theme.spacing.unit
   },
   follow: {
     right: theme.spacing.unit * 2

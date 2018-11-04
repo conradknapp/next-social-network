@@ -1,18 +1,15 @@
-import React from "react";
-import { AppBar, Typography, Tabs, Tab } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import Typography from "@material-ui/core/Typography";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 import FollowGrid from "./FollowGrid";
 import Post from "../index/Post";
-// import PostList from './../post/PostList'
 
 class ProfileTabs extends React.Component {
   state = {
     tab: 0,
     hideComments: true
-  };
-
-  componentWillReceiveProps = () => {
-    this.setState({ tab: 0 });
   };
 
   handleTabChange = (event, value) => {
@@ -21,7 +18,13 @@ class ProfileTabs extends React.Component {
 
   render() {
     const { tab, hideComments } = this.state;
-    const { handleRemovePost, handleToggleLike, posts, user, auth } = this.props;
+    const {
+      handleRemovePost,
+      handleToggleLike,
+      posts,
+      user,
+      auth
+    } = this.props;
 
     return (
       <div>
@@ -29,8 +32,8 @@ class ProfileTabs extends React.Component {
           <Tabs
             value={tab}
             onChange={this.handleTabChange}
-            indicatorColor="primary"
-            textColor="primary"
+            indicatorColor="secondary"
+            textColor="secondary"
             fullWidth
           >
             <Tab label="Posts" />
@@ -67,12 +70,10 @@ class ProfileTabs extends React.Component {
   }
 }
 
-const TabContainer = ({ children }) => {
-  return (
-    <Typography component="div" style={{ padding: 8 * 2 }}>
-      {children}
-    </Typography>
-  );
-};
+const TabContainer = ({ children }) => (
+  <Typography component="div" style={{ padding: 8 * 2 }}>
+    {children}
+  </Typography>
+);
 
 export default ProfileTabs;

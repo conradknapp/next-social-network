@@ -1,39 +1,55 @@
-import React from "react";
-// prettier-ignore
-import { Paper, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, IconButton, Typography, CircularProgress, Divider, withStyles } from '@material-ui/core';
-import { Edit } from "@material-ui/icons";
+import Paper from "@material-ui/core/Paper";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Divider from "@material-ui/core/Divider";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Edit from "@material-ui/icons/Edit";
 import Link from "next/link";
-import { format } from "date-fns";
+import format from "date-fns/format";
+import isSameDay from "date-fns/is_same_day";
 
 import ProfileTabs from "../components/profile/ProfileTabs";
 import RemoveUser from "../components/profile/RemoveUser";
 import FollowUser from "../components/profile/FollowUser";
 import {
   getUser,
-  authInitialProps,
-  removePost,
+  deletePost,
   getPostsByUser,
   likePost,
   unlikePost
-} from "../lib/auth";
+} from "../lib/api";
+import { authInitialProps } from "../lib/auth";
 
 class Profile extends React.Component {
   state = {
     user: {},
-    isFollowing: false,
     posts: [],
-    loading: true,
-    isAuth: false
+    isFollowing: false,
+    isAuth: false,
+    isLoading: true
   };
 
   componentDidMount() {
-    const { userId, auth } = this.props;
+    const { auth, userId } = this.props;
+
     getUser(userId).then(async user => {
+      const isAuth = auth.user._id === userId;
       const isFollowing = this.checkFollow(auth, user);
-      const isAuth = this.checkIfAuth(auth.user._id, userId);
-      // const posts = this.getUserPosts(userId);
       const posts = await getPostsByUser(userId);
-      this.setState({ user, posts, isFollowing, isAuth, loading: false });
+      this.setState({
+        user,
+        posts,
+        isFollowing,
+        isAuth,
+        isLoading: false
+      });
     });
   }
 
@@ -43,44 +59,17 @@ class Profile extends React.Component {
     );
   };
 
-  checkIfAuth = (authUserId, userId) => {
-    return authUserId === userId;
-  };
-
-  // getUserPosts = userId => {
-  //   let userPosts;
-  //   getPostsByUser(userId).then(posts => {
-  //     console.log(posts);
-  //     userPosts = posts;
-  //   }).catch(err => {
-  //     console.error(err);
-  //     userPosts = [];
-  //   });
-  //   return userPosts;
-  // };
-
   toggleFollow = sendRequest => {
     const { auth, userId } = this.props;
     const { isFollowing } = this.state;
-    // const toggleFollowPayload = {
-    //   authUserId: auth.user._id,
-    //   followId: userId
-    // };
+
     sendRequest(auth.user._id, userId).then(() => {
       this.setState({ isFollowing: !isFollowing });
     });
   };
 
-  // removePost = post => {
-  //   const updatedPosts = [...this.state.posts];
-  //   const index = updatedPosts.indexOf(post);
-  //   updatedPosts.splice(index, 1);
-  //   this.setState({ posts: updatedPosts });
-  // };
-
-  handleRemovePost = removedPost => {
-    // this.setState({ isRemovingPost: true });
-    removePost(removedPost._id)
+  handleRemovePost = deletedPost => {
+    deletePost(deletedPost._id)
       .then(postData => {
         const postIndex = this.state.posts.findIndex(
           post => post._id === postData._id
@@ -91,14 +80,12 @@ class Profile extends React.Component {
         ];
         this.setState({ posts: updatedPosts });
       })
-      .catch(err => {
-        console.error(err);
-        // this.setState({ isRemovingPost: false });
-      });
+      .catch(err => console.error(err));
   };
 
   handleToggleLike = post => {
     const { auth } = this.props;
+
     const isPostLiked = post.likes.includes(auth.user._id);
     const sendRequest = isPostLiked ? unlikePost : likePost;
     sendRequest({
@@ -121,26 +108,29 @@ class Profile extends React.Component {
       });
   };
 
+  formatDate = date => format(date, "dddd, MMMM Do, YYYY");
+
   render() {
     const { classes, auth } = this.props;
-    const { isAuth, user, isFollowing, loading, posts } = this.state;
-    console.log(posts);
+    const { isAuth, user, isFollowing, isLoading, posts } = this.state;
 
     return (
       <Paper className={classes.root} elevation={4}>
-        <Typography variant="h5" component="h1" className={classes.title}>
+        <Typography
+          align="center"
+          variant="h5"
+          component="h1"
+          className={classes.title}
+        >
           Profile
         </Typography>
-        {loading ? (
+        {isLoading ? (
           <CircularProgress className={classes.progress} size={50} />
         ) : (
           <List dense>
             <ListItem>
               <ListItemAvatar>
-                <Avatar
-                  src={`/api/users/image/${user._id}`}
-                  className={classes.bigAvatar}
-                />
+                <Avatar src={user.avatar} className={classes.bigAvatar} />
               </ListItemAvatar>
               <ListItemText primary={user.name} secondary={user.email} />{" "}
               {isAuth ? (
@@ -165,10 +155,14 @@ class Profile extends React.Component {
             <ListItem>
               <ListItemText
                 primary={user.about}
-                secondary={`Joined: ${format(
-                  user.createdAt,
-                  "dddd, MMMM Do, YYYY"
-                )}`}
+                secondary={
+                  <>
+                    <div>Joined: {this.formatDate(user.updatedAt)}</div>
+                    {!isSameDay(user.createdAt, user.updatedAt) && (
+                      <div>Updated: {this.formatDate(user.updatedAt)}</div>
+                    )}
+                  </>
+                }
               />
             </ListItem>
             <ProfileTabs
@@ -191,6 +185,10 @@ Profile.getInitialProps = authInitialProps(true);
 const styles = theme => ({
   root: {
     maxWidth: 600,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     padding: theme.spacing.unit * 3,
     marginTop: theme.spacing.unit * 5,
     margin: "auto"

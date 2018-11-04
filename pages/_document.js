@@ -1,9 +1,8 @@
-import React from "react";
 import Document, { Head, Main, NextScript } from "next/document";
 // styled-jsx included in Next.js by default
 import flush from "styled-jsx/server";
 
-import { getServerSideToken, getUserScript } from "../lib/auth";
+import { getSessionFromServer, getUserScript } from "../lib/auth";
 
 class MyDocument extends Document {
   render() {
@@ -37,7 +36,7 @@ class MyDocument extends Document {
 
 MyDocument.getInitialProps = ctx => {
   // const documentProps = await Document.getInitialProps(ctx);
-  const user = getServerSideToken(ctx.req);
+  const user = getSessionFromServer(ctx.req);
 
   // Render app and page and get the context of the page with collected side effects.
   let pageContext;
@@ -50,7 +49,6 @@ MyDocument.getInitialProps = ctx => {
   });
 
   return {
-    // ...documentProps,
     ...user,
     ...page,
     pageContext,

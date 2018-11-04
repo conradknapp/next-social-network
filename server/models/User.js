@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 const mongodbErrorHandler = require("mongoose-mongodb-errors");
 const passportLocalMongoose = require("passport-local-mongoose");
-const md5 = require('md5');
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,27 +17,35 @@ const userSchema = new mongoose.Schema(
       trim: true,
       required: "Name is required"
     },
+    avatar: {
+      type: String,
+      required: "Avatar image is required",
+      default: "/static/images/profile-image.jpg"
+    },
     about: {
       type: String,
       trim: true
     },
-    photo: {
-      data: Buffer,
-      contentType: String
-    },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now
-    // },
-    // updatedAt: Date,
-    following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
-    followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }]
+    // we wrap 'following' and 'followers' in array so that when they are populated as objects, they are put in an array (to more easily iterate over them)
+    following: [{ type: ObjectId, ref: "User" }],
+    followers: [{ type: ObjectId, ref: "User" }]
   },
+  // gives us "createdAt" and "updatedAt" fields automatically
   { timestamps: true }
 );
 
+const autoPopulateFollowingAndFollowers = function(next) {
+  this.populate("following", "_id name avatar");
+  this.populate("followers", "_id name avatar");
+  next();
+};
+
+userSchema.pre("findOne", autoPopulateFollowingAndFollowers);
+
+/* passportLocalMongoose takes our User schema and sets up a passport "local" authentication strategy using our email as the username field */
 userSchema.plugin(passportLocalMongoose, { usernameField: "email" });
-// Gives us a better 'unique' error (rather than 11000 duplicate key)
+
+/* The MongoDBErrorHandler plugin gives us a better 'unique' error, rather than: "11000 duplicate key" */
 userSchema.plugin(mongodbErrorHandler);
 
 module.exports = mongoose.model("User", userSchema);

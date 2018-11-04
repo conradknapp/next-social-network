@@ -91,3 +91,8 @@ Rudimentary Examples w/ HackerNews
 - https://github.com/Aerolab/nextjs-pwa
 
 Prefetching Example
+
+- https://stackoverflow.com/questions/45041511/how-do-i-decide-whether-a-post-is-liked-by-a-user-with-mongoose
+- https://stackoverflow.com/questions/45041511/how-do-i-decide-whether-a-post-is-liked-by-a-user-with-mongoose
+
+shift 3 - go from one instance of something to another

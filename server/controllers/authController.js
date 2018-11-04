@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
 const passport = require("passport");
-
+const mongoose = require("mongoose");
 const User = mongoose.model("User");
 
 exports.validateSignup = (req, res, next) => {
@@ -67,7 +66,7 @@ exports.signin = (req, res, next) => {
 };
 
 exports.signout = (req, res) => {
-  res.clearCookie("next-social.sid");
+  res.clearCookie("next-connect.sid");
   req.logout();
   res.json({ message: "You are now signed out!" });
 };

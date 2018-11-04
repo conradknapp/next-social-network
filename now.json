@@ -4,7 +4,7 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "dotenv": "variables.env",
+  "dotenv": true,
   "scale": {
     "sfo1": {
       "min": 1,

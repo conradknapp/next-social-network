@@ -1,18 +1,22 @@
-import React from "react";
-// prettier-ignore
-import { Badge, Card, CardHeader, CardContent, CardActions, Typography, Avatar, IconButton, Divider, withStyles } from '@material-ui/core';
-import {
-  DeleteTwoTone,
-  Favorite,
-  FavoriteBorder,
-  Comment
-} from "@material-ui/icons";
+import Badge from "@material-ui/core/Badge";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import Divider from "@material-ui/core/Divider";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Comment from "@material-ui/icons/Comment";
+import DeleteTwoTone from "@material-ui/icons/DeleteTwoTone";
+import Favorite from "@material-ui/icons/Favorite";
+import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Link from "next/link";
-import { distanceInWordsToNow } from "date-fns";
+import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 
 import Comments from "./Comments";
 
-class Post extends React.Component {
+class Post extends React.PureComponent {
   state = {
     isLiked: false,
     numLikes: 0,
@@ -20,48 +24,32 @@ class Post extends React.Component {
   };
 
   componentDidMount() {
-    const { post } = this.props;
     this.setState({
-      isLiked: this.checkIfLiked(post.likes),
-      numLikes: post.likes.length,
-      comments: post.comments
+      isLiked: this.checkLiked(this.props.post.likes),
+      numLikes: this.props.post.likes.length,
+      comments: this.props.post.comments
     });
   }
 
-  /* When props change, reset state to display new data in Post component */
-  // componentWillReceiveProps = props => {
-  //   this.setState({
-  //     isLiked: this.checkIfLiked(props.post.likes),
-  //     numLikes: props.post.likes.length,
-  //     comments: props.post.comments
-  //   });
-  // };
+  componentDidUpdate(prevProps) {
+    /* Note: show the difference when using a regular Component versus a PureComponent */
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.numLikes !== nextProps.post.likes.length) {
-      return {
-        numLikes: nextProps.post.likes.length
-      };
-    }
-
-    if (prevState.comments.length !== nextProps.post.comments.length) {
-      return {
-        comments: nextProps.post.comments
-      };
-    }
-    // Return null to indicate no change to state.
-    return null;
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.numLikes !== prevState.numLikes) {
+    // console.log({ prevProps }, { props: this.props });
+    if (prevProps.post.likes.length !== this.props.post.likes.length) {
       this.setState({
-        isLiked: this.checkIfLiked(this.props.post.likes)
+        isLiked: this.checkLiked(this.props.post.likes),
+        numLikes: this.props.post.likes.length
+      });
+    }
+
+    if (prevProps.post.comments.length !== this.props.post.comments.length) {
+      this.setState({
+        comments: this.props.post.comments
       });
     }
   }
 
-  checkIfLiked = likes => {
+  checkLiked = likes => {
     const { auth } = this.props;
     return likes.includes(auth.user._id);
   };
@@ -71,25 +59,25 @@ class Post extends React.Component {
       classes,
       post,
       auth,
+      isDeletingPost,
       handleToggleLike,
       handleRemovePost,
       handleAddComment,
       handleRemoveComment,
-      isRemovingPost,
       hideComments
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
-    const isPoster = post.postedBy._id === auth.user._id;
+    const isPostAuthor = post.postedBy._id === auth.user._id;
 
     return (
       <Card className={classes.card}>
         {/* Post Header */}
         <CardHeader
-          avatar={<Avatar src={`/api/users/image/${post.postedBy._id}`} />}
+          // avatar={<Avatar src={`/api/users/image/${post.postedBy._id}`} />}
           action={
-            isPoster && (
+            isPostAuthor && (
               <IconButton
-                disabled={isRemovingPost}
+                disabled={isDeletingPost}
                 onClick={() => handleRemovePost(post)}
               >
                 <DeleteTwoTone color="secondary" />
@@ -101,7 +89,7 @@ class Post extends React.Component {
               <a>{post.postedBy.name}</a>
             </Link>
           }
-          subheader={distanceInWordsToNow(post.created, {
+          subheader={distanceInWordsToNow(post.createdAt, {
             includeSeconds: true,
             addSuffix: true
           })}
@@ -113,7 +101,7 @@ class Post extends React.Component {
           </Typography>
 
           {/* Post Image */}
-          {post.photo && (
+          {post.image && (
             <div className={classes.imageContainer}>
               <img
                 className={classes.image}
@@ -146,7 +134,6 @@ class Post extends React.Component {
         <Divider />
 
         {/* Comments Area */}
-
         {!hideComments && (
           <Comments
             auth={auth}
@@ -175,7 +162,6 @@ const styles = theme => ({
   },
   imageContainer: {
     textAlign: "center",
-    // backgroundColor: "#f2f5f4",
     padding: theme.spacing.unit
   },
   image: {
