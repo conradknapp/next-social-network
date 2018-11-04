@@ -7,8 +7,8 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import withStyles from "@material-ui/core/styles/withStyles";
 import AddAPhoto from "@material-ui/icons/AddAPhoto";
+import withStyles from "@material-ui/core/styles/withStyles";
 
 const NewPost = ({
   auth,
@@ -48,17 +48,20 @@ const NewPost = ({
       <input
         accept="image/*"
         name="image"
+        id="image"
         onChange={handleChange}
-        // className={classes.input}
+        className={classes.input}
         type="file"
       />
-      {/* <IconButton
-        color="secondary"
-        className={classes.photoButton}
-        component="span"
-      >
-        <AddAPhoto />
-      </IconButton> */}
+      <label htmlFor="image">
+        <IconButton
+          color="secondary"
+          className={classes.photoButton}
+          component="span"
+        >
+          <AddAPhoto />
+        </IconButton>
+      </label>
       <span className={classes.filename}>{image && image.name}</span>
     </CardContent>
     <CardActions className={classes.cardActions}>

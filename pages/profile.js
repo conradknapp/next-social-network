@@ -16,7 +16,7 @@ import format from "date-fns/format";
 import isSameDay from "date-fns/is_same_day";
 
 import ProfileTabs from "../components/profile/ProfileTabs";
-import RemoveUser from "../components/profile/RemoveUser";
+import DeleteUser from "../components/profile/DeleteUser";
 import FollowUser from "../components/profile/FollowUser";
 import {
   getUser,
@@ -145,7 +145,7 @@ class Profile extends React.Component {
                       </IconButton>
                     </a>
                   </Link>
-                  <RemoveUser auth={auth} />
+                  <DeleteUser auth={auth} />
                 </ListItemSecondaryAction>
               ) : (
                 <FollowUser
@@ -160,9 +160,11 @@ class Profile extends React.Component {
                 primary={user.about}
                 secondary={
                   <>
-                    <div>Joined: {this.formatDate(user.updatedAt)}</div>
+                    <span>Joined: {this.formatDate(user.createdAt)}</span>
                     {!isSameDay(user.createdAt, user.updatedAt) && (
-                      <div>Updated: {this.formatDate(user.updatedAt)}</div>
+                      <span style={{ display: "block" }}>
+                        Updated: {this.formatDate(user.updatedAt)}
+                      </span>
                     )}
                   </>
                 }

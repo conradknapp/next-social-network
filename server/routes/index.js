@@ -36,7 +36,7 @@ router.put(
   userController.deleteFollower
 );
 
-router.get("/api/users/findusers/:userId", userController.findUsers);
+router.get("/api/users/findusers/:userId", userController.getUserFeed);
 router
   .route("/api/users/:userId")
   .get(userController.getMe)

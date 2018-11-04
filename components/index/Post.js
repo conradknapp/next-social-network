@@ -7,11 +7,11 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Comment from "@material-ui/icons/Comment";
 import DeleteTwoTone from "@material-ui/icons/DeleteTwoTone";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
+import withStyles from "@material-ui/core/styles/withStyles";
 import Link from "next/link";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 
@@ -32,6 +32,7 @@ class Post extends React.PureComponent {
     });
   }
 
+
   componentDidUpdate(prevProps) {
     /* Note: show the difference when using a regular Component versus a PureComponent */
 
@@ -50,12 +51,9 @@ class Post extends React.PureComponent {
     }
   }
 
-  checkLiked = likes => {
-    const { auth } = this.props;
-    return likes.includes(auth.user._id);
-  };
+  checkLiked = likes => likes.includes(this.props.auth.user._id);
 
-  formatTimePosted = time =>
+  formatTimeCreated = time =>
     distanceInWordsToNow(time, {
       includeSeconds: true,
       addSuffix: true
@@ -74,7 +72,7 @@ class Post extends React.PureComponent {
       hideComments
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
-    const isPostAuthor = post.postedBy._id === auth.user._id;
+    const isPostCreator = post.postedBy._id === auth.user._id;
 
     return (
       <Card className={classes.card}>
@@ -82,7 +80,7 @@ class Post extends React.PureComponent {
         <CardHeader
           avatar={<Avatar src={post.postedBy.avatar} />}
           action={
-            isPostAuthor && (
+            isPostCreator && (
               <IconButton
                 disabled={isDeletingPost}
                 onClick={() => handleRemovePost(post)}
@@ -96,7 +94,7 @@ class Post extends React.PureComponent {
               <a>{post.postedBy.name}</a>
             </Link>
           }
-          subheader={this.formatTimePosted(post.createdAt)}
+          subheader={this.formatTimeCreated(post.createdAt)}
           className={classes.cardHeader}
         />
         <CardContent className={classes.cardContent}>

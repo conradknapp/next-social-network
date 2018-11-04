@@ -31,7 +31,7 @@ class Signup extends React.Component {
     open: false,
     openSuccess: false,
     isLoading: false,
-    error: "",
+    errors: [],
     createdUser: ""
   };
 
@@ -41,7 +41,7 @@ class Signup extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.setState({ error: "", isLoading: true });
+    this.setState({ errors: [], isLoading: true });
     const user = {
       name: this.state.name,
       password: this.state.password,
@@ -52,7 +52,7 @@ class Signup extends React.Component {
         // console.log(createdUser);
         this.setState({
           createdUser,
-          error: "",
+          errors: "",
           openSuccess: true,
           isLoading: false
         });
@@ -61,15 +61,15 @@ class Signup extends React.Component {
   };
 
   showError = err => {
-    const error = (err.response && err.response.data) || err.message;
-    this.setState({ error, open: true, isLoading: false });
+    const errors = (err.response && err.response.data) || err.message;
+    this.setState({ errors, open: true, isLoading: false });
   };
 
   handleClose = () => this.setState({ open: false });
 
   render() {
     const { classes } = this.props;
-    const { createdUser, open, error, isLoading, openSuccess } = this.state;
+    const { createdUser, open, errors, isLoading, openSuccess } = this.state;
 
     return (
       <div className={classes.root}>
@@ -118,7 +118,7 @@ class Signup extends React.Component {
           </form>
 
           {/* Error Snackbar */}
-          {error.length > 0 && (
+          {errors.length > 0 && (
             <Snackbar
               anchorOrigin={{
                 vertical: "bottom",
@@ -129,7 +129,7 @@ class Signup extends React.Component {
               autoHideDuration={6000}
               message={
                 <span className={classes.snack}>
-                  {error.map(err => (
+                  {errors.map(err => (
                     <li>{err}</li>
                   ))}
                 </span>

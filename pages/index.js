@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Router from "next/router";
 
-import FindUsers from "../components/index/FindUsers";
+import UserFeed from "../components/index/UserFeed";
 import PostFeed from "../components/index/PostFeed";
 import { authInitialProps } from "../lib/auth";
 
@@ -110,7 +110,7 @@ class Index extends React.Component {
                   paper: classes.drawerPaper
                 }}
               >
-                <FindUsers auth={auth} />
+                <UserFeed auth={auth} />
               </Drawer>
             </Grid>
           </Grid>

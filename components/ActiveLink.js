@@ -1,12 +1,12 @@
 import { withRouter } from "next/router";
 
 const ActiveLink = ({ router, href, children }) => {
-  const prefetchPage = () => {
+  (function prefetchPages() {
     if (typeof window !== "undefined") {
       router.prefetch(href);
-      console.log(`prefetching ${href}`);
+      // console.log(`prefetching ${href}`);
     }
-  };
+  })();
 
   const handleClick = event => {
     event.preventDefault();
@@ -14,7 +14,7 @@ const ActiveLink = ({ router, href, children }) => {
   };
 
   const isCurrentPath = router.pathname === href || router.asPath === href;
-  prefetchPage();
+
   return (
     <div>
       <a

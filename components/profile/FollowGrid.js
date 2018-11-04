@@ -1,8 +1,8 @@
-import withStyles from "@material-ui/core/styles/withStyles";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
+import withStyles from "@material-ui/core/styles/withStyles";
 import Link from "next/link";
 
 const FollowGrid = ({ classes, users }) => (
@@ -12,11 +12,14 @@ const FollowGrid = ({ classes, users }) => (
         <GridListTile style={{ height: 120 }} key={user._id}>
           <Link href={`/profile/${user._id}`}>
             <a>
-              <Avatar
-                src={user.avatar}
-                className={classes.bigAvatar}
-              />
-              <Typography className={classes.tileText}>{user.name}</Typography>
+              <Avatar src={user.avatar} className={classes.bigAvatar} />
+              <Typography
+                component="h3"
+                variant="subtitle1"
+                className={classes.tileText}
+              >
+                {user.name}
+              </Typography>
             </a>
           </Link>
         </GridListTile>

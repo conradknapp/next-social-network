@@ -27,8 +27,8 @@ class EditProfile extends React.Component {
     name: "",
     about: "",
     avatar: "",
+    avatarPreview: "",
     email: "",
-    password: "",
     error: "",
     isLoading: true,
     isSaving: false
@@ -51,23 +51,29 @@ class EditProfile extends React.Component {
   handleSubmit = () => {
     this.setState({ isSaving: true });
     updateUser(this.state._id, this.userData).then(() => {
-      Router.push(`/profile/${this.state._id}`);
+      setTimeout(() => Router.push(`/profile/${this.state._id}`), 6000);
     });
   };
 
   handleChange = event => {
-    const inputValue =
-      event.target.name === "avatar"
-        ? event.target.files[0]
-        : event.target.value;
+    let inputValue;
+
+    if (event.target.name === "avatar") {
+      inputValue = event.target.files[0];
+      this.setState({ avatarPreview: this.createPreviewImage(inputValue) });
+    } else {
+      inputValue = event.target.value;
+    }
     this.userData.set(event.target.name, inputValue);
     this.setState({ [event.target.name]: inputValue });
   };
 
+  createPreviewImage = file => URL.createObjectURL(file);
+
   render() {
     const { classes } = this.props;
     // prettier-ignore
-    const { _id, name, password, email, about, error, avatar, isLoading, isSaving } = this.state;
+    const { name, email, about, error, avatar, avatarPreview, isLoading, isSaving } = this.state;
 
     return (
       <div className={classes.root}>
@@ -78,7 +84,33 @@ class EditProfile extends React.Component {
           <Typography component="h1" variant="h5">
             Edit Profile
           </Typography>
+
+          {/* Edit Profile Form */}
           <form onSubmit={this.handleSubmit} className={classes.form}>
+            {isLoading ? (
+              <Avatar className={classes.bigAvatar}>
+                <FaceTwoTone />
+              </Avatar>
+            ) : (
+              <Avatar
+                src={avatarPreview || avatar}
+                className={classes.bigAvatar}
+              />
+            )}
+            <input
+              id="avatar"
+              accept="image/*"
+              name="avatar"
+              onChange={this.handleChange}
+              className={classes.input}
+              type="file"
+            />
+            <label htmlFor="avatar">
+              <Button variant="contained" color="secondary" component="span">
+                Upload Image <CloudUpload />
+              </Button>
+            </label>
+            <span className={classes.filename}>{avatar && avatar.name}</span>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="name">Name</InputLabel>
               <Input
@@ -151,7 +183,7 @@ class EditProfile extends React.Component {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              User {createdUser} successfully created!
+              Your profile was successfully updated!
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -164,82 +196,6 @@ class EditProfile extends React.Component {
         </Dialog> */}
       </div>
     );
-    // return (
-    //   <Card className={classes.card}>
-    //     <CardContent>
-    //       <Typography variant="h4" className={classes.title}>
-    //         Edit Profile
-    //       </Typography>
-    //       {isLoading ? (
-    //         <Avatar className={classes.bigAvatar}>
-    //           <FaceTwoTone />
-    //         </Avatar>
-    //       ) : (
-    //         <Avatar
-    //           src={avatar}
-    //           className={classes.bigAvatar}
-    //         />
-    //       )}
-    //       <input
-    //         accept="image/*"
-    //         name="avatar"
-    //         onChange={this.handleChange}
-    //         className={classes.input}
-    //         type="file"
-    //       />
-    //       <Button variant="contained" color="secondary" component="span">
-    //         Upload Image <CloudUpload />
-    //       </Button>
-    //       <span className={classes.filename}>{avatar.name}</span>
-    //       <TextField
-    //         label="Name"
-    //         name="name"
-    //         className={classes.textField}
-    //         value={name}
-    //         onChange={this.handleChange}
-    //         margin="normal"
-    //       />
-    //       <TextField
-    //         label="About"
-    //         multiline
-    //         name="about"
-    //         rows="2"
-    //         value={about}
-    //         onChange={this.handleChange}
-    //         className={classes.textField}
-    //         margin="normal"
-    //       />
-    //       <TextField
-    //         type="email"
-    //         label="Email"
-    //         name="email"
-    //         className={classes.textField}
-    //         value={email}
-    //         onChange={this.handleChange}
-    //         margin="normal"
-    //       />
-    //       {/* {error && (
-    //         <Typography component="p" color="error">
-    //           <Icon color="error" className={classes.error}>
-    //             error
-    //           </Icon>
-    //           {error}
-    //         </Typography>
-    //       )} */}
-    //     </CardContent>
-    //     <CardActions className={classes.wrapper}>
-    //       <Button
-    //         color="primary"
-    //         variant="contained"
-    //         disabled={isLoading || isSaving}
-    //         onClick={this.handleSubmit}
-    //         className={classes.submit}
-    //       >
-    //         {isSaving ? "Saving" : "Save"}
-    //       </Button>
-    //     </CardActions>
-    //   </Card>
-    // );
   }
 }
 
@@ -290,44 +246,10 @@ const styles = theme => ({
   icon: {
     padding: "0px 2px 2px 0px",
     verticalAlign: "middle"
+  },
+  input: {
+    display: "none"
   }
 });
-
-// const styles = theme => ({
-//   card: {
-//     maxWidth: 600,
-//     margin: "auto",
-//     textAlign: "center",
-//     marginTop: theme.spacing.unit * 5,
-//     paddingBottom: theme.spacing.unit * 2
-//   },
-//   title: {
-//     margin: theme.spacing.unit * 2,
-//     color: theme.palette.protectedTitle
-//   },
-//   error: {
-//     verticalAlign: "middle"
-//   },
-//   textField: {
-//     marginLeft: theme.spacing.unit,
-//     marginRight: theme.spacing.unit,
-//     width: 300
-//   },
-//   submit: {
-//     margin: "auto",
-//     marginBottom: theme.spacing.unit * 2
-//   },
-//   bigAvatar: {
-//     width: 60,
-//     height: 60,
-//     margin: "auto"
-//   },
-//   input: {
-//     display: "none"
-//   },
-//   filename: {
-//     marginLeft: "10px"
-//   }
-// });
 
 export default withStyles(styles)(EditProfile);

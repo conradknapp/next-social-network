@@ -11,7 +11,7 @@ import Router from "next/router";
 import { signoutUser } from "../../lib/auth";
 import { deleteUser } from "../../lib/api";
 
-class RemoveUser extends React.Component {
+class DeleteUser extends React.Component {
   state = {
     open: false,
     isDeleting: false
@@ -73,4 +73,4 @@ class RemoveUser extends React.Component {
   }
 }
 
-export default RemoveUser;
+export default DeleteUser;

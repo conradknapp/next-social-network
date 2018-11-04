@@ -3,8 +3,8 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Avatar from "@material-ui/core/Avatar";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Delete from "@material-ui/icons/Delete";
+import withStyles from "@material-ui/core/styles/withStyles";
 import Link from "next/link";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 

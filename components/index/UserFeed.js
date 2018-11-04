@@ -1,9 +1,11 @@
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -11,9 +13,9 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import AccountBox from "@material-ui/icons/AccountBox";
 import Link from "next/link";
 
-import { findUsers, followUser } from "../../lib/api";
+import { getUserFeed, followUser } from "../../lib/api";
 
-class FindUsers extends React.Component {
+class UserFeed extends React.Component {
   state = {
     users: [],
     open: false
@@ -22,7 +24,7 @@ class FindUsers extends React.Component {
   componentDidMount() {
     const { auth } = this.props;
 
-    findUsers(auth.user._id).then(users => {
+    getUserFeed(auth.user._id).then(users => {
       this.setState({ users });
     });
   }
@@ -55,38 +57,40 @@ class FindUsers extends React.Component {
           Browse Users
         </Typography>
         <Divider />
+
+        {/* User List */}
         <List>
-          {users.map((user, i) => {
-            return (
-              <span key={user._id}>
-                <ListItem>
-                  {/* <ListItemAvatar className={classes.avatar}>
-                    <Avatar src={`/api/users/image/${user._id}`} />
-                  </ListItemAvatar> */}
-                  <ListItemText primary={user.name} />
-                  <ListItemSecondaryAction className={classes.follow}>
-                    <Link href={`/profile/${user._id}`}>
-                      <IconButton
-                        variant="contained"
-                        color="secondary"
-                        className={classes.viewButton}
-                      >
-                        <AccountBox />
-                      </IconButton>
-                    </Link>
-                    <Button
+          {users.map((user, i) => (
+            <span key={user._id}>
+              <ListItem>
+                <ListItemAvatar className={classes.avatar}>
+                  <Avatar src={user.avatar} />
+                </ListItemAvatar>
+                <ListItemText primary={user.name} />
+                <ListItemSecondaryAction className={classes.follow}>
+                  <Link href={`/profile/${user._id}`}>
+                    <IconButton
                       variant="contained"
-                      color="primary"
-                      onClick={() => this.handleFollow(user, i)}
+                      color="secondary"
+                      className={classes.viewButton}
                     >
-                      Follow
-                    </Button>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              </span>
-            );
-          })}
+                      <AccountBox />
+                    </IconButton>
+                  </Link>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => this.handleFollow(user, i)}
+                  >
+                    Follow
+                  </Button>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </span>
+          ))}
         </List>
+
+        {/* Follow User Snackbar */}
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
@@ -120,4 +124,4 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(FindUsers);
+export default withStyles(styles)(UserFeed);
