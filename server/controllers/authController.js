@@ -9,27 +9,25 @@ exports.validateSignup = (req, res, next) => {
   req.sanitizeBody("password");
 
   // Name is non-null and between 4 and 10 chars
-  req.checkBody("name", "Name is required").notEmpty();
-  req
-    .checkBody("name", "Name must be between 4 and 10 characters")
-    .isLength({ min: 4, max: 10 });
+  req.checkBody("name", "Enter a name").notEmpty();
+  // req
+  //   .checkBody("name", "Name must be between 4 and 10 characters")
+  //   .isLength({ min: 4, max: 10 });
 
   // Email is non-null, valid, and normalized
   req
-    .checkBody("email", "Email is not valid")
+    .checkBody("email", "Enter a valid email")
     .isEmail()
     .normalizeEmail();
 
-  // Password is non-null and between 4 and 10 chars
+  // Password is non-null
   req.checkBody("password", "Password is required").notEmpty();
-  req
-    .checkBody("password", "Password must be between 4 and 10 characters")
-    .isLength({ min: 4, max: 10 });
 
   const errors = req.validationErrors();
+
   if (errors) {
-    const json = errors.map(err => err.msg);
-    return res.status(400).send(json);
+    const firstError = errors.map(err => err.msg)[0];
+    return res.status(400).send(firstError);
   }
   next();
 };
@@ -40,7 +38,7 @@ exports.signup = async (req, res) => {
   // passport local mongoose plugin gives us a register method that will hash our password and call .save();
   User.register(user, password, (err, user) => {
     if (err) {
-      return res.sendStatus(500);
+      return res.status(500).send(err.message);
     }
     // console.log("user registered!", user);
     res.json(user.name);
@@ -50,7 +48,7 @@ exports.signup = async (req, res) => {
 exports.signin = (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
-      return res.status(500).json(err);
+      return res.status(500).json(err.message);
     }
     if (!user) {
       return res.status(400).json(info.message);
@@ -58,7 +56,7 @@ exports.signin = (req, res, next) => {
 
     req.logIn(user, err => {
       if (err) {
-        return res.status(500).json(err);
+        return res.status(500).json(err.message);
       }
       res.json(user);
     });

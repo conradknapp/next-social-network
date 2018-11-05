@@ -16,7 +16,7 @@ const catchErrors = fn => {
 router.post(
   "/api/auth/signup",
   authController.validateSignup,
-  authController.signup
+  catchErrors(authController.signup)
 );
 router.post("/api/auth/signin", authController.signin);
 router.get("/api/auth/signout", authController.signout);

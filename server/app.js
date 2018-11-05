@@ -111,9 +111,10 @@ app.prepare().then(() => {
   /* apply routes from the "routes" folder */
   server.use("/", routes);
 
-  /* Error handling */
+  /* Error handling from async / await functions */
   server.use((err, req, res, next) => {
     const { status = 500, message } = err;
+    console.log({ errFromHandler: err });
     res.status(status).json(message);
   });
 

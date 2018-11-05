@@ -20,6 +20,13 @@ exports.getAuthUser = (req, res) => {
 exports.getUserById = async (req, res, next, id) => {
   const user = await User.findOne({ _id: id });
   req.profile = user;
+
+  const profileId = mongoose.Types.ObjectId(req.profile._id);
+
+  if (profileId.equals(req.user._id)) {
+    req.isAuthUser = true;
+    return next();
+  }
   next();
 };
 
@@ -71,14 +78,16 @@ exports.updateUser = async (req, res) => {
   const updatedUser = await User.findOneAndUpdate(
     { _id: req.user._id },
     { $set: req.body },
-    { new: true, runValidators: true, context: "query" }
+    // Run Validators is an option that allows us to rerun our Mongoose schema validation (w/ validate, required, min/maxlength)
+    { new: true, runValidators: true }
   );
   res.json(updatedUser);
 };
 
 exports.deleteUser = async (req, res) => {
-  const isAuthUser = req.params.userId === req.user._id;
-  if (!isAuthUser) {
+  const { userId } = req.params;
+
+  if (!req.isAuthUser) {
     return res.status(403).json({
       message: "You are not authorized to perform this action"
     });

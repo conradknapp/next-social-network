@@ -31,7 +31,7 @@ class Signup extends React.Component {
     openSuccess: false,
     openError: false,
     isLoading: false,
-    errors: [],
+    error: [],
     createdUser: ""
   };
 
@@ -41,7 +41,7 @@ class Signup extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.setState({ errors: [], isLoading: true });
+    this.setState({ error: "", isLoading: true });
     const user = {
       name: this.state.name,
       password: this.state.password,
@@ -51,7 +51,7 @@ class Signup extends React.Component {
       .then(createdUser => {
         this.setState({
           createdUser,
-          errors: "",
+          error: "",
           openSuccess: true,
           isLoading: false
         });
@@ -60,15 +60,21 @@ class Signup extends React.Component {
   };
 
   showError = err => {
-    const errors = (err.response && err.response.data) || err.message;
-    this.setState({ errors, openError: true, isLoading: false });
+    const error = (err.response && err.response.data) || err.message;
+    this.setState({ error, openError: true, isLoading: false });
   };
 
   handleClose = () => this.setState({ openError: false });
 
   render() {
     const { classes } = this.props;
-    const { createdUser, openError, errors, isLoading, openSuccess } = this.state;
+    const {
+      createdUser,
+      openError,
+      error,
+      isLoading,
+      openSuccess
+    } = this.state;
 
     return (
       <div className={classes.root}>
@@ -82,19 +88,11 @@ class Signup extends React.Component {
           <form onSubmit={this.handleSubmit} className={classes.form}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="name">Name</InputLabel>
-              <Input
-                name="name"
-                type="text"
-                onChange={this.handleChange}
-              />
+              <Input name="name" type="text" onChange={this.handleChange} />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input
-                name="email"
-                type="email"
-                onChange={this.handleChange}
-              />
+              <Input name="email" type="email" onChange={this.handleChange} />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="password">Password</InputLabel>
@@ -117,7 +115,7 @@ class Signup extends React.Component {
           </form>
 
           {/* Error Snackbar */}
-          {errors.length > 0 && (
+          {error && (
             <Snackbar
               anchorOrigin={{
                 vertical: "bottom",
@@ -126,13 +124,7 @@ class Signup extends React.Component {
               open={openError}
               onClose={this.handleClose}
               autoHideDuration={6000}
-              message={
-                <span className={classes.snack}>
-                  {errors.map(err => (
-                    <li>{err}</li>
-                  ))}
-                </span>
-              }
+              message={<span className={classes.snack}>{error}</span>}
             />
           )}
         </Paper>
@@ -208,7 +200,8 @@ const styles = theme => ({
   },
   icon: {
     padding: "0px 2px 2px 0px",
-    verticalAlign: "middle"
+    verticalAlign: "middle",
+    color: "green"
   }
 });
 

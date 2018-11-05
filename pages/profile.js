@@ -123,11 +123,13 @@ class Profile extends React.Component {
           Profile
         </Typography>
         {isLoading ? (
-          <CircularProgress
-            className={classes.progress}
-            size={55}
-            thickness={5}
-          />
+          <div className={classes.progressContainer}>
+            <CircularProgress
+              className={classes.progress}
+              size={55}
+              thickness={5}
+            />
+          </div>
         ) : (
           <List dense>
             <ListItem>
@@ -182,20 +184,24 @@ Profile.getInitialProps = authInitialProps(true);
 
 const styles = theme => ({
   root: {
-    maxWidth: 600,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
     padding: theme.spacing.unit * 3,
     marginTop: theme.spacing.unit * 5,
-    margin: "auto"
+    margin: "auto",
+    [theme.breakpoints.up("sm")]: {
+      width: 600
+    }
   },
   title: {
     color: theme.palette.openTitle
   },
   progress: {
     margin: theme.spacing.unit * 2
+  },
+  progressContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column"
   },
   bigAvatar: {
     width: 60,

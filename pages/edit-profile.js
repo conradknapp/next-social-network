@@ -139,7 +139,7 @@ class EditProfile extends React.Component {
               <Input
                 name="about"
                 type="text"
-                name={about}
+                value={about}
                 onChange={this.handleChange}
               />
             </FormControl>
@@ -253,7 +253,8 @@ const styles = theme => ({
   },
   icon: {
     padding: "0px 2px 2px 0px",
-    verticalAlign: "middle"
+    verticalAlign: "middle",
+    color: "green"
   },
   input: {
     display: "none"

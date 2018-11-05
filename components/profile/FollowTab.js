@@ -42,8 +42,10 @@ const styles = theme => ({
     margin: "auto"
   },
   gridList: {
-    width: 500,
-    height: 220
+    width: 300,
+    [theme.breakpoints.up("sm")]: {
+      width: 400
+    }
   },
   tileText: {
     textAlign: "center",
