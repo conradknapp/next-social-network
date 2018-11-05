@@ -36,10 +36,12 @@ class PostFeed extends React.Component {
   };
 
   handleChange = event => {
-    const inputValue =
-      event.target.name === "image"
-        ? event.target.files[0]
-        : event.target.value;
+    let inputValue;
+    if (event.target.name === "image") {
+      inputValue = event.target.files[0];
+    } else {
+      inputValue = event.target.value;
+    }
     this.postData.set(event.target.name, inputValue);
     this.setState({ [event.target.name]: inputValue });
   };
@@ -89,10 +91,7 @@ class PostFeed extends React.Component {
 
     const isPostLiked = post.likes.includes(auth.user._id);
     const sendRequest = isPostLiked ? unlikePost : likePost;
-    sendRequest({
-      userId: auth.user._id,
-      postId: post._id
-    })
+    sendRequest(auth.user._id, post._id)
       .then(postData => {
         const postIndex = this.state.posts.findIndex(
           post => post._id === postData._id

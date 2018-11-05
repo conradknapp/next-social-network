@@ -18,21 +18,20 @@ import { getUserFeed, followUser } from "../../lib/api";
 class UserFeed extends React.Component {
   state = {
     users: [],
-    open: false
+    open: false,
+    followMessage: ""
   };
 
   componentDidMount() {
     const { auth } = this.props;
 
-    getUserFeed(auth.user._id).then(users => {
-      this.setState({ users });
-    });
+    getUserFeed(auth.user._id).then(users => this.setState({ users }));
   }
 
   handleFollow = (user, userIndex) => {
     const { auth } = this.props;
 
-    followUser(auth.user._id, user._id).then(() => {
+    followUser(auth.user._id, user._id).then(user => {
       const updatedUsers = [
         ...this.state.users.slice(0, userIndex),
         ...this.state.users.slice(userIndex + 1)

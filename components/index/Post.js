@@ -32,7 +32,6 @@ class Post extends React.PureComponent {
     });
   }
 
-
   componentDidUpdate(prevProps) {
     /* Note: show the difference when using a regular Component versus a PureComponent */
 
@@ -69,7 +68,7 @@ class Post extends React.PureComponent {
       handleRemovePost,
       handleAddComment,
       handleRemoveComment,
-      hideComments
+      disablePost
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
     const isPostCreator = post.postedBy._id === auth.user._id;
@@ -113,6 +112,7 @@ class Post extends React.PureComponent {
         {/* Post Buttons */}
         <CardActions>
           <IconButton
+            disabled={disablePost}
             onClick={() => handleToggleLike(post)}
             className={classes.button}
           >
@@ -133,7 +133,7 @@ class Post extends React.PureComponent {
         <Divider />
 
         {/* Comments Area */}
-        {!hideComments && (
+        {!disablePost && (
           <Comments
             key={post._id}
             auth={auth}

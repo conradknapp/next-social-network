@@ -28,8 +28,8 @@ class Signup extends React.Component {
     name: "",
     password: "",
     email: "",
-    open: false,
     openSuccess: false,
+    openError: false,
     isLoading: false,
     errors: [],
     createdUser: ""
@@ -49,7 +49,6 @@ class Signup extends React.Component {
     };
     signupUser(user)
       .then(createdUser => {
-        // console.log(createdUser);
         this.setState({
           createdUser,
           errors: "",
@@ -62,14 +61,14 @@ class Signup extends React.Component {
 
   showError = err => {
     const errors = (err.response && err.response.data) || err.message;
-    this.setState({ errors, open: true, isLoading: false });
+    this.setState({ errors, openError: true, isLoading: false });
   };
 
-  handleClose = () => this.setState({ open: false });
+  handleClose = () => this.setState({ openError: false });
 
   render() {
     const { classes } = this.props;
-    const { createdUser, open, errors, isLoading, openSuccess } = this.state;
+    const { createdUser, openError, errors, isLoading, openSuccess } = this.state;
 
     return (
       <div className={classes.root}>
@@ -124,7 +123,7 @@ class Signup extends React.Component {
                 vertical: "bottom",
                 horizontal: "right"
               }}
-              open={open}
+              open={openError}
               onClose={this.handleClose}
               autoHideDuration={6000}
               message={

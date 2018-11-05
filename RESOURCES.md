@@ -19,8 +19,6 @@ BuilderBook
 - About isomorphic unfetch
   https://nodewebapps.com/2018/03/29/building-server-rendered-react-apps-with-nextjs/
 
-- https://github.com/shamahoque/mern-social
-
 Next w/ Postgres
 
 - https://www.youtube.com/watch?v=kmrJkrW-ha0
@@ -36,10 +34,6 @@ Cookie Auth Example
 - https://with-cookie-auth-hmjqggpeof.now.sh/profile
 
 https://flaviocopes.com/express-validate-input/
-
-Serving Static Files
-
-- https://github.com/ahalimkara/babel-plugin-import-static-files
 
 Running Nodemon/Webpack 4 Simultaneously
 
@@ -96,3 +90,7 @@ Prefetching Example
 - https://stackoverflow.com/questions/45041511/how-do-i-decide-whether-a-post-is-liked-by-a-user-with-mongoose
 
 shift 3 - go from one instance of something to another
+
+[Show Preview Image in JavaScript](https://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded)
+
+- https://medium.com/@contactsunny/hide-properties-of-mongoose-objects-in-node-js-json-responses-a5437a5dbec2

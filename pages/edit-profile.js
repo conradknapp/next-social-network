@@ -30,6 +30,9 @@ class EditProfile extends React.Component {
     avatarPreview: "",
     email: "",
     error: "",
+    updatedUser: null,
+    openSuccess: false,
+    openError: false,
     isLoading: true,
     isSaving: false
   };
@@ -48,12 +51,7 @@ class EditProfile extends React.Component {
       });
   }
 
-  handleSubmit = () => {
-    this.setState({ isSaving: true });
-    updateUser(this.state._id, this.userData).then(() => {
-      setTimeout(() => Router.push(`/profile/${this.state._id}`), 6000);
-    });
-  };
+  createPreviewImage = file => URL.createObjectURL(file);
 
   handleChange = event => {
     let inputValue;
@@ -68,12 +66,28 @@ class EditProfile extends React.Component {
     this.setState({ [event.target.name]: inputValue });
   };
 
-  createPreviewImage = file => URL.createObjectURL(file);
+  handleSubmit = event => {
+    event.preventDefault();
+    this.setState({ isSaving: true });
+    updateUser(this.state._id, this.userData)
+      .then(updatedUser => {
+        this.setState({ updatedUser, openSuccess: true });
+        setTimeout(() => Router.push(`/profile/${this.state._id}`), 6000);
+      })
+      .catch(this.showError);
+  };
+
+  showError = err => {
+    const error = (err.response && err.response.data) || err.message;
+    this.setState({ error, openError: true, isSaving: false });
+  };
+
+  handleClose = () => this.setState({ openError: false });
 
   render() {
     const { classes } = this.props;
     // prettier-ignore
-    const { name, email, about, error, avatar, avatarPreview, isLoading, isSaving } = this.state;
+    const { name, email, about, error, avatar, avatarPreview, isLoading, isSaving, updatedUser, openSuccess, openError } = this.state;
 
     return (
       <div className={classes.root}>
@@ -105,7 +119,7 @@ class EditProfile extends React.Component {
               className={classes.input}
               type="file"
             />
-            <label htmlFor="avatar">
+            <label htmlFor="avatar" className={classes.uploadButton}>
               <Button variant="contained" color="secondary" component="span">
                 Upload Image <CloudUpload />
               </Button>
@@ -151,49 +165,32 @@ class EditProfile extends React.Component {
           </form>
 
           {/* Error Snackbar */}
-          {error.length > 0 && (
+          {error && (
             <Snackbar
               anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "right"
               }}
-              open={open}
+              open={openError}
               onClose={this.handleClose}
               autoHideDuration={6000}
-              message={
-                <span className={classes.snack}>
-                  {error.map(err => (
-                    <li>{err}</li>
-                  ))}
-                </span>
-              }
+              message={<span className={classes.snack}>{error}</span>}
             />
           )}
         </Paper>
 
         {/* Success Dialog */}
-        {/* <Dialog
-          open={openSuccess}
-          disableBackdropClick={true}
-          TransitionComponent={Transition}
-        >
+        <Dialog open={openSuccess} disableBackdropClick={true}>
           <DialogTitle>
             <VerifiedUserTwoTone className={classes.icon} />
-            New Account
+            Profile Updated
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Your profile was successfully updated!
+              User {updatedUser && updatedUser.name} was successfully updated!
             </DialogContentText>
           </DialogContent>
-          <DialogActions>
-            <Button color="primary" variant="contained">
-              <Link href="/signin">
-                <a className={classes.signinLink}>Sign In</a>
-              </Link>
-            </Button>
-          </DialogActions>
-        </Dialog> */}
+        </Dialog>
       </div>
     );
   }
@@ -213,6 +210,17 @@ const styles = theme => ({
       marginLeft: "auto",
       marginRight: "auto"
     }
+  },
+  bigAvatar: {
+    width: 60,
+    height: 60,
+    margin: "auto"
+  },
+  uploadButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "0.25em"
   },
   paper: {
     marginTop: theme.spacing.unit * 8,

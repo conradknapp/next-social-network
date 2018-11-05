@@ -3,8 +3,9 @@ import { withRouter } from "next/router";
 const ActiveLink = ({ router, href, children }) => {
   (function prefetchPages() {
     if (typeof window !== "undefined") {
-      router.prefetch(href);
-      // console.log(`prefetching ${href}`);
+      // want to avoid prefetching any dynamic routes (will be an error in production)
+      router.prefetch(router.pathname);
+      // console.log(`prefetching ${router.pathname}`);
     }
   })();
 

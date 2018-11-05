@@ -1,9 +1,20 @@
 const mongoose = require("mongoose");
+const multer = require("multer");
+const jimp = require("jimp");
 const User = mongoose.model("User");
 
-exports.getUsers = async (req, res) => {
-  const users = await User.find().select("name email updatedAt createdAt");
-  res.json(users);
+// exports.getUsers = async (req, res) => {
+//   const users = await User.find().select("name email updatedAt createdAt");
+//   res.json(users);
+// };
+
+exports.getAuthUser = (req, res) => {
+  if (!req.user) {
+    return res.status(403).json({
+      message: "You are unauthenticated. Please sign in or sign up"
+    });
+  }
+  res.json(req.user);
 };
 
 exports.getUserById = async (req, res, next, id) => {
@@ -12,11 +23,7 @@ exports.getUserById = async (req, res, next, id) => {
   next();
 };
 
-exports.getMe = (req, res) => {
-  res.json(req.user);
-};
-
-exports.getUser = async (req, res) => {
+exports.getUserProfile = async (req, res) => {
   const user = await User.findOne({ _id: req.params.userId });
   if (!user) {
     return res.status(404).json({
@@ -26,25 +33,47 @@ exports.getUser = async (req, res) => {
   res.json(user);
 };
 
-exports.updateUser = (req, res) => {
-  // let form = new formidable.IncomingForm();
-  // form.keepExtensions = true;
-  // form.parse(req, async (err, fields, files) => {
-  //   if (err) {
-  //     return res.status(400).json({
-  //       error: "Photo could not be uploaded"
-  //     });
-  //   }
-  //   let user = req.user;
-  //   user = _.extend(user, fields);
-  //   user.updatedAt = new Date().toISOString();
-  //   if (files.avatar) {
-  //     user.avatar.data = fs.readFileSync(files.avatar.path);
-  //     user.avatar.contentType = files.avatar.type;
-  //   }
-  //   const updatedUser = await user.save();
-  //   res.json(updatedUser);
-  // });
+const avatarUploadOptions = {
+  storage: multer.memoryStorage(),
+  limits: {
+    // stores image files up to 1mb
+    fileSize: 1024 * 1024 * 1
+  },
+  fileFilter: (req, file, next) => {
+    if (file.mimetype.startsWith("image/")) {
+      next(null, true);
+    } else {
+      next(null, false);
+    }
+  }
+};
+
+// We have to make sure the type= file with name attribute should be same as the parameter name passed in upload.single()
+exports.uploadAvatar = multer(avatarUploadOptions).single("avatar");
+
+exports.resizeAvatar = async (req, res, next) => {
+  // multer puts our uploaded image on req.file
+  if (!req.file) {
+    return next();
+  }
+  const extension = req.file.mimetype.split("/")[1];
+  req.body.avatar = `/static/uploads/avatars/${
+    req.user.name
+  }-${Date.now()}.${extension}`;
+  const image = await jimp.read(req.file.buffer);
+  await image.resize(250, jimp.AUTO);
+  await image.write(`./${req.body.avatar}`);
+  next();
+};
+
+exports.updateUser = async (req, res) => {
+  req.body.updatedAt = new Date().toISOString();
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $set: req.body },
+    { new: true, runValidators: true, context: "query" }
+  );
+  res.json(updatedUser);
 };
 
 exports.deleteUser = async (req, res) => {
@@ -71,12 +100,12 @@ exports.addFollowing = async (req, res, next) => {
 exports.addFollower = async (req, res) => {
   const { authUserId, followId } = req.body;
 
-  const result = await User.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     { _id: followId },
     { $push: { followers: authUserId } },
     { new: true }
   );
-  res.json(result);
+  res.json(user);
 };
 
 exports.deleteFollowing = async (req, res, next) => {
@@ -92,12 +121,12 @@ exports.deleteFollowing = async (req, res, next) => {
 exports.deleteFollower = async (req, res) => {
   const { authUserId, followId } = req.body;
 
-  const result = await User.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     { _id: followId },
     { $pull: { followers: authUserId } },
     { new: true }
   );
-  res.json(result);
+  res.json(user);
 };
 
 exports.getUserFeed = async (req, res) => {

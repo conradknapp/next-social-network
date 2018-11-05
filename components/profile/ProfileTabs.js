@@ -3,13 +3,13 @@ import Typography from "@material-ui/core/Typography";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
-import FollowGrid from "./FollowGrid";
+import FollowTab from "./FollowTab";
 import Post from "../index/Post";
 
 class ProfileTabs extends React.Component {
   state = {
     tab: 0,
-    hideComments: true
+    disablePost: true
   };
 
   handleTabChange = (event, value) => {
@@ -17,7 +17,7 @@ class ProfileTabs extends React.Component {
   };
 
   render() {
-    const { tab, hideComments } = this.state;
+    const { tab, disablePost } = this.state;
     const {
       handleRemovePost,
       handleToggleLike,
@@ -48,7 +48,7 @@ class ProfileTabs extends React.Component {
                 key={post._id}
                 post={post}
                 auth={auth}
-                hideComments={hideComments}
+                disablePost={disablePost}
                 handleToggleLike={handleToggleLike}
                 handleRemovePost={handleRemovePost}
               />
@@ -57,12 +57,12 @@ class ProfileTabs extends React.Component {
         )}
         {tab === 1 && (
           <TabContainer>
-            <FollowGrid users={user.following} />
+            <FollowTab users={user.following} />
           </TabContainer>
         )}
         {tab === 2 && (
           <TabContainer>
-            <FollowGrid users={user.followers} />
+            <FollowTab users={user.followers} />
           </TabContainer>
         )}
       </div>
@@ -71,7 +71,7 @@ class ProfileTabs extends React.Component {
 }
 
 const TabContainer = ({ children }) => (
-  <Typography component="div" style={{ padding: 8 * 2 }}>
+  <Typography component="div" style={{ padding: "1em" }}>
     {children}
   </Typography>
 );

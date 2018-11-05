@@ -13,7 +13,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Edit from "@material-ui/icons/Edit";
 import Link from "next/link";
 import format from "date-fns/format";
-import isSameDay from "date-fns/is_same_day";
 
 import ProfileTabs from "../components/profile/ProfileTabs";
 import DeleteUser from "../components/profile/DeleteUser";
@@ -136,6 +135,7 @@ class Profile extends React.Component {
                 <Avatar src={user.avatar} className={classes.bigAvatar} />
               </ListItemAvatar>
               <ListItemText primary={user.name} secondary={user.email} />{" "}
+              {/* Auth - Edit Buttons / UnAuth - Follow Button */}
               {isAuth ? (
                 <ListItemSecondaryAction>
                   <Link href="/edit-profile">
@@ -158,18 +158,11 @@ class Profile extends React.Component {
             <ListItem>
               <ListItemText
                 primary={user.about}
-                secondary={
-                  <>
-                    <span>Joined: {this.formatDate(user.createdAt)}</span>
-                    {!isSameDay(user.createdAt, user.updatedAt) && (
-                      <span style={{ display: "block" }}>
-                        Updated: {this.formatDate(user.updatedAt)}
-                      </span>
-                    )}
-                  </>
-                }
+                secondary={`Joined: ${this.formatDate(user.createdAt)}`}
               />
             </ListItem>
+
+            {/* Display User's Posts, their Following, Followers */}
             <ProfileTabs
               user={user}
               auth={auth}

@@ -6,7 +6,7 @@ const jimp = require("jimp");
 const imageUploadOptions = {
   storage: multer.memoryStorage(),
   limits: {
-    // stores files only up to 1mb
+    // stores image files up to 1mb
     fileSize: 1024 * 1024 * 1
   },
   fileFilter: (req, file, next) => {
@@ -21,14 +21,14 @@ const imageUploadOptions = {
 exports.uploadImage = multer(imageUploadOptions).single("image");
 
 exports.resizeImage = async (req, res, next) => {
-  // multer puts our uploadedmage on req.file
+  // multer puts our uploaded image on req.file
   if (!req.file) {
     return next();
   }
   const extension = req.file.mimetype.split("/")[1];
-  req.body.image = `/static/uploads/${Date.now()}-${
+  req.body.image = `/static/uploads/${
     req.user.name
-  }.${extension}`;
+  }-${Date.now()}.${extension}`;
   const image = await jimp.read(req.file.buffer);
   await image.resize(750, jimp.AUTO);
   await image.write(`./${req.body.image}`);
@@ -61,7 +61,7 @@ exports.getPostsByUser = async (req, res) => {
 };
 
 exports.getPostFeed = async (req, res) => {
-  const { following, _id } = req.user;
+  const { following, _id } = req.profile;
 
   following.push(_id);
   const posts = await Post.find({ postedBy: { $in: following } }).sort({
@@ -76,14 +76,14 @@ exports.deletePost = async (req, res) => {
 };
 
 exports.toggleLike = async (req, res) => {
-  const { userId, postId } = req.body;
+  const { authUserId, postId } = req.body;
+  
   const post = await Post.findOne({ _id: postId });
-  console.log(post);
   const likeIds = post.likes.map(id => id.toString());
-  if (likeIds.includes(userId)) {
-    await post.likes.pull(userId);
+  if (likeIds.includes(authUserId)) {
+    await post.likes.pull(authUserId);
   } else {
-    await post.likes.push(userId);
+    await post.likes.push(authUserId);
   }
   await post.save();
   res.json(post);
@@ -95,11 +95,11 @@ exports.toggleComment = async (req, res) => {
   let data;
 
   if (req.url.includes("uncomment")) {
-    data = { _id: comment._id };
     operator = "$pull";
+    data = { _id: comment._id };
   } else {
-    data = comment;
     operator = "$push";
+    data = comment;
   }
   const updatedPost = await Post.findOneAndUpdate(
     { _id: postId },
@@ -108,6 +108,5 @@ exports.toggleComment = async (req, res) => {
   )
     .populate("postedBy", "_id name avatar")
     .populate("comments.postedBy", "_id name avatar");
-  console.log(updatedPost);
   res.json(updatedPost);
 };

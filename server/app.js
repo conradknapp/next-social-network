@@ -6,6 +6,9 @@ const logger = require("morgan");
 const mongoSessionStore = require("connect-mongo");
 const expressValidator = require("express-validator");
 const passport = require("passport");
+const helmet = require("helmet");
+const compression = require("compression");
+
 /* Loads all variables from .env file to "process.env" */
 require("dotenv").config();
 /* Require our models here so we can use the mongoose.model() singleton to reference our models across our app */
@@ -13,13 +16,6 @@ require("./models/Post");
 require("./models/User");
 const routes = require("./routes");
 require("./passport");
-
-/**
- * Note: Uncomment code beneath for production
- */
-
-// const helmet = require("helmet");
-// const compression = require("compression");
 
 const dev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
@@ -47,14 +43,12 @@ mongoose.connection.on("error", err => {
 app.prepare().then(() => {
   const server = express();
 
-  /**
-   * Note: Uncomment code beneath for production
-   */
-
-  /* Helmet helps secure our app by setting various HTTP headers */
-  // server.use(helmet());
-  /* Compression gives us gzip compression upon deployment */
-  // server.use(compression());
+  if (!dev) {
+    /* Helmet helps secure our app by setting various HTTP headers */
+    server.use(helmet());
+    /* Compression gives us gzip compression */
+    server.use(compression());
+  }
 
   /* Body Parser built-in to Express as of version 4.16 */
   server.use(express.json());
@@ -72,11 +66,11 @@ app.prepare().then(() => {
   const MongoStore = mongoSessionStore(session);
   const sessionConfig = {
     name: "next-connect.sid",
-    // used to sign cookies into the session
+    // secret used for using signed cookies w/ the session
     secret: process.env.SESSION_SECRET,
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
-      ttl: 14 * 24 * 60 * 60 // save session 14 days
+      ttl: 14 * 24 * 60 * 60 // save session for 14 days
     }),
     // forces the session to be saved back to the store
     resave: false,
@@ -88,15 +82,12 @@ app.prepare().then(() => {
     }
   };
 
-  /**
-   * Note: Uncomment code beneath for production
-   */
+  if (!dev) {
+    sessionConfig.cookie.secure = true; // serve secure cookies in production environment
+    server.set("trust proxy", 1); // trust first proxy
+  }
 
-  // if (!dev) {
-  //   sessionConfig.cookie.secure = true; // serve secure cookies in production environment
-  //   server.set("trust proxy", 1); // trust first proxy
-  // }
-
+  /* Apply our session configuration to express-session */
   server.use(session(sessionConfig));
 
   /* Add passport middleware to set passport up */
@@ -119,6 +110,12 @@ app.prepare().then(() => {
 
   /* apply routes from the "routes" folder */
   server.use("/", routes);
+
+  /* Error handling */
+  server.use((err, req, res, next) => {
+    const { status = 500, message } = err;
+    res.status(status).json(message);
+  });
 
   /* create custom routes with route params */
   server.get("/profile/:userId", (req, res) => {
