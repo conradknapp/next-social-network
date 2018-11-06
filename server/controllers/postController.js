@@ -54,7 +54,7 @@ exports.getPostById = async (req, res, next, id) => {
 };
 
 exports.getPostsByUser = async (req, res) => {
-  const posts = await Post.find({ postedBy: req.user._id }).sort({
+  const posts = await Post.find({ postedBy: req.profile._id }).sort({
     createdAt: "desc"
   });
   res.json(posts);
@@ -77,7 +77,7 @@ exports.deletePost = async (req, res) => {
 
 exports.toggleLike = async (req, res) => {
   const { authUserId, postId } = req.body;
-  
+
   const post = await Post.findOne({ _id: postId });
   const likeIds = post.likes.map(id => id.toString());
   if (likeIds.includes(authUserId)) {
