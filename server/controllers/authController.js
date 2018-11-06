@@ -10,9 +10,9 @@ exports.validateSignup = (req, res, next) => {
 
   // Name is non-null and between 4 and 10 chars
   req.checkBody("name", "Enter a name").notEmpty();
-  // req
-  //   .checkBody("name", "Name must be between 4 and 10 characters")
-  //   .isLength({ min: 4, max: 10 });
+  req
+    .checkBody("name", "Name must be between 4 and 10 characters")
+    .isLength({ min: 4, max: 10 });
 
   // Email is non-null, valid, and normalized
   req
