@@ -133,16 +133,15 @@ class Post extends React.PureComponent {
         <Divider />
 
         {/* Comments Area */}
-        {!disablePost && (
           <Comments
             key={post._id}
             auth={auth}
             postId={post._id}
             comments={comments}
+            disablePost={disablePost}
             handleAddComment={handleAddComment}
             handleRemoveComment={handleRemoveComment}
           />
-        )}
       </Card>
     );
   }

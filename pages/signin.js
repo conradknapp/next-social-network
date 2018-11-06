@@ -14,8 +14,8 @@ import { signinUser } from "../lib/auth";
 
 class Signin extends React.Component {
   state = {
-    email: "reed@gmail.com",
-    password: "reeder",
+    email: "",
+    password: "",
     error: "",
     open: false,
     isLoading: false

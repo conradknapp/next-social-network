@@ -3,10 +3,10 @@ const multer = require("multer");
 const jimp = require("jimp");
 const User = mongoose.model("User");
 
-// exports.getUsers = async (req, res) => {
-//   const users = await User.find().select("name email updatedAt createdAt");
-//   res.json(users);
-// };
+exports.getUsers = async (req, res) => {
+  const users = await User.find().select("_id name email updatedAt createdAt");
+  res.json(users);
+};
 
 exports.getAuthUser = (req, res) => {
   if (!req.user) {

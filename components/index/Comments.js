@@ -58,33 +58,36 @@ class Comments extends React.PureComponent {
   };
 
   render() {
-    const { classes, comments, auth } = this.props;
+    const { classes, comments, auth, disablePost } = this.props;
     const { text } = this.state;
 
     return (
       <div className={classes.comments}>
         {/* Comment Input */}
-        <CardHeader
-          avatar={
-            <Avatar className={classes.smallAvatar} src={auth.user.avatar} />
-          }
-          title={
-            <form onSubmit={this.handleSubmit}>
-              <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="add-comment">Add comment</InputLabel>
-                <Input
-                  id="add-comment"
-                  name="text"
-                  value={text}
-                  onChange={this.handleChange}
-                  placeholder="Reply to this post"
-                  className={classes.commentField}
-                />
-              </FormControl>
-            </form>
-          }
-          className={classes.cardHeader}
-        />
+        {!disablePost && (
+          <CardHeader
+            avatar={
+              <Avatar className={classes.smallAvatar} src={auth.user.avatar} />
+            }
+            title={
+              <form onSubmit={this.handleSubmit}>
+                <p>{disablePost}</p>
+                <FormControl margin="normal" required fullWidth>
+                  <InputLabel htmlFor="add-comment">Add comment</InputLabel>
+                  <Input
+                    id="add-comment"
+                    name="text"
+                    value={text}
+                    onChange={this.handleChange}
+                    placeholder="Reply to this post"
+                    className={classes.commentField}
+                  />
+                </FormControl>
+              </form>
+            }
+            className={classes.cardHeader}
+          />
+        )}
 
         {/* Comments */}
         {comments.map(comment => (
