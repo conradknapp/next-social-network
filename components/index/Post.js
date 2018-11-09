@@ -50,7 +50,7 @@ class Post extends React.PureComponent {
     }
   }
 
-  checkLiked = likes => likes.includes(this.props.authUser._id);
+  checkLiked = likes => likes.includes(this.props.auth.user_id);
 
   formatTimeCreated = time =>
     distanceInWordsToNow(time, {
@@ -62,7 +62,7 @@ class Post extends React.PureComponent {
     const {
       classes,
       post,
-      authUser,
+      auth,
       isDeletingPost,
       handleToggleLike,
       handleRemovePost,
@@ -71,7 +71,7 @@ class Post extends React.PureComponent {
       disablePost
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
-    const isPostCreator = post.postedBy._id === authUser._id;
+    const isPostCreator = post.postedBy._id === auth.user_id;
 
     return (
       <Card className={classes.card}>
@@ -133,15 +133,15 @@ class Post extends React.PureComponent {
         <Divider />
 
         {/* Comments Area */}
-          <Comments
-            key={post._id}
-            authUser={authUser}
-            postId={post._id}
-            comments={comments}
-            disablePost={disablePost}
-            handleAddComment={handleAddComment}
-            handleRemoveComment={handleRemoveComment}
-          />
+        <Comments
+          key={post._id}
+          auth={auth}
+          postId={post._id}
+          comments={comments}
+          disablePost={disablePost}
+          handleAddComment={handleAddComment}
+          handleRemoveComment={handleRemoveComment}
+        />
       </Card>
     );
   }

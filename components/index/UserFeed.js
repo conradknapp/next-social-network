@@ -23,9 +23,9 @@ class UserFeed extends React.Component {
   };
 
   componentDidMount() {
-    const { authUser } = this.props;
+    const { auth } = this.props;
 
-    getUserFeed(authUser._id).then(users => this.setState({ users }));
+    getUserFeed(auth.user._id).then(users => this.setState({ users }));
   }
 
   handleFollow = (user, userIndex) => {

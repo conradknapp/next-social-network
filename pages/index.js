@@ -10,16 +10,13 @@ import UserFeed from "../components/index/UserFeed";
 import PostFeed from "../components/index/PostFeed";
 import { authInitialProps } from "../lib/auth";
 
-const Index = ({ classes, auth }) => {
-  const { user = {} } = auth || {};
-
-  return (
+const Index = ({ classes, auth }) => (
   <main className={classes.root}>
-    {user._id ? (
+    {auth.user && auth.user._id ? (
       // Auth User Page
       <Grid container>
         <Grid item xs={12} sm={12} md={7}>
-          <PostFeed authUser={user} />
+          <PostFeed auth={auth} />
         </Grid>
         <Grid item className={classes.drawerContainer}>
           <Drawer
@@ -30,7 +27,7 @@ const Index = ({ classes, auth }) => {
               paper: classes.drawerPaper
             }}
           >
-            <UserFeed authUser={user} />
+            <UserFeed auth={auth} />
           </Drawer>
         </Grid>
       </Grid>
@@ -73,7 +70,7 @@ const Index = ({ classes, auth }) => {
       </Grid>
     )}
   </main>
-)};
+);
 
 Index.getInitialProps = authInitialProps();
 

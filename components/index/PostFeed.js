@@ -28,9 +28,9 @@ class PostFeed extends React.Component {
   }
 
   getPosts = () => {
-    const { authUser } = this.props;
+    const { auth } = this.props;
 
-    getPostFeed(authUser._id).then(posts => this.setState({ posts }));
+    getPostFeed(auth.user._id).then(posts => this.setState({ posts }));
   };
 
   handleChange = event => {
@@ -46,10 +46,10 @@ class PostFeed extends React.Component {
   };
 
   handleAddPost = () => {
-    const { authUser } = this.props;
+    const { auth } = this.props;
 
     this.setState({ isAddingPost: true });
-    addPost(authUser._id, this.postData)
+    addPost(auth.user._id, this.postData)
       .then(post => {
         const updatedPosts = [post, ...this.state.posts];
         this.setState({
@@ -86,9 +86,9 @@ class PostFeed extends React.Component {
   };
 
   handleToggleLike = post => {
-    const { authUser } = this.props;
+    const { auth } = this.props;
 
-    const isPostLiked = post.likes.includes(authUser._id);
+    const isPostLiked = post.likes.includes(auth.user._id);
     const sendRequest = isPostLiked ? unlikePost : likePost;
     sendRequest(post._id)
       .then(postData => {
@@ -108,11 +108,11 @@ class PostFeed extends React.Component {
   };
 
   handleAddComment = (postId, text) => {
-    const { authUser } = this.props;
+    const { auth } = this.props;
 
     const comment = {
       text,
-      postedBy: authUser._id
+      postedBy: auth.user._id
     };
     addComment(postId, comment).then(postData => {
       const postIndex = this.state.posts.findIndex(
@@ -142,7 +142,7 @@ class PostFeed extends React.Component {
   };
 
   render() {
-    const { classes, authUser } = this.props;
+    const { classes, auth } = this.props;
     const { posts, text, image, isAddingPost, isDeletingPost } = this.state;
 
     return (
@@ -157,7 +157,7 @@ class PostFeed extends React.Component {
           Post Feed
         </Typography>
         <NewPost
-          authUser={authUser}
+          auth={auth}
           handleChange={this.handleChange}
           handleAddPost={this.handleAddPost}
           isAddingPost={isAddingPost}
@@ -167,7 +167,7 @@ class PostFeed extends React.Component {
         {posts.map(post => (
           <Post
             key={post._id}
-            authUser={authUser}
+            auth={auth}
             post={post}
             isDeletingPost={isDeletingPost}
             handleRemovePost={this.handleRemovePost}
