@@ -10,115 +10,70 @@ import UserFeed from "../components/index/UserFeed";
 import PostFeed from "../components/index/PostFeed";
 import { authInitialProps } from "../lib/auth";
 
-class Index extends React.Component {
-  state = {
-    splashPage: true,
-    isLoading: true
-  };
+const Index = ({ classes, auth }) => {
+  const { user = {} } = auth || {};
 
-  componentDidMount() {
-    this.checkAuth();
-  }
-
-  checkAuth = () => {
-    const { auth } = this.props;
-    const { user = {} } = auth || {};
-
-    if (user._id) {
-      this.setState({
-        splashPage: false,
-        isLoading: false
-      });
-    } else {
-      this.setState({
-        splashPage: true,
-        isLoading: false
-      });
-    }
-  };
-
-  render() {
-    const { classes, auth } = this.props;
-    const { splashPage, isLoading } = this.state;
-
-    return (
-      <main className={classes.root}>
-        {/* Loading Spinner  */}
-        {isLoading ? (
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            className={classes.progressContainer}
+  return (
+  <main className={classes.root}>
+    {user._id ? (
+      // Auth User Page
+      <Grid container>
+        <Grid item xs={12} sm={12} md={7}>
+          <PostFeed authUser={user} />
+        </Grid>
+        <Grid item className={classes.drawerContainer}>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            anchor="right"
+            classes={{
+              paper: classes.drawerPaper
+            }}
           >
-            <CircularProgress
-              className={classes.progress}
-              thickness={5}
-              size={70}
-            />
-          </Grid>
-        ) : splashPage ? (
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            className={classes.heroContent}
-          >
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              A Better Social Network
-            </Typography>
-            <Typography
-              variant="h6"
-              align="center"
-              color="textSecondary"
-              component="p"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </Typography>
-            <Button
-              className={classes.fabButton}
-              onClick={() => Router.push("/signup")}
-              variant="extendedFab"
-              color="primary"
-            >
-              Get Started
-            </Button>
-          </Grid>
-        ) : (
-          // Auth User Page
-          <Grid container>
-            <Grid item xs={12} sm={12} md={7}>
-              <PostFeed auth={auth} />
-            </Grid>
-            <Grid item className={classes.drawerContainer}>
-              <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                anchor="right"
-                classes={{
-                  paper: classes.drawerPaper
-                }}
-              >
-                <UserFeed auth={auth} />
-              </Drawer>
-            </Grid>
-          </Grid>
-        )}
-      </main>
-    );
-  }
-}
+            <UserFeed authUser={user} />
+          </Drawer>
+        </Grid>
+      </Grid>
+    ) : (
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        className={classes.heroContent}
+      >
+        <Typography
+          component="h1"
+          variant="h2"
+          align="center"
+          color="textPrimary"
+          gutterBottom
+        >
+          A Better Social Network
+        </Typography>
+        <Typography
+          variant="h6"
+          align="center"
+          color="textSecondary"
+          component="p"
+        >
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat.
+        </Typography>
+        <Button
+          className={classes.fabButton}
+          onClick={() => Router.push("/signup")}
+          variant="extendedFab"
+          color="primary"
+        >
+          Get Started
+        </Button>
+      </Grid>
+    )}
+  </main>
+)};
 
 Index.getInitialProps = authInitialProps();
 

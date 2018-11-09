@@ -97,42 +97,42 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.addFollowing = async (req, res, next) => {
-  const { authUserId, followId } = req.body;
+  const { followId } = req.body;
 
   await User.findOneAndUpdate(
-    { _id: authUserId },
+    { _id: req.user._id },
     { $push: { following: followId } }
   );
   next();
 };
 
 exports.addFollower = async (req, res) => {
-  const { authUserId, followId } = req.body;
+  const { followId } = req.body;
 
   const user = await User.findOneAndUpdate(
     { _id: followId },
-    { $push: { followers: authUserId } },
+    { $push: { followers: req.user._id } },
     { new: true }
   );
   res.json(user);
 };
 
 exports.deleteFollowing = async (req, res, next) => {
-  const { authUserId, followId } = req.body;
+  const { followId } = req.body;
 
   await User.findOneAndUpdate(
-    { _id: authUserId },
+    { _id: req.user._id },
     { $pull: { following: followId } }
   );
   next();
 };
 
 exports.deleteFollower = async (req, res) => {
-  const { authUserId, followId } = req.body;
+  const { followId } = req.body;
 
   const user = await User.findOneAndUpdate(
     { _id: followId },
-    { $pull: { followers: authUserId } },
+    { $pull: { followers: req.user._id } },
     { new: true }
   );
   res.json(user);

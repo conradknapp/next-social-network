@@ -23,11 +23,20 @@ const ROOT_URL = dev ? `http://localhost:${port}` : process.env.PRODUCTION_URL;
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const mongooseOptions = {
+let mongooseOptions = {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false
 };
+
+if (!dev) {
+  mongooseOptions = Object.assign(mongooseOptions, {
+    keepAlive: 1,
+    connectTimeoutMS: 30000,
+    reconnectTries: 30,
+    reconnectInterval: 5000
+  });
+}
 
 mongoose
   .connect(

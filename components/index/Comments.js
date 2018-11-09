@@ -33,8 +33,8 @@ class Comments extends React.PureComponent {
     });
 
   showComment = comment => {
-    const { postId, handleRemoveComment, auth, classes } = this.props;
-    const isPoster = auth.user._id === comment.postedBy._id;
+    const { postId, handleRemoveComment, authUser, classes } = this.props;
+    const isPoster = authUser._id === comment.postedBy._id;
 
     return (
       <div>
@@ -58,7 +58,7 @@ class Comments extends React.PureComponent {
   };
 
   render() {
-    const { classes, comments, auth, disablePost } = this.props;
+    const { classes, comments, authUser, disablePost } = this.props;
     const { text } = this.state;
 
     return (
@@ -67,7 +67,7 @@ class Comments extends React.PureComponent {
         {!disablePost && (
           <CardHeader
             avatar={
-              <Avatar className={classes.smallAvatar} src={auth.user.avatar} />
+              <Avatar className={classes.smallAvatar} src={authUser.avatar} />
             }
             title={
               <form onSubmit={this.handleSubmit}>

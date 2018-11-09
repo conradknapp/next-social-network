@@ -11,7 +11,7 @@ import AddAPhoto from "@material-ui/icons/AddAPhoto";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 const NewPost = ({
-  auth,
+  authUser,
   classes,
   handleAddPost,
   handleChange,
@@ -21,10 +21,10 @@ const NewPost = ({
 }) => (
   <Card className={classes.card}>
     <CardHeader
-      avatar={<Avatar src={auth.user.avatar} />}
+      avatar={<Avatar src={authUser.avatar} />}
       title={
         <Typography variant="h6" component="h2">
-          {auth.user.name}
+          {authUser.name}
         </Typography>
       }
       className={classes.cardHeader}
@@ -36,7 +36,7 @@ const NewPost = ({
         name="text"
         multiline
         rows="2"
-        placeholder={`What's on your mind, ${auth.user.name}?`}
+        placeholder={`What's on your mind, ${authUser.name}?`}
         fullWidth
         onChange={handleChange}
         margin="normal"

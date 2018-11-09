@@ -94,3 +94,5 @@ shift 3 - go from one instance of something to another
 [Show Preview Image in JavaScript](https://stackoverflow.com/questions/4459379/preview-an-image-before-it-is-uploaded)
 
 - https://medium.com/@contactsunny/hide-properties-of-mongoose-objects-in-node-js-json-responses-a5437a5dbec2
+
+- https://stackoverflow.com/questions/30909492/mongoerror-topology-was-destroyed

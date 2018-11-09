@@ -6,11 +6,11 @@ import NewPost from "./NewPost";
 import {
   getPostFeed,
   addPost,
-  unlikePost,
   likePost,
-  deleteComment,
+  unlikePost,
   deletePost,
-  addComment
+  addComment,
+  deleteComment
 } from "../../lib/api";
 
 class PostFeed extends React.Component {
@@ -28,15 +28,14 @@ class PostFeed extends React.Component {
   }
 
   getPosts = () => {
-    const { auth } = this.props;
+    const { authUser } = this.props;
 
-    getPostFeed(auth.user._id).then(posts => {
-      this.setState({ posts });
-    });
+    getPostFeed(authUser._id).then(posts => this.setState({ posts }));
   };
 
   handleChange = event => {
     let inputValue;
+
     if (event.target.name === "image") {
       inputValue = event.target.files[0];
     } else {
@@ -47,10 +46,10 @@ class PostFeed extends React.Component {
   };
 
   handleAddPost = () => {
-    const { auth } = this.props;
+    const { authUser } = this.props;
 
     this.setState({ isAddingPost: true });
-    addPost(auth.user._id, this.postData)
+    addPost(authUser._id, this.postData)
       .then(post => {
         const updatedPosts = [post, ...this.state.posts];
         this.setState({
@@ -87,11 +86,11 @@ class PostFeed extends React.Component {
   };
 
   handleToggleLike = post => {
-    const { auth } = this.props;
+    const { authUser } = this.props;
 
-    const isPostLiked = post.likes.includes(auth.user._id);
+    const isPostLiked = post.likes.includes(authUser._id);
     const sendRequest = isPostLiked ? unlikePost : likePost;
-    sendRequest(auth.user._id, post._id)
+    sendRequest(post._id)
       .then(postData => {
         const postIndex = this.state.posts.findIndex(
           post => post._id === postData._id
@@ -109,11 +108,11 @@ class PostFeed extends React.Component {
   };
 
   handleAddComment = (postId, text) => {
-    const { auth } = this.props;
+    const { authUser } = this.props;
 
     const comment = {
       text,
-      postedBy: auth.user._id
+      postedBy: authUser._id
     };
     addComment(postId, comment).then(postData => {
       const postIndex = this.state.posts.findIndex(
@@ -143,7 +142,7 @@ class PostFeed extends React.Component {
   };
 
   render() {
-    const { classes, auth } = this.props;
+    const { classes, authUser } = this.props;
     const { posts, text, image, isAddingPost, isDeletingPost } = this.state;
 
     return (
@@ -158,7 +157,7 @@ class PostFeed extends React.Component {
           Post Feed
         </Typography>
         <NewPost
-          auth={auth}
+          authUser={authUser}
           handleChange={this.handleChange}
           handleAddPost={this.handleAddPost}
           isAddingPost={isAddingPost}
@@ -168,7 +167,7 @@ class PostFeed extends React.Component {
         {posts.map(post => (
           <Post
             key={post._id}
-            auth={auth}
+            authUser={authUser}
             post={post}
             isDeletingPost={isDeletingPost}
             handleRemovePost={this.handleRemovePost}

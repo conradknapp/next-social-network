@@ -17,13 +17,7 @@ import format from "date-fns/format";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import DeleteUser from "../components/profile/DeleteUser";
 import FollowUser from "../components/profile/FollowUser";
-import {
-  getUser,
-  deletePost,
-  getPostsByUser,
-  likePost,
-  unlikePost
-} from "../lib/api";
+import { getUser, deletePost, getPostsByUser } from "../lib/api";
 import { authInitialProps } from "../lib/auth";
 
 class Profile extends React.Component {
@@ -75,29 +69,6 @@ class Profile extends React.Component {
         );
         const updatedPosts = [
           ...this.state.posts.slice(0, postIndex),
-          ...this.state.posts.slice(postIndex + 1)
-        ];
-        this.setState({ posts: updatedPosts });
-      })
-      .catch(err => console.error(err));
-  };
-
-  handleToggleLike = post => {
-    const { auth } = this.props;
-
-    const isPostLiked = post.likes.includes(auth.user._id);
-    const sendRequest = isPostLiked ? unlikePost : likePost;
-    sendRequest({
-      userId: auth.user._id,
-      postId: post._id
-    })
-      .then(postData => {
-        const postIndex = this.state.posts.findIndex(
-          post => post._id === postData._id
-        );
-        const updatedPosts = [
-          ...this.state.posts.slice(0, postIndex),
-          postData,
           ...this.state.posts.slice(postIndex + 1)
         ];
         this.setState({ posts: updatedPosts });
@@ -192,7 +163,7 @@ const styles = theme => ({
     }
   },
   title: {
-    color: theme.palette.openTitle
+    color: theme.palette.primary.main
   },
   progress: {
     margin: theme.spacing.unit * 2

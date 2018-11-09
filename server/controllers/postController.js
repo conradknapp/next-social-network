@@ -76,10 +76,11 @@ exports.deletePost = async (req, res) => {
 };
 
 exports.toggleLike = async (req, res) => {
-  const { authUserId, postId } = req.body;
+  const { postId } = req.body;
 
   const post = await Post.findOne({ _id: postId });
   const likeIds = post.likes.map(id => id.toString());
+  const authUserId = req.user._id.toString();
   if (likeIds.includes(authUserId)) {
     await post.likes.pull(authUserId);
   } else {

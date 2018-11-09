@@ -18,37 +18,35 @@ import { getUserFeed, followUser } from "../../lib/api";
 class UserFeed extends React.Component {
   state = {
     users: [],
-    open: false,
+    openSuccess: false,
     followMessage: ""
   };
 
   componentDidMount() {
-    const { auth } = this.props;
+    const { authUser } = this.props;
 
-    getUserFeed(auth.user._id).then(users => this.setState({ users }));
+    getUserFeed(authUser._id).then(users => this.setState({ users }));
   }
 
   handleFollow = (user, userIndex) => {
-    const { auth } = this.props;
-
-    followUser(auth.user._id, user._id).then(user => {
+    followUser(user._id).then(user => {
       const updatedUsers = [
         ...this.state.users.slice(0, userIndex),
         ...this.state.users.slice(userIndex + 1)
       ];
       this.setState({
         users: updatedUsers,
-        open: true,
+        openSuccess: true,
         followMessage: `Following ${user.name}!`
       });
     });
   };
 
-  handleClose = () => this.setState({ open: false });
+  handleClose = () => this.setState({ openSuccess: false });
 
   render() {
     const { classes } = this.props;
-    const { open, followMessage, users } = this.state;
+    const { openSuccess, followMessage, users } = this.state;
 
     return (
       <div>
@@ -95,7 +93,7 @@ class UserFeed extends React.Component {
             vertical: "bottom",
             horizontal: "right"
           }}
-          open={open}
+          open={openSuccess}
           onClose={this.handleClose}
           autoHideDuration={6000}
           message={<span className={classes.snack}>{followMessage}</span>}
@@ -116,7 +114,7 @@ const styles = theme => ({
     right: theme.spacing.unit * 2
   },
   snack: {
-    color: theme.palette.protectedTitle
+    color: theme.palette.primary.light
   },
   viewButton: {
     verticalAlign: "middle"
