@@ -50,7 +50,7 @@ class Post extends React.PureComponent {
     }
   }
 
-  checkLiked = likes => likes.includes(this.props.auth.user_id);
+  checkLiked = likes => likes.includes(this.props.auth.user._id);
 
   formatTimeCreated = time =>
     distanceInWordsToNow(time, {
