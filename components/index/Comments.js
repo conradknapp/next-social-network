@@ -33,8 +33,8 @@ class Comments extends React.PureComponent {
     });
 
   showComment = comment => {
-    const { postId, handleRemoveComment, auth, classes } = this.props;
-    const isPoster = auth.user._id === comment.postedBy._id;
+    const { postId, handleDeleteComment, auth, classes } = this.props;
+    const isCommentCreator = auth.user._id === comment.postedBy._id;
 
     return (
       <div>
@@ -45,9 +45,9 @@ class Comments extends React.PureComponent {
         {comment.text}
         <span className={classes.commentDate}>
           {this.formatTimeAdded(comment.createdAt)}
-          {isPoster && (
+          {isCommentCreator && (
             <Delete
-              onClick={() => handleRemoveComment(postId, comment)}
+              onClick={() => handleDeleteComment(postId, comment)}
               className={classes.commentDelete}
               color="secondary"
             />

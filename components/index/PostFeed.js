@@ -66,7 +66,7 @@ class PostFeed extends React.Component {
       });
   };
 
-  handleRemovePost = deletedPost => {
+  handleDeletePost = deletedPost => {
     this.setState({ isDeletingPost: true });
     deletePost(deletedPost._id)
       .then(postData => {
@@ -127,7 +127,7 @@ class PostFeed extends React.Component {
     });
   };
 
-  handleRemoveComment = (postId, comment) => {
+  handleDeleteComment = (postId, comment) => {
     deleteComment(postId, comment).then(postData => {
       const postIndex = this.state.posts.findIndex(
         post => post._id === postData._id
@@ -170,9 +170,9 @@ class PostFeed extends React.Component {
             auth={auth}
             post={post}
             isDeletingPost={isDeletingPost}
-            handleRemovePost={this.handleRemovePost}
+            handleDeletePost={this.handleDeletePost}
             handleAddComment={this.handleAddComment}
-            handleRemoveComment={this.handleRemoveComment}
+            handleDeleteComment={this.handleDeleteComment}
             handleToggleLike={this.handleToggleLike}
           />
         ))}

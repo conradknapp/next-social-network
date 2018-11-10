@@ -20,7 +20,6 @@ class ProfileTabs extends React.Component {
     const { tab, disablePost } = this.state;
     const {
       handleRemovePost,
-      handleToggleLike,
       posts,
       user,
       auth
@@ -49,7 +48,6 @@ class ProfileTabs extends React.Component {
                 post={post}
                 auth={auth}
                 disablePost={disablePost}
-                handleToggleLike={handleToggleLike}
                 handleRemovePost={handleRemovePost}
               />
             ))}

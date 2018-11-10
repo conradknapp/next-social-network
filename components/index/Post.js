@@ -65,9 +65,9 @@ class Post extends React.PureComponent {
       auth,
       isDeletingPost,
       handleToggleLike,
-      handleRemovePost,
+      handleDeletePost,
       handleAddComment,
-      handleRemoveComment,
+      handleDeleteComment,
       disablePost
     } = this.props;
     const { comments, numLikes, isLiked } = this.state;
@@ -82,7 +82,7 @@ class Post extends React.PureComponent {
             isPostCreator && (
               <IconButton
                 disabled={isDeletingPost}
-                onClick={() => handleRemovePost(post)}
+                onClick={() => handleDeletePost(post)}
               >
                 <DeleteTwoTone color="secondary" />
               </IconButton>
@@ -140,7 +140,7 @@ class Post extends React.PureComponent {
           comments={comments}
           disablePost={disablePost}
           handleAddComment={handleAddComment}
-          handleRemoveComment={handleRemoveComment}
+          handleDeleteComment={handleDeleteComment}
         />
       </Card>
     );
